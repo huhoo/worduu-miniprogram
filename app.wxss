@@ -1,0 +1,214 @@
+/**
+ * 全局样式 · 沿用 Web 版「字伴」配色
+ * 宣纸底 #FCFAF7 / 页面底 #F8F9F5 / 主色 竹绿 #059669 / 田字格朱红 #E26D5C
+ */
+page {
+  --paper: #FCFAF7;
+  --page: #F8F9F5;
+  --ink: #1C1917;
+  --ink-2: #57534E;
+  --ink-3: #A8A29E;
+  --line: #E7E5E4;
+  --green: #059669;
+  --green-light: #ECFDF5;
+  --vermilion: #E26D5C;
+  --vermilion-light: #F3AFA6;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+
+  background: var(--page);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/** 楷体：汉字展示专用 */
+.kai {
+  font-family: 'Kaiti SC', 'KaiTi', 'STKaiti', '楷体', 'Songti SC', 'SimSun', serif;
+}
+
+/* ---------- 容器 ---------- */
+.page {
+  padding: 24rpx 24rpx 160rpx;
+}
+
+.card {
+  background: #FFFFFF;
+  border: 1rpx solid var(--line);
+  border-radius: 32rpx;
+  padding: 28rpx;
+  box-shadow: 0 1rpx 3rpx rgba(28, 25, 23, 0.04);
+}
+
+.card + .card {
+  margin-top: 24rpx;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ---------- 文字 ---------- */
+.title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sub {
+  font-size: 24rpx;
+  color: var(--ink-2);
+}
+
+.muted {
+  font-size: 22rpx;
+  color: var(--ink-3);
+}
+
+.mono {
+  font-family: 'SF Mono', 'Menlo', monospace;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: #FFFFFF;
+  padding: 24rpx 32rpx;
+}
+
+.btn-ghost {
+  background: #FFFFFF;
+  color: var(--ink-2);
+  border: 1rpx solid var(--line);
+  padding: 20rpx 28rpx;
+}
+
+.btn:active {
+  opacity: 0.75;
+}
+
+.btn-disabled {
+  opacity: 0.4;
+}
+
+/* ---------- 标签 ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.chip-green { background: var(--green-light); color: #065F46; }
+.chip-amber { background: var(--amber-light); color: #92400E; }
+.chip-rose  { background: #FFF1F2; color: #9F1239; }
+.chip-blue  { background: #EFF6FF; color: #1E40AF; }
+.chip-stone { background: #F5F5F4; color: var(--ink-2); }
+
+/* ---------- 田字格 ---------- */
+.tianzige {
+  position: relative;
+  background: var(--paper);
+  border: 4rpx solid var(--vermilion);
+  border-radius: 32rpx;
+  overflow: hidden;
+}
+
+.tianzige-guide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.guide-line {
+  position: absolute;
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--vermilion-light);
+}
+
+.guide-v {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left-width: 2rpx;
+}
+
+.guide-h {
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top-width: 2rpx;
+}
+
+/* ---------- 空状态 ---------- */
+.empty {
+  padding: 80rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 64rpx;
+  opacity: 0.35;
+}
+
+/* ---------- 底部导航栏 ---------- */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: #FFFFFF;
+  border-top: 1rpx solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.tabbar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0 12rpx;
+}
+
+.tabbar-emoji {
+  font-size: 40rpx;
+  line-height: 1.2;
+}
+
+.tabbar-label {
+  font-size: 20rpx;
+  margin-top: 4rpx;
+  color: var(--ink-3);
+}
+
+.tabbar-item.active .tabbar-label {
+  color: var(--green);
+  font-weight: 700;
+}

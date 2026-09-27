@@ -1,0 +1,151 @@
+/* ---------- 字头 ---------- */
+.head {
+  display: flex;
+  align-items: center;
+}
+
+.head-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200rpx;
+  flex-shrink: 0;
+}
+
+.big-char {
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 28rpx;
+  background: #FCFAF7;
+  border: 4rpx solid #E26D5C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 108rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.big-pinyin {
+  margin-top: 16rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: #57534E;
+}
+
+.head-right {
+  flex: 1;
+  margin-left: 28rpx;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #F5F5F4;
+}
+
+.meta-row:last-child {
+  border-bottom: none;
+}
+
+.meta-label {
+  width: 80rpx;
+  font-size: 22rpx;
+  color: #A8A29E;
+}
+
+.meta-value {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1C1917;
+}
+
+/* ---------- 发音 ---------- */
+.audio-row {
+  margin-top: 24rpx;
+}
+
+.audio-btn {
+  flex: 1;
+}
+
+.audio-row .audio-btn:first-child {
+  margin-right: 16rpx;
+}
+
+/* ---------- 笔顺 ---------- */
+.glyph-wrap {
+  margin-top: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- 正文块 ---------- */
+.body-text {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #57534E;
+  line-height: 1.75;
+}
+
+.words {
+  margin-top: 16rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.word {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1rpx solid #A7F3D0;
+  border-radius: 16rpx;
+  padding: 10rpx 24rpx;
+  font-size: 26rpx;
+  margin: 0 16rpx 16rpx 0;
+}
+
+/* ---------- 状态 ---------- */
+.loading-tip {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 4rpx solid #D1FAE5;
+  border-top-color: #059669;
+  border-radius: 50%;
+  margin-right: 14rpx;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notice {
+  margin-top: 24rpx;
+  background: #FFFBEB;
+  border: 1rpx solid #FDE68A;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+}
+
+.notice-text {
+  font-size: 24rpx;
+  color: #92400E;
+  line-height: 1.6;
+}
+
+.write-btn {
+  margin-top: 32rpx;
+  width: 100%;
+}

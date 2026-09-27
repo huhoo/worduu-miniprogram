@@ -1,0 +1,108 @@
+<!-- 字库为空 -->
+<view class="page" wx:if="{{total === 0}}">
+  <view class="card empty">
+    <view class="empty-icon">🌱</view>
+    <text class="sub">字库还是空的，没有可以认读的字</text>
+    <text class="muted">先拍一页课本或课外书把生字收进来，认读评测会从这些字里出题。</text>
+    <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
+  </view>
+</view>
+
+<!-- 本次报告 -->
+<view class="page" wx:elif="{{done}}">
+  <view class="card report">
+    <view class="report-percent">{{percent}}%</view>
+    <text class="report-line">读对 {{correctCount}} 个 · 共 {{total}} 个</text>
+  </view>
+
+  <view class="card" wx:if="{{wrongList.length > 0}}">
+    <view class="row">
+      <text class="warn-icon">⚠️</text>
+      <text class="title">这几个字读错了，已放进错题本</text>
+    </view>
+    <view class="wrong-grid">
+      <view
+        wx:for="{{wrongList}}"
+        wx:key="char"
+        class="wrong-item"
+        data-char="{{item.char}}"
+        bindtap="playWrong"
+      >
+        <text class="wrong-char kai">{{item.char}}</text>
+        <text class="wrong-pinyin">{{item.pinyin}}</text>
+      </view>
+    </view>
+    <text class="muted">点上面的字可以听正确读音。这些字已标为「经常读错」，之后会优先安排复习。</text>
+  </view>
+
+  <view class="card perfect" wx:else>
+    <text class="perfect-icon">🎉</text>
+    <text class="sub">全部读对了，真棒！</text>
+  </view>
+
+  <view class="btn btn-primary" bindtap="goAchievement">🏆 生成今日成就卡</view>
+  <view class="btn btn-ghost" bindtap="backHome">完成，回到首页</view>
+</view>
+
+<!-- 答题中 -->
+<view class="page" wx:else>
+  <view class="row-between bar">
+    <view class="row">
+      <text class="bar-title">识字认读评测</text>
+    </view>
+    <text class="bar-progress">{{index + 1}} / {{total}}</text>
+  </view>
+
+  <view class="card stage">
+    <view class="tianzige big-box">
+      <view class="guide-line guide-v"></view>
+      <view class="guide-line guide-h"></view>
+      <text class="stage-char kai">{{current.char}}</text>
+    </view>
+
+    <view class="pinyin-row">
+      <text wx:if="{{showPinyin}}" class="stage-pinyin">{{current.pinyin || '暂无拼音'}}</text>
+      <text wx:else class="pinyin-link" bindtap="togglePinyin">点击查看拼音提示</text>
+    </view>
+
+    <view class="row audio-row">
+      <view class="btn btn-ghost audio-btn" bindtap="playRead">🔊 听发音</view>
+      <view class="btn btn-ghost audio-btn" bindtap="playSpell">🎧 慢速拼读</view>
+    </view>
+
+    <text class="source">来源：{{current.source}} · {{current.sourceDetail}}</text>
+  </view>
+
+  <!-- 未作答 -->
+  <view class="card" wx:if="{{!answered}}">
+    <text class="title ask">请看着上面的字，大声读出来</text>
+    <text class="muted ask-note">
+      小程序没有自动语音识别，这一步由家长旁听后点选结果 —— 记录的是真实判断，不是机器猜测的分数。
+    </text>
+    <view class="row judge-row">
+      <view class="btn btn-primary judge-btn" data-pass="{{true}}" bindtap="answer">✓ 读对了</view>
+      <view class="btn btn-ghost judge-btn" data-pass="{{false}}" bindtap="answer">✗ 没读准</view>
+    </view>
+  </view>
+
+  <!-- 已作答 -->
+  <view class="card result {{isCorrect ? 'result-ok' : 'result-bad'}}" wx:else>
+    <view class="row-between">
+      <view class="row">
+        <text class="result-icon">{{isCorrect ? '✅' : '💪'}}</text>
+        <text class="result-title">{{isCorrect ? '读对了！' : '再接再厉！'}}</text>
+      </view>
+      <text class="result-time">⏱ {{responseTime}} 秒</text>
+    </view>
+    <text class="result-feedback">{{feedback}}</text>
+
+    <view class="row audio-row" wx:if="{{!isCorrect}}">
+      <view class="btn btn-ghost audio-btn" bindtap="playRead">再听一遍</view>
+      <view class="btn btn-ghost audio-btn" bindtap="playSpell">听慢速拼读</view>
+    </view>
+  </view>
+
+  <view wx:if="{{answered}}" class="btn btn-primary next-btn" bindtap="next">
+    {{isLast ? '查看本次挑战报告' : '下一题'}}
+  </view>
+</view>

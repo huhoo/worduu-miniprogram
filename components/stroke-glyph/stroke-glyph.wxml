@@ -1,0 +1,63 @@
+<view class="glyph">
+  <!-- 加载中 -->
+  <view wx:if="{{status === 'loading'}}" class="stage loading" style="width:{{size}}px;height:{{size}}px">
+    <view class="spinner"></view>
+  </view>
+
+  <!-- 无权威笔顺数据：只给字形，不给动画 -->
+  <view wx:elif="{{status === 'empty'}}" class="empty-wrap">
+    <view class="stage tianzige" style="width:{{size}}px;height:{{size}}px">
+      <text class="ghost kai" style="font-size:{{size * 0.62}}px">{{char}}</text>
+    </view>
+    <text class="empty-note">
+      这个字暂无权威笔顺数据，因此不提供逐笔演示。请参照课本或请教老师，避免跟着不准确的动画学。
+    </text>
+  </view>
+
+  <!-- 正常：canvas 逐笔演示 -->
+  <view wx:else class="stage-wrap">
+    <view class="stage tianzige" style="width:{{size}}px;height:{{size}}px">
+      <canvas
+        type="2d"
+        id="glyph-canvas"
+        class="glyph-canvas"
+        style="width:{{size}}px;height:{{size}}px"
+      ></canvas>
+      <view class="badge">{{shown}} / {{total}}</view>
+    </view>
+
+    <view wx:if="{{showControls}}">
+      <view class="dots">
+        <view
+          wx:for="{{dots}}"
+          wx:key="*this"
+          class="dot {{shown === item ? 'dot-current' : (shown > item ? 'dot-done' : '')}}"
+          data-index="{{index}}"
+          bindtap="gotoStroke"
+        >{{item}}</view>
+      </view>
+
+      <!-- 笔画名：只在两个数据源对笔画数一致时才出现 -->
+      <view class="pills" wx:if="{{hasNames}}">
+        <text
+          wx:for="{{names}}"
+          wx:key="index"
+          class="pill {{shown === index + 1 ? 'pill-current' : ''}}"
+          data-index="{{index}}"
+          bindtap="gotoStroke"
+        >{{item}}</text>
+      </view>
+
+      <text class="stroke-name" wx:if="{{hasNames && currentName}}">第 {{shown}} 笔：{{currentName}}</text>
+
+      <view class="controls">
+        <view class="ctrl {{shown <= 1 ? 'ctrl-off' : ''}}" bindtap="prevStroke">‹</view>
+        <view class="play" bindtap="togglePlay">{{playing ? '暂停' : '逐笔演示'}}</view>
+        <view class="ctrl {{shown >= total ? 'ctrl-off' : ''}}" bindtap="nextStroke">›</view>
+      </view>
+
+      <text class="credit" wx:if="{{hasNames}}">共 {{total}} 画 · 笔顺 Make Me a Hanzi · 笔画名 cnchar</text>
+      <text class="credit" wx:else>共 {{total}} 画 · 笔顺 Make Me a Hanzi · 该字无权威笔画名，故不标注</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/ocr/ocr",
+    "pages/bank/bank",
+    "pages/detail/detail",
+    "pages/quiz/quiz",
+    "pages/dictation/dictation",
+    "pages/write/write",
+    "pages/profile/profile",
+    "pages/shelf/shelf",
+    "pages/reader/reader",
+    "pages/achievement/achievement",
+    "pages/share/share"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#FCFAF7",
+    "navigationBarTitleText": "字伴",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F9F5",
+    "backgroundColorTop": "#F8F9F5",
+    "backgroundColorBottom": "#F8F9F5"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

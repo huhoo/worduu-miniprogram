@@ -1,0 +1,196 @@
+.glyph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.stage {
+  position: relative;
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+
+.stage-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tianzige {
+  background: #FCFAF7;
+  border: 4rpx solid #E26D5C;
+}
+
+.glyph-canvas {
+  display: block;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FAFAF9;
+  border: 1rpx solid #E7E5E4;
+}
+
+.spinner {
+  width: 48rpx;
+  height: 48rpx;
+  border: 6rpx solid #D1FAE5;
+  border-top-color: #059669;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ghost {
+  color: #D6D3D1;
+}
+
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.empty-note {
+  margin-top: 16rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  color: #78716C;
+  text-align: center;
+  padding: 0 24rpx;
+}
+
+.badge {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  background: #ECFDF5;
+  color: #065F46;
+  font-size: 18rpx;
+  padding: 2rpx 14rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid #A7F3D0;
+}
+
+.dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+
+.dot {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: #F5F5F4;
+  color: #A8A29E;
+  font-size: 20rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6rpx;
+}
+
+.dot-done {
+  background: #E7E5E4;
+  color: #57534E;
+}
+
+.dot-current {
+  background: #059669;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 6rpx #A7F3D0;
+}
+
+/* ---------- 笔画名 ---------- */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 12rpx;
+  padding: 0 12rpx;
+}
+
+.pill {
+  background: #FFFBEB;
+  border: 1rpx solid #FDE68A;
+  color: #92400E;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  margin: 6rpx;
+}
+
+.pill-current {
+  background: #D97706;
+  border-color: #D97706;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.stroke-name {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #57534E;
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+
+.ctrl {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 18rpx;
+  border: 1rpx solid #E7E5E4;
+  background: #FFFFFF;
+  color: #57534E;
+  font-size: 34rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ctrl-off {
+  opacity: 0.3;
+}
+
+.play {
+  margin: 0 24rpx;
+  padding: 14rpx 32rpx;
+  border-radius: 999rpx;
+  background: #059669;
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.play:active {
+  opacity: 0.8;
+}
+
+.credit {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 18rpx;
+  color: #D6D3D1;
+  text-align: center;
+}

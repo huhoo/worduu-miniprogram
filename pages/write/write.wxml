@@ -1,0 +1,106 @@
+<!-- 字库为空 -->
+<view class="page" wx:if="{{ready && !item}}">
+  <view class="card empty">
+    <view class="empty-icon">✍️</view>
+    <text class="sub">字库还是空的，没有可练习的字</text>
+    <text class="muted">先拍一页课本或课外书，把生字收进来，这里就能逐笔练习书写。</text>
+    <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照认字</view>
+  </view>
+</view>
+
+<view class="page" wx:elif="{{item}}">
+  <!-- 字头 -->
+  <view class="card head">
+    <view class="row">
+      <text class="head-char kai">{{item.char}}</text>
+      <text class="head-meta">共 {{item.strokeCount || '—'}} 笔 · 部首【{{item.radical || '—'}}】</text>
+    </view>
+    <view class="row tabs">
+      <view
+        class="tab {{tab === 'write' ? 'tab-on' : ''}}"
+        data-tab="write"
+        bindtap="switchTab"
+      >✍️ 写字练习</view>
+      <view
+        class="tab {{tab === 'animate' ? 'tab-on' : ''}}"
+        data-tab="animate"
+        bindtap="switchTab"
+      >👁 看笔顺动画</view>
+    </view>
+  </view>
+
+  <!-- 写字练习 -->
+  <view class="card" wx:if="{{tab === 'write'}}">
+    <view class="row-between mode-row">
+      <text class="sub">练习模式</text>
+      <view class="row mode-switch">
+        <view
+          class="mode {{mode === 'trace' ? 'mode-on' : ''}}"
+          data-mode="trace"
+          bindtap="switchMode"
+        >跟写（描红）</view>
+        <view
+          class="mode {{mode === 'free' ? 'mode-on' : ''}}"
+          data-mode="free"
+          bindtap="switchMode"
+        >独立写（考核）</view>
+      </view>
+    </view>
+
+    <view class="canvas-wrap">
+      <view class="tianzige" style="width:{{300}}px;height:{{300}}px">
+        <canvas
+          type="2d"
+          id="write-canvas"
+          class="write-canvas"
+          style="width:{{300}}px;height:{{300}}px"
+          bindtouchstart="onTouchStart"
+          bindtouchmove="onTouchMove"
+          bindtouchend="onTouchEnd"
+          bindtouchcancel="onTouchEnd"
+        ></canvas>
+      </view>
+      <view class="stroke-badge">已写 {{strokeCount}} 笔</view>
+    </view>
+
+    <view class="row tools">
+      <view class="btn btn-ghost tool-btn" bindtap="undo">撤销一笔</view>
+      <view class="btn btn-ghost tool-btn" bindtap="clear">重写清除</view>
+      <view class="btn btn-ghost tool-btn" bindtap="playRead">🔊 听读音</view>
+    </view>
+
+    <view wx:if="{{note}}" class="notice">
+      <text class="notice-text">{{note}}</text>
+    </view>
+
+    <view class="row count-row">
+      <text class="sub">当前书写：<text class="count-num">{{strokeCount}}</text> 笔</text>
+      <text class="sub">标准笔画：<text class="count-num green">{{standardStrokeCount || '—'}}</text> 笔</text>
+    </view>
+
+    <view class="btn btn-primary submit-btn {{strokeCount === 0 || evaluating ? 'btn-disabled' : ''}}" bindtap="evaluate">
+      {{evaluating ? 'AI 正在批改字形与笔顺…' : '我写完了，检查字形'}}
+    </view>
+
+    <!-- 批改结果 -->
+    <view class="result" wx:if="{{result}}">
+      <view class="row-between">
+        <text class="result-title">{{result.isPassed ? '批改通过！🎉' : '继续加油哦！💪'}}</text>
+        <text class="result-score">字形 {{result.shapeScore}} · 笔顺 {{result.strokeScore}}</text>
+      </view>
+      <text class="result-feedback">{{result.feedback}}</text>
+      <view wx:if="{{result.hasImprovements}}" class="improve">
+        建议：{{result.improvementsText}}
+      </view>
+      <view class="btn btn-ghost next-btn" bindtap="nextChar">练下一个字</view>
+    </view>
+  </view>
+
+  <!-- 笔顺动画 -->
+  <view class="card" wx:else>
+    <stroke-glyph char="{{item.char}}" size="{{280}}" is-mi-zi-ge="{{true}}" />
+    <view class="btn btn-primary animate-btn" bindtap="switchTab" data-tab="write">去田字格练习</view>
+  </view>
+</view>
+
+<tabbar current="write" />

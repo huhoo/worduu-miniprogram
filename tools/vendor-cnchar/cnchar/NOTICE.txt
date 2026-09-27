@@ -1,0 +1,11 @@
+Vendored data from cnchar (https://github.com/theajack/cnchar), MIT licensed.
+
+Files:
+  stroke-order-jian.json  per-character stroke type codes (6,939 characters)
+  stroke-table.json       stroke code -> standard name / shape / type / foldCount
+  LICENSE                 the upstream MIT licence, redistributed unaltered
+
+Used by scripts/build-stroke-data.mjs to attach standard stroke NAMES to the
+centrelines it takes from hanzi-writer-data. The two datasets are independent;
+a character only gets names when both agree on its stroke count (99.9% of the
+6,811 characters they share).

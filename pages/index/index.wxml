@@ -1,0 +1,93 @@
+<view class="page">
+  <!-- 顶部横幅 -->
+  <view class="banner">
+    <view class="banner-body">
+      <view class="banner-tag">
+        <text class="banner-tag-text">字伴 · 孩子专属语文AI伙伴</text>
+      </view>
+      <view class="banner-title">
+        <text>{{childNickname ? childNickname + '，' : ''}}让每个汉字\n都成为好朋友！</text>
+      </view>
+      <view class="banner-sub">
+        <text class="dot"></text>
+        <text>今日伴读 {{stats.studyTimeMinutes}} 分钟 · 新学 {{stats.todayLearnedCount}} 字 · 已掌握 {{stats.mastered}} 字</text>
+      </view>
+    </view>
+    <view class="banner-mascot">
+      <text class="mascot-emoji">🐣</text>
+      <text class="mascot-label">字伴小精灵</text>
+    </view>
+  </view>
+
+  <!-- 功能模块 -->
+  <view class="grid">
+    <view
+      wx:for="{{modules}}"
+      wx:key="key"
+      class="module"
+      data-key="{{item.key}}"
+      bindtap="goModule"
+    >
+      <view class="module-head">
+        <view class="module-icon" style="background:{{item.bg}};color:{{item.fg}}">{{item.emoji}}</view>
+        <text class="module-badge">{{item.badge}}</text>
+      </view>
+      <view class="module-title">{{item.title}}</view>
+      <view class="module-sub">{{item.subtitle}}</view>
+    </view>
+  </view>
+
+  <!-- 今日学习进展 -->
+  <view class="card">
+    <view class="row-between progress-head">
+      <view class="row">
+        <text class="flame">🔥</text>
+        <text class="title">今日学习进展</text>
+      </view>
+      <text class="more" bindtap="openBank">查看详情 ›</text>
+    </view>
+    <view class="progress-grid">
+      <view class="progress-cell">
+        <view class="progress-num">{{stats.todayLearnedCount}}</view>
+        <view class="progress-label">已学汉字</view>
+      </view>
+      <view class="progress-cell">
+        <view class="progress-num green">{{stats.todayMasteredCount}}</view>
+        <view class="progress-label">掌握</view>
+      </view>
+      <view class="progress-cell">
+        <view class="progress-num amber">{{stats.todayReviewCount}}</view>
+        <view class="progress-label">待复习</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近学习的生字 -->
+  <view class="card">
+    <view class="row-between">
+      <text class="title">最近学习的生字</text>
+      <text class="more" bindtap="openBank">全部生字 ({{total}}) ›</text>
+    </view>
+    <view class="recent-grid" wx:if="{{recentChars.length > 0}}">
+      <view
+        wx:for="{{recentChars}}"
+        wx:key="id"
+        class="recent-item"
+        data-id="{{item.id}}"
+        bindtap="openChar"
+      >
+        <text class="recent-char kai">{{item.char}}</text>
+        <text class="recent-pinyin">{{item.pinyin}}</text>
+        <text class="recent-source">{{item.source}}</text>
+      </view>
+    </view>
+    <view class="empty" wx:else>
+      <view class="empty-icon">🌱</view>
+      <text class="sub">字库还是空的</text>
+      <text class="muted">先拍一页课本或课外书，把生字收进来</text>
+      <view class="btn btn-primary empty-btn" data-key="ocr" bindtap="goModule">去拍照认字</view>
+    </view>
+  </view>
+</view>
+
+<tabbar current="index" />

@@ -1,0 +1,104 @@
+<view class="page" wx:if="{{article}}">
+  <!-- 文章信息 -->
+  <view class="head">
+    <view class="head-left">
+      <text class="badge">{{article.source}} · {{article.sourceBook}}</text>
+      <text class="title">{{article.title}}</text>
+    </view>
+    <view class="mode-btn" bindtap="openSettings">
+      <text class="mode-btn-text">AI 伴读模式</text>
+    </view>
+  </view>
+
+  <!-- 阅读卡 -->
+  <view class="paper">
+    <view
+      wx:for="{{paragraphs}}"
+      wx:for-item="para"
+      wx:key="index"
+      class="sentence {{currentIdx === para.index && playing ? 'sentence-on' : ''}}"
+    >
+      <text
+        wx:for="{{para.chars}}"
+        wx:for-item="ch"
+        wx:key="index"
+        class="ch {{ch.isPunct ? 'ch-punct' : (highlightVocab && ch.isVocab ? 'ch-vocab' : 'ch-plain')}}"
+        data-char="{{ch.ch}}"
+        bindtap="openChar"
+      >{{ch.ch}}</text>
+    </view>
+
+    <view class="tip">
+      <text class="tip-emoji">📖</text>
+      <text class="tip-text">点击文中任意不认识的汉字，就能看拼音、查字义、听发音。</text>
+    </view>
+  </view>
+
+  <!-- 播放器 -->
+  <view class="player">
+    <view class="player-top">
+      <view class="counter">
+        <text class="counter-now">{{currentLabel}}</text>
+        <text class="counter-sep">/</text>
+        <text class="counter-all">共 {{totalSentences}} 句</text>
+      </view>
+
+      <view class="rates">
+        <text
+          wx:for="{{rates}}"
+          wx:key="*this"
+          class="rate {{rate === item ? 'rate-on' : ''}}"
+          data-rate="{{item}}"
+          bindtap="pickRate"
+        >{{item}}x</text>
+      </view>
+    </view>
+
+    <view class="progress">
+      <view class="progress-bar" style="width: {{progress}}%"></view>
+    </view>
+
+    <view class="controls">
+      <view class="ctrl" bindtap="replay">↺</view>
+
+      <view class="play {{playing ? 'play-on' : ''}} {{mode === 'free' ? 'play-off' : ''}}" bindtap="togglePlay">
+        <text wx:if="{{playing}}">暂停伴读</text>
+        <text wx:elif="{{mode === 'free'}}">自主默读模式（静音）</text>
+        <text wx:elif="{{synthesizing}}">正在准备语音…</text>
+        <text wx:else>开始 AI 伴读</text>
+      </view>
+
+      <view class="ctrl {{highlightVocab ? 'ctrl-on' : ''}}" bindtap="toggleHighlight">✎</view>
+    </view>
+
+    <text class="notice" wx:if="{{notice}}">{{notice}}</text>
+  </view>
+
+  <!-- 模式设置 -->
+  <view class="mask" wx:if="{{showSettings}}" bindtap="closeSettings">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-head">
+        <text class="sheet-title">AI 伴读模式设置</text>
+        <text class="sheet-close" bindtap="closeSettings">✕</text>
+      </view>
+
+      <text class="sheet-label">朗读方式</text>
+      <view class="modes">
+        <text
+          wx:for="{{modes}}"
+          wx:key="key"
+          class="mode-item {{mode === item.key ? 'mode-item-on' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="pickMode"
+        >{{item.label}}</text>
+      </view>
+      <text class="sheet-hint">{{modeHint}}</text>
+
+      <view class="apply" bindtap="applyAndPlay">应用并开始伴读</view>
+    </view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="empty">{{notice || '没有找到这本书'}}</view>
+</view>

@@ -1,0 +1,136 @@
+<view class="page">
+  <!-- 加载中 -->
+  <view class="state" wx:if="{{loading}}">
+    <text class="state-emoji">⏳</text>
+    <text class="state-text">正在打开奖状…</text>
+  </view>
+
+  <!-- 链接无效 -->
+  <view class="invalid" wx:elif="{{invalid}}">
+    <text class="invalid-emoji">😵</text>
+    <text class="invalid-title">这条分享链接打不开</text>
+    <text class="invalid-text">{{invalidReason}}请让家长重新分享一次。</text>
+    <view class="btn btn-primary" bindtap="goApp">进入字伴</view>
+  </view>
+
+  <block wx:else>
+    <!-- 分享来源横幅 -->
+    <view class="banner">
+      <view class="banner-left">
+        <view class="logo">字</view>
+        <view class="banner-text">
+          <view class="banner-title">字伴 · 亲友见证与鼓励</view>
+          <view class="banner-sub">宝贝 <text class="strong">{{card.childName}}</text> 完成了今日识字任务！</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 奖状 -->
+    <view class="cert">
+      <view class="cert-head">
+        <view class="cert-brand">
+          <text class="cert-brand-name">识字荣誉奖状</text>
+          <text class="cert-date">{{card.date}}</text>
+        </view>
+        <view class="cert-name">{{card.childName}} 宝贝</view>
+      </view>
+
+      <view class="cert-main">
+        <view class="cert-title">🏆 {{card.title}}</view>
+        <view class="cert-score">{{card.scoreText}}</view>
+        <view class="cert-praise">“{{card.praiseComment}}”</view>
+      </view>
+
+      <view class="metrics">
+        <view class="metric">
+          <view class="metric-label">🔥 累计识字</view>
+          <view class="metric-value">{{card.totalRecognized}}<text class="metric-unit">字</text></view>
+        </view>
+        <view class="metric">
+          <view class="metric-label">⏱ 专注学习</view>
+          <view class="metric-value">{{card.durationMinutes}}<text class="metric-unit">分钟</text></view>
+        </view>
+        <view class="metric">
+          <view class="metric-label">✨ 攻克生字</view>
+          <view class="metric-value">{{card.highlightChars.length}}<text class="metric-unit">个</text></view>
+        </view>
+      </view>
+
+      <view class="chars" wx:if="{{card.highlightChars.length}}">
+        <text class="chars-label">✨ 今日掌握的新汉字</text>
+        <view class="chips">
+          <view class="chip" wx:for="{{card.highlightChars}}" wx:key="char">
+            <text class="chip-char">{{item.char}}</text>
+            <text class="chip-pinyin">{{item.pinyin}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 点赞 -->
+    <view class="like-box">
+      <view class="like-head">
+        <view class="like-head-left">
+          <text class="like-title">为 {{card.childName}} 点赞鼓励</text>
+          <text class="like-sub">您的鼓励会同步给家长，也会留一份在这台设备上。</text>
+        </view>
+        <view class="like-count">已收 {{likes.length}} 个赞</view>
+      </view>
+
+      <text class="step">1. 选择您的身份</text>
+      <view class="roles">
+        <view
+          wx:for="{{roles}}"
+          wx:key="role"
+          class="role {{selectedRole === item.role ? 'role-on' : ''}}"
+          data-role="{{item.role}}"
+          bindtap="selectRole"
+        >
+          <text class="role-emoji">{{item.emoji}}</text>
+          <text class="role-name">{{item.name}}</text>
+        </view>
+      </view>
+
+      <text class="step">2. 送上一句鼓励寄语</text>
+      <input
+        class="input"
+        value="{{message}}"
+        placeholder="写一句鼓励的话送给宝贝…"
+        maxlength="80"
+        bindinput="onMessageInput"
+      />
+
+      <view class="btn {{hasLiked ? 'btn-done' : (selectedRole ? 'btn-like' : 'btn-off')}}" bindtap="sendLike">
+        <text wx:if="{{hasLiked}}">✓ 已送出小红花，宝贝能看到你的鼓励！</text>
+        <text wx:elif="{{submitting}}">正在送出…</text>
+        <text wx:else>🌸 送上一朵小红花并为宝贝点赞</text>
+      </view>
+
+      <text class="sync-fail" wx:if="{{syncFailed}}">{{syncFailed}}</text>
+
+      <view class="wall">
+        <text class="wall-title">亲友鼓励动态 ({{likes.length}})</text>
+        <view class="wall-list" wx:if="{{likes.length}}">
+          <view class="wall-item" wx:for="{{likes}}" wx:key="id">
+            <text class="wall-emoji">{{item.emoji}}</text>
+            <view class="wall-body">
+              <view class="wall-line">
+                <text class="wall-name">{{item.roleName}}</text>
+                <text class="wall-time">{{item.time}}</text>
+              </view>
+              <text class="wall-msg">{{item.message}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="wall-empty" wx:else>成为第一个为宝贝送花点赞的亲友吧！</view>
+      </view>
+    </view>
+
+    <!-- 引流 -->
+    <view class="promo">
+      <text class="promo-title">你也想带孩子高效识字吗？</text>
+      <text class="promo-text">「字伴」支持拍照课本提取生字、AI 伴读点查、规范笔顺手写与听写默写，让每个汉字都成为孩子的好朋友。</text>
+      <view class="btn btn-primary btn-inline" bindtap="goApp">立即体验字伴</view>
+    </view>
+  </block>
+</view>

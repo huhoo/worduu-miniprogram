@@ -1,0 +1,369 @@
+/* ---------- 分段切换 ---------- */
+.segment {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.seg-item {
+  padding: 14rpx 32rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #78716C;
+}
+
+.seg-on {
+  background: #FFFFFF;
+  color: #065F46;
+  font-weight: 700;
+  box-shadow: 0 1rpx 3rpx rgba(28, 25, 23, 0.06);
+}
+
+/* ---------- 识字量卡 ---------- */
+.top {
+  align-items: flex-start;
+}
+
+.caption {
+  display: block;
+  font-size: 20rpx;
+  color: #A8A29E;
+}
+
+.total-row {
+  margin-top: 6rpx;
+  align-items: baseline;
+}
+
+.total-num {
+  font-size: 64rpx;
+  font-weight: 800;
+  color: #1C1917;
+  font-family: 'SF Mono', Menlo, monospace;
+  letter-spacing: -2rpx;
+}
+
+.total-unit {
+  margin-left: 10rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #57534E;
+}
+
+.seal {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 24rpx;
+  background: #ECFDF5;
+  color: #059669;
+  font-size: 40rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 熟练率圆环 ---------- */
+.ring-row {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.ring-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ring-canvas {
+  display: block;
+}
+
+.ring-center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring-pct {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #059669;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.ring-label {
+  font-size: 18rpx;
+  color: #A8A29E;
+}
+
+/* ---------- 掌握度分桶 ---------- */
+.buckets {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.bucket {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6rpx 0;
+}
+
+.bdot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 12rpx;
+}
+
+.bname {
+  font-size: 22rpx;
+  color: #57534E;
+}
+
+.bnum {
+  align-items: baseline;
+}
+
+.bcount {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #1C1917;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.bpct {
+  margin-left: 8rpx;
+  font-size: 18rpx;
+  color: #A8A29E;
+}
+
+/* ---------- 专项复习 ---------- */
+.review-btn {
+  margin-top: 24rpx;
+  background: #FFF1F2;
+  border: 1rpx solid #FECDD3;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.review-text {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #9F1239;
+}
+
+.review-arrow {
+  font-size: 28rpx;
+  color: #F43F5E;
+}
+
+.review-off {
+  opacity: 0.45;
+}
+
+/* ---------- 记忆轨迹 ---------- */
+.sparkle {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.more {
+  font-size: 22rpx;
+  color: #78716C;
+}
+
+.trail {
+  margin-top: 16rpx;
+}
+
+.trail-item {
+  background: #FCFAF7;
+  border: 1rpx solid #E7E5E4;
+  border-radius: 24rpx;
+  padding: 20rpx;
+  margin-top: 16rpx;
+}
+
+.trail-char {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.trail-source {
+  margin-left: 14rpx;
+  font-size: 18rpx;
+  color: #57534E;
+  background: #FFFFFF;
+  border: 1rpx solid #E7E5E4;
+  padding: 2rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+.tag {
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+}
+
+.tag.is-ok { background: #ECFDF5; color: #065F46; border: 1rpx solid #A7F3D0; }
+.tag.is-bad { background: #FFF1F2; color: #9F1239; border: 1rpx solid #FECDD3; }
+.tag.is-amber { background: #FFFBEB; color: #92400E; border: 1rpx solid #FDE68A; }
+.tag.is-blue { background: #EFF6FF; color: #1E40AF; border: 1rpx solid #BFDBFE; }
+
+.trail-note {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: #57534E;
+  line-height: 1.6;
+}
+
+/* ---------- 家长端 ---------- */
+.head {
+  align-items: center;
+}
+
+.avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: #D1FAE5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+
+.head-text {
+  margin-left: 20rpx;
+}
+
+.head-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.head-sub {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #A8A29E;
+}
+
+.metrics {
+  margin-top: 24rpx;
+  display: flex;
+  background: #FAFAF9;
+  border-radius: 24rpx;
+  padding: 16rpx 0;
+  text-align: center;
+}
+
+.metric {
+  flex: 1;
+}
+
+.metric-label {
+  display: block;
+  font-size: 20rpx;
+  color: #78716C;
+}
+
+.metric-num {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #1C1917;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.metric-num.green {
+  color: #059669;
+}
+
+/* ---------- 小结 ---------- */
+.summary {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #57534E;
+  background: #FAFAF9;
+  border: 1rpx solid #E7E5E4;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  line-height: 1.7;
+}
+
+.sum-box {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  line-height: 1.7;
+  border-radius: 20rpx;
+  padding: 18rpx 22rpx;
+}
+
+.sum-strong {
+  font-weight: 800;
+}
+
+.sum-ok { background: #ECFDF5; border: 1rpx solid #A7F3D0; color: #065F46; }
+.sum-bad { background: #FFF1F2; border: 1rpx solid #FECDD3; color: #9F1239; }
+.sum-amber { background: #FFFBEB; border: 1rpx solid #FDE68A; color: #92400E; }
+.sum-plain { background: #FAFAF9; border: 1rpx solid #E7E5E4; color: #57534E; }
+
+.foot-note {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 18rpx;
+  color: #D6D3D1;
+  line-height: 1.6;
+}
+
+/* ---------- 空状态 ---------- */
+.empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60rpx 40rpx;
+}
+
+.empty-emoji {
+  font-size: 72rpx;
+  opacity: 0.4;
+}
+
+.empty-title {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #44403C;
+}
+
+.empty-sub {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #78716C;
+  line-height: 1.7;
+}
+
+.empty-btn {
+  margin-top: 28rpx;
+  width: 60%;
+}

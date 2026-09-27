@@ -1,0 +1,45 @@
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  background: #FFFFFF;
+  border-top: 1rpx solid #E7E5E4;
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.tabbar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0 12rpx;
+}
+
+.tabbar-item:active {
+  background: #F5F5F4;
+}
+
+.tabbar-emoji {
+  font-size: 40rpx;
+  line-height: 1.2;
+  opacity: 0.55;
+}
+
+.tabbar-item.active .tabbar-emoji {
+  opacity: 1;
+}
+
+.tabbar-label {
+  font-size: 20rpx;
+  margin-top: 4rpx;
+  color: #A8A29E;
+}
+
+.tabbar-item.active .tabbar-label {
+  color: #059669;
+  font-weight: 700;
+}

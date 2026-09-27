@@ -1,0 +1,73 @@
+<view class="page" wx:if="{{card}}">
+  <!-- 顶部横幅 -->
+  <view class="banner">
+    <view class="banner-left">
+      <view class="logo">字</view>
+      <view class="banner-text">
+        <view class="banner-title">字伴 · 今日识字成就卡</view>
+        <view class="banner-sub">把孩子的进步分享给老师和家人</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 奖状 -->
+  <view class="cert">
+    <view class="cert-head">
+      <view class="cert-brand">
+        <text class="cert-brand-name">字伴 · 识字荣誉</text>
+        <text class="cert-date">{{card.date}}</text>
+      </view>
+      <view class="cert-name">{{card.childName}} 宝贝</view>
+    </view>
+
+    <view class="cert-main">
+      <view class="cert-title">🏆 {{card.title}}</view>
+      <view class="cert-score">{{card.scoreText}}</view>
+      <view class="cert-praise">“{{card.praiseComment}}”</view>
+    </view>
+
+    <view class="metrics">
+      <view class="metric">
+        <view class="metric-label">🔥 累计识字</view>
+        <view class="metric-value">{{card.totalRecognized}}<text class="metric-unit">字</text></view>
+      </view>
+      <view class="metric">
+        <view class="metric-label">⏱ 专注学习</view>
+        <view class="metric-value">{{card.durationMinutes}}<text class="metric-unit">分钟</text></view>
+      </view>
+      <view class="metric">
+        <view class="metric-label">✨ 攻克生字</view>
+        <view class="metric-value">{{card.highlightChars.length}}<text class="metric-unit">个</text></view>
+      </view>
+    </view>
+
+    <view class="chars" wx:if="{{card.highlightChars.length}}">
+      <text class="chars-label">✨ 今日掌握的新汉字</text>
+      <view class="chips">
+        <view class="chip" wx:for="{{card.highlightChars}}" wx:key="char">
+          <text class="chip-char">{{item.char}}</text>
+          <text class="chip-pinyin">{{item.pinyin}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作 -->
+  <view class="actions">
+    <view class="btn btn-primary {{drawing ? 'btn-off' : ''}}" bindtap="makePoster">
+      {{drawing ? '正在生成海报…' : '生成奖状海报'}}
+    </view>
+    <button class="btn btn-share" open-type="share" disabled="{{saving}}">
+      {{saving ? '正在准备分享…' : '转发给老师或家人'}}
+    </button>
+    <text class="hint">分享前会把奖状存到云端，接收方点开链接就能看到完整内容并点赞。</text>
+    <text class="notice" wx:if="{{notice}}">{{notice}}</text>
+  </view>
+
+  <view class="truth">
+    <text class="truth-text">卡片上的每个数字都来自孩子真实的认读、书写与默写记录，没有预估、没有预设值。</text>
+  </view>
+
+  <!-- 离屏 canvas：只用于绘制海报 -->
+  <canvas type="2d" id="poster-canvas" class="poster-canvas"></canvas>
+</view>

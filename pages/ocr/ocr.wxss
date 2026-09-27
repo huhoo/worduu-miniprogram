@@ -1,0 +1,266 @@
+/* ---------- 来源选择 ---------- */
+.picker {
+  display: flex;
+  align-items: center;
+  background: #F5F5F4;
+  border-radius: 16rpx;
+  padding: 12rpx 20rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.picker-arrow {
+  margin-left: 8rpx;
+  color: #A8A29E;
+  font-size: 22rpx;
+}
+
+.picker-note {
+  display: block;
+  margin-top: 16rpx;
+  line-height: 1.6;
+}
+
+/* ---------- 拍照区 ---------- */
+.shoot {
+  width: 100%;
+  min-height: 420rpx;
+  border-radius: 28rpx;
+  background: #FCFAF7;
+  border: 2rpx dashed #D6D3D1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.preview {
+  width: 100%;
+}
+
+.shoot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 40rpx;
+  text-align: center;
+}
+
+.shoot-emoji {
+  font-size: 96rpx;
+  opacity: 0.5;
+}
+
+.shoot-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-top: 20rpx;
+  color: #44403C;
+}
+
+.shoot-btn {
+  margin-top: 24rpx;
+  width: 100%;
+}
+
+/* ---------- 识别中 ---------- */
+.scanning {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 36rpx;
+  height: 36rpx;
+  border: 4rpx solid #D1FAE5;
+  border-top-color: #059669;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- 提示条 ---------- */
+.notice {
+  margin-top: 24rpx;
+  background: #FFFBEB;
+  border: 1rpx solid #FDE68A;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+}
+
+.notice-standalone {
+  margin-top: 0;
+}
+
+.notice-text {
+  font-size: 24rpx;
+  color: #92400E;
+  line-height: 1.6;
+}
+
+/* ---------- 结果头部 ---------- */
+.result-head {
+  align-items: flex-start;
+}
+
+.thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+}
+
+.result-meta {
+  flex: 1;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.rawtext {
+  margin-top: 24rpx;
+  background: #FAFAF9;
+  border-radius: 20rpx;
+  padding: 20rpx;
+}
+
+.rawtext-label {
+  font-size: 20rpx;
+  color: #A8A29E;
+}
+
+.rawtext-body {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #57534E;
+  line-height: 1.7;
+}
+
+/* ---------- 字列表 ---------- */
+.char-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F4;
+}
+
+.char-row:last-of-type {
+  border-bottom: none;
+}
+
+.char-row.checked {
+  background: transparent;
+}
+
+.char-box {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 20rpx;
+  background: #FCFAF7;
+  border: 1rpx solid #E26D5C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #1C1917;
+  flex-shrink: 0;
+}
+
+.char-info {
+  flex: 1;
+  margin-left: 20rpx;
+  overflow: hidden;
+}
+
+.char-pinyin {
+  font-size: 26rpx;
+  font-weight: 700;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: #1C1917;
+}
+
+.char-meaning {
+  display: block;
+  font-size: 22rpx;
+  color: #78716C;
+  margin-top: 4rpx;
+  line-height: 1.5;
+}
+
+.char-words {
+  display: block;
+  font-size: 20rpx;
+  color: #A8A29E;
+  margin-top: 4rpx;
+}
+
+.check {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 2rpx solid #D6D3D1;
+  color: transparent;
+  font-size: 26rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.check-on {
+  background: #059669;
+  border-color: #059669;
+  color: #FFFFFF;
+}
+
+/* ---------- 手动补充 ---------- */
+.manual {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #F5F5F4;
+}
+
+.manual-row {
+  margin-top: 12rpx;
+}
+
+.manual-input {
+  flex: 1;
+  background: #FAFAF9;
+  border: 1rpx solid #E7E5E4;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  font-size: 26rpx;
+}
+
+.manual-btn {
+  margin-left: 16rpx;
+  padding: 16rpx 28rpx;
+}
+
+/* ---------- 其他 ---------- */
+.link {
+  font-size: 22rpx;
+  color: #059669;
+  font-weight: 600;
+}
+
+.link-gap {
+  margin-left: 24rpx;
+}
+
+.add-btn {
+  margin-top: 32rpx;
+  width: 100%;
+}

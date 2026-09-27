@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="notice">
+    <text class="notice-emoji">📖</text>
+    <text class="notice-text">下面是 app 内置的示例读物，用来体验伴读功能。阅读进度里的「已收录 / 已掌握」全部来自你自己的字库，不会预先写死。</text>
+  </view>
+
+  <view class="filters">
+    <view
+      wx:for="{{filters}}"
+      wx:key="key"
+      class="filter {{filter === item.key ? 'filter-on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="switchFilter"
+    >{{item.label}}</view>
+  </view>
+
+  <view class="list" wx:if="{{articles.length}}">
+    <view
+      wx:for="{{articles}}"
+      wx:key="id"
+      class="book"
+      data-id="{{item.id}}"
+      bindtap="openArticle"
+    >
+      <view class="cover">{{item.emoji}}</view>
+
+      <view class="info">
+        <view class="line1">
+          <text class="title">{{item.title}}</text>
+          <text class="tag">{{item.source}}</text>
+        </view>
+        <view class="line2">{{item.sourceBook}} · 第 {{item.page}} 页</view>
+        <view class="stats">
+          <text class="stat">全书 <text class="num">{{item.totalChars}}</text> 字</text>
+          <text class="stat">已收录 <text class="num">{{item.encountered}}</text> 个</text>
+          <text class="stat stat-ok">已掌握 <text class="num">{{item.mastered}}</text> 个</text>
+        </view>
+      </view>
+
+      <view class="arrow">›</view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <text class="empty-emoji">🔍</text>
+    <text class="empty-text">这个分类下还没有读物</text>
+  </view>
+
+  <text class="foot">共 {{totalBooks}} 本示例读物</text>
+</view>

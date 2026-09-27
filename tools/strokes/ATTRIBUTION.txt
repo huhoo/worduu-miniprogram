@@ -1,0 +1,18 @@
+Stroke-order data for 字伴
+
+Source data: hanzi-writer-data@2.0.1, derived from the Make Me a Hanzi project
+(https://github.com/skishore/makemeahanzi).
+
+Licence: ARPHIC PUBLIC LICENSE — full text in ARPHICPL.TXT, redistributed unaltered.
+
+Transformations applied (see scripts/build-stroke-data.mjs):
+  - retained only the `medians` centreline polylines; dropped the `strokes` outlines
+    and `radStrokes`;
+  - halved all coordinates (1024-unit box -> 512);
+  - regrouped per-character files into shards keyed by (codepoint >> 8).
+
+Per section 2 of the licence, modified data is made freely available under the same
+licence: it is served publicly from /strokes/ on this site and reproducible from the
+unmodified upstream package by running the build script above.
+
+The data is provided WITHOUT WARRANTY, as the licence requires.

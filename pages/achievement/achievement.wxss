@@ -1,0 +1,262 @@
+/* ---------- 顶部横幅 ---------- */
+.banner {
+  background: linear-gradient(135deg, #047857, #0F766E);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+}
+
+.banner-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 18rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1rpx solid rgba(255, 255, 255, 0.4);
+  color: #FFFFFF;
+  font-size: 32rpx;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.banner-text {
+  margin-left: 20rpx;
+}
+
+.banner-title {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.banner-sub {
+  font-size: 21rpx;
+  color: rgba(236, 253, 245, 0.9);
+  margin-top: 4rpx;
+}
+
+/* ---------- 奖状 ---------- */
+.cert {
+  background: linear-gradient(180deg, #FFFDF9, #FAF6F0 55%, #F5EFE6);
+  border: 3rpx solid #E9DFD0;
+  border-radius: 32rpx;
+  padding: 32rpx;
+}
+
+.cert-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.cert-brand-name {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.cert-date {
+  display: block;
+  font-size: 20rpx;
+  color: var(--ink-3);
+  margin-top: 2rpx;
+}
+
+.cert-name {
+  background: #D1FAE5;
+  color: #065F46;
+  font-size: 22rpx;
+  font-weight: 800;
+  padding: 6rpx 20rpx;
+  border-radius: 999rpx;
+}
+
+.cert-main {
+  text-align: center;
+  padding: 28rpx 0;
+}
+
+.cert-title {
+  display: inline-block;
+  background: rgba(245, 158, 11, 0.18);
+  color: #92400E;
+  font-size: 24rpx;
+  font-weight: 900;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+}
+
+.cert-score {
+  font-size: 56rpx;
+  font-weight: 900;
+  color: var(--ink);
+  margin-top: 20rpx;
+  font-family: 'Kaiti SC', 'KaiTi', 'STKaiti', '楷体', serif;
+}
+
+.cert-praise {
+  font-size: 23rpx;
+  color: var(--ink-2);
+  font-style: italic;
+  margin-top: 12rpx;
+}
+
+/* ---------- 三个数字 ---------- */
+.metrics {
+  display: flex;
+}
+
+.metric {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid rgba(231, 229, 228, 0.9);
+  border-radius: 24rpx;
+  padding: 18rpx 8rpx;
+  text-align: center;
+  margin-right: 12rpx;
+}
+
+.metric:last-child {
+  margin-right: 0;
+}
+
+.metric-label {
+  font-size: 19rpx;
+  color: var(--ink-3);
+}
+
+.metric-value {
+  font-size: 34rpx;
+  font-weight: 900;
+  color: var(--ink);
+  margin-top: 6rpx;
+}
+
+.metric-unit {
+  font-size: 18rpx;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin-left: 2rpx;
+}
+
+/* ---------- 生字 ---------- */
+.chars {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.chars-label {
+  font-size: 19rpx;
+  font-weight: 800;
+  color: var(--ink-3);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16rpx;
+}
+
+.chip {
+  background: #FFFFFF;
+  border: 1rpx solid #E9DFD0;
+  border-radius: 20rpx;
+  padding: 12rpx 20rpx;
+  margin: 8rpx;
+  display: flex;
+  align-items: baseline;
+}
+
+.chip-char {
+  font-size: 40rpx;
+  font-weight: 900;
+  color: var(--ink);
+  font-family: 'Kaiti SC', 'KaiTi', 'STKaiti', '楷体', serif;
+}
+
+.chip-pinyin {
+  font-size: 20rpx;
+  color: var(--ink-3);
+  margin-left: 10rpx;
+}
+
+/* ---------- 操作 ---------- */
+.actions {
+  margin-top: 28rpx;
+}
+
+.btn {
+  width: 100%;
+  font-size: 28rpx;
+  font-weight: 800;
+  text-align: center;
+  padding: 26rpx 0;
+  border-radius: 24rpx;
+  margin-bottom: 18rpx;
+  box-sizing: border-box;
+  line-height: 1.4;
+}
+
+.btn-primary {
+  background: var(--amber);
+  color: #FFFFFF;
+}
+
+.btn-share {
+  background: var(--green);
+  color: #FFFFFF;
+  border: none;
+}
+
+.btn-off {
+  background: #D6D3D1;
+}
+
+.hint {
+  display: block;
+  font-size: 20rpx;
+  color: var(--ink-3);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.notice {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 21rpx;
+  color: #92400E;
+  background: var(--amber-light);
+  border: 1rpx solid #FDE68A;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  line-height: 1.6;
+}
+
+.truth {
+  margin-top: 24rpx;
+  text-align: center;
+}
+
+.truth-text {
+  font-size: 20rpx;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+/* 海报 canvas 不参与布局，移到屏幕外 */
+.poster-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: 0;
+  width: 600px;
+  height: 840px;
+}

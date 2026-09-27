@@ -1,0 +1,170 @@
+/* ---------- 顶部说明 ---------- */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  background: var(--amber-light);
+  border: 1rpx solid #FDE68A;
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.notice-emoji {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.notice-text {
+  flex: 1;
+  font-size: 22rpx;
+  color: #92400E;
+  line-height: 1.6;
+}
+
+/* ---------- 分类筛选 ---------- */
+.filters {
+  display: flex;
+  margin-bottom: 24rpx;
+}
+
+.filter {
+  padding: 14rpx 32rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #78716C;
+  background: #FFFFFF;
+  border: 1rpx solid var(--line);
+  margin-right: 16rpx;
+}
+
+.filter-on {
+  background: var(--green);
+  color: #FFFFFF;
+  border-color: var(--green);
+  font-weight: 700;
+}
+
+/* ---------- 书列表 ---------- */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.book {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 1rpx solid var(--line);
+  border-radius: 32rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.book:active {
+  background: #FAFAF9;
+}
+
+.cover {
+  width: 112rpx;
+  height: 144rpx;
+  border-radius: 20rpx;
+  background: var(--page);
+  border: 1rpx solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  margin-left: 24rpx;
+  min-width: 0;
+}
+
+.line1 {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.tag {
+  margin-left: 12rpx;
+  font-size: 18rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 8rpx;
+  background: #F5F5F4;
+  color: #78716C;
+}
+
+.line2 {
+  font-size: 22rpx;
+  color: var(--ink-3);
+  margin-top: 4rpx;
+}
+
+.stats {
+  display: flex;
+  margin-top: 12rpx;
+}
+
+.stat {
+  font-size: 21rpx;
+  color: var(--ink-2);
+  margin-right: 20rpx;
+}
+
+.stat-ok {
+  color: #047857;
+}
+
+.num {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.stat-ok .num {
+  color: #047857;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: var(--ink-3);
+  margin-left: 8rpx;
+}
+
+/* ---------- 空状态 ---------- */
+.empty {
+  background: #FFFFFF;
+  border: 1rpx solid var(--line);
+  border-radius: 32rpx;
+  padding: 80rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-emoji {
+  font-size: 64rpx;
+}
+
+.empty-text {
+  font-size: 24rpx;
+  color: var(--ink-3);
+  margin-top: 16rpx;
+}
+
+.foot {
+  display: block;
+  text-align: center;
+  font-size: 21rpx;
+  color: var(--ink-3);
+  margin-top: 24rpx;
+}

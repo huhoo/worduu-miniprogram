@@ -1,0 +1,109 @@
+<!-- 空字库：不出题，也不伪造一份卷子 -->
+<view class="page center" wx:if="{{empty}}">
+  <text class="empty-emoji">📝</text>
+  <text class="empty-title">生字库还是空的，没有可以听写的字</text>
+  <text class="empty-sub">先拍一页课本或课外书把生字收进来，听写会从这些字里出题。</text>
+  <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
+</view>
+
+<!-- 听写报告 -->
+<view class="page" wx:elif="{{done}}">
+  <view class="card report">
+    <text class="report-emoji">{{percent === 100 ? '🎉' : '💪'}}</text>
+    <text class="report-title">{{percent === 100 ? '听写默写满分！' : '完成听写默写挑战！'}}</text>
+    <text class="report-score">默写正确 {{correctCount}} / {{total}} 字</text>
+
+    <view class="progress">
+      <view class="progress-fill" style="width: {{percent}}%"></view>
+    </view>
+    <text class="report-percent">{{percent}}%</text>
+
+    <view class="report-wrong" wx:if="{{wrongList.length}}">
+      <text class="report-wrong-title">需要复习的字（点一下听读音）</text>
+      <view class="wrong-row">
+        <view
+          wx:for="{{wrongList}}"
+          wx:key="id"
+          class="wrong-item"
+          data-char="{{item.char}}"
+          bindtap="playWrong"
+        >
+          <text class="wrong-char kai">{{item.char}}</text>
+          <text class="wrong-pinyin">{{item.pinyin}}</text>
+          <text class="wrong-strokes">{{item.written}} 笔</text>
+        </view>
+      </view>
+    </view>
+
+    <text class="report-note" wx:else>全部默写正确，这些字已经记进「会写会默」清单。</text>
+  </view>
+
+  <view class="btn btn-primary mt" bindtap="goAchievement">🏆 生成今日成就卡</view>
+  <view class="btn btn-primary mt" bindtap="restart">再听一轮</view>
+  <view class="btn btn-ghost mt" bindtap="backHome">回到首页</view>
+</view>
+
+<!-- 听写进行中 -->
+<view class="page" wx:else>
+  <view class="bar">
+    <view class="row">
+      <text class="bar-emoji">✍️</text>
+      <text class="bar-title">听写默写测试</text>
+    </view>
+    <text class="bar-progress">{{index + 1}} / {{total}}</text>
+  </view>
+
+  <!-- 发音卡：只给声音，不给字形 -->
+  <view class="card listen">
+    <view class="play-btn {{playing ? 'playing' : ''}}" bindtap="playRead">
+      <text class="play-icon">🔊</text>
+    </view>
+    <text class="listen-title">请写出听到的字</text>
+    <text class="listen-sub">听音写字 · 提交后核对字形与笔画</text>
+    <view class="row audio-row">
+      <view class="btn btn-ghost audio-btn" bindtap="playRead">重听字音</view>
+      <view class="btn btn-ghost audio-btn amber" bindtap="playSpell">听拼读提示</view>
+    </view>
+  </view>
+
+  <view class="card write-card">
+    <view class="canvas-wrap">
+      <canvas
+        type="2d"
+        id="dictation-canvas"
+        class="canvas"
+        style="width: 280px; height: 280px;"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+      ></canvas>
+    </view>
+
+    <view class="row tools">
+      <text class="tool" bindtap="undo">撤销一笔</text>
+      <text class="tool" bindtap="clear">重写</text>
+      <text class="stroke-count">已写 {{writtenStrokes}} 笔</text>
+    </view>
+
+    <!-- 批改结果：AI 不可用时只报笔画数，不编造分数 -->
+    <view class="verdict" wx:if="{{revealed}}">
+      <view class="verdict-note" wx:if="{{verdictNote}}">{{verdictNote}}</view>
+      <view class="row-center">
+        <text class="verdict-char kai">{{current.char}}</text>
+        <text class="verdict-pinyin">{{current.pinyin}}</text>
+        <text class="tag {{isCorrect ? 'tag-ok' : 'tag-bad'}}">{{isCorrect ? '默写正确' : '需复习巩固'}}</text>
+      </view>
+      <text class="verdict-strokes">
+        标准笔画 {{hasStandard ? current.strokeCount : '未记录'}} 笔 · 你写了 {{writtenStrokes}} 笔
+      </text>
+      <text class="verdict-feedback" wx:if="{{feedback}}">{{feedback}}</text>
+    </view>
+
+    <view class="btn btn-primary submit-btn" wx:if="{{!revealed}}" bindtap="submit">
+      {{evaluating ? 'AI 正在批改…' : '提交默写'}}
+    </view>
+    <view class="btn btn-primary submit-btn" wx:else bindtap="next">
+      {{isLast ? '查看听写报告' : '下一字'}}
+    </view>
+  </view>
+</view>

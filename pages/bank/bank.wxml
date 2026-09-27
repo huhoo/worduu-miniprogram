@@ -1,0 +1,64 @@
+<view class="page">
+  <!-- 搜索 -->
+  <view class="search">
+    <text class="search-icon">🔍</text>
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="搜索汉字、拼音或组词（如：蝶、xuě、森林）"
+      bindinput="onSearch"
+    />
+  </view>
+
+  <!-- 分类 -->
+  <scroll-view scroll-x class="tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab {{activeTab === item.key ? 'tab-on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTabTap"
+    >{{item.key}} ({{item.count}})</view>
+  </scroll-view>
+
+  <!-- 列表 -->
+  <view class="card list-card">
+    <view
+      wx:for="{{list}}"
+      wx:key="id"
+      class="item"
+      data-id="{{item.id}}"
+      bindtap="openDetail"
+    >
+      <view class="item-char kai">{{item.char}}</view>
+      <view class="item-body">
+        <view class="row">
+          <text class="item-pinyin">{{item.pinyin || '暂无拼音'}}</text>
+          <text class="chip chip-stone">{{item.source}}</text>
+        </view>
+        <text class="item-date">{{item.dateEncountered}} 遇到</text>
+        <text class="item-words" wx:if="{{item.wordsText}}">组词：{{item.wordsText}}</text>
+      </view>
+      <view class="item-right">
+        <text class="mastery mastery-{{item.masteryClass}}">{{item.mastery}}</text>
+        <view class="play" data-id="{{item.id}}" catchtap="playChar">🔊</view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{list.length === 0}}">
+      <view class="empty-icon">🔍</view>
+      <text class="sub" wx:if="{{total > 0}}">没有找到匹配的汉字</text>
+      <block wx:else>
+        <text class="sub">字库还是空的</text>
+        <text class="muted">拍一页课本或课外书，生字会自动收进来</text>
+        <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{total > 0}}" class="btn btn-primary quiz-btn" bindtap="goQuiz">
+    开始认读测试（{{total}} 字）
+  </view>
+</view>
+
+<tabbar current="bank" />

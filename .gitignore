@@ -1,0 +1,16 @@
+# 微信开发者工具生成的个人配置（含本机路径、调试设置，不该进版本库）
+project.private.config.json
+
+# 依赖
+node_modules/
+cloudfunctions/*/node_modules/
+cloudfunctions/*/package-lock.json
+
+# 系统文件
+.DS_Store
+*.swp
+Thumbs.db
+
+# 本地日志 / 临时产物
+*.log
+.miniprogram-tmp/

@@ -1,0 +1,352 @@
+/* ---------- 顶部进度条 ---------- */
+.bar {
+  background: #FFFFFF;
+  border: 1rpx solid #E7E5E4;
+  border-radius: 24rpx;
+  padding: 18rpx 28rpx;
+}
+
+.bar-emoji {
+  font-size: 30rpx;
+  margin-right: 10rpx;
+}
+
+.bar-title {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #57534E;
+}
+
+.bar-progress {
+  font-size: 24rpx;
+  font-weight: 700;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: #065F46;
+  background: #ECFDF5;
+  padding: 4rpx 18rpx;
+  border-radius: 999rpx;
+}
+
+/* ---------- 发音卡 ---------- */
+.listen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.play-btn {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background: #ECFDF5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 12rpx #F0FDF4;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.play-btn.playing {
+  background: #059669;
+  transform: scale(1.06);
+}
+
+.play-icon {
+  font-size: 56rpx;
+  line-height: 1;
+}
+
+.listen-title {
+  margin-top: 20rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.listen-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #A8A29E;
+}
+
+.audio-row {
+  margin-top: 20rpx;
+}
+
+.audio-btn {
+  font-size: 22rpx;
+  padding: 14rpx 26rpx;
+  border-radius: 999rpx;
+}
+
+.audio-row .audio-btn + .audio-btn {
+  margin-left: 16rpx;
+}
+
+.audio-btn.amber {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #92400E;
+}
+
+/* ---------- 书写区 ---------- */
+.write-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.canvas-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.canvas {
+  display: block;
+}
+
+.tools {
+  margin-top: 20rpx;
+  justify-content: center;
+}
+
+.tool {
+  font-size: 22rpx;
+  color: #57534E;
+  background: #F5F5F4;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+}
+
+.tools .tool + .tool {
+  margin-left: 16rpx;
+}
+
+.stroke-count {
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #A8A29E;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+/* ---------- 批改结果 ---------- */
+.verdict {
+  margin-top: 24rpx;
+  width: 100%;
+  background: #FAFAF9;
+  border: 1rpx solid #E7E5E4;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  text-align: center;
+}
+
+.verdict-note {
+  display: block;
+  text-align: left;
+  font-size: 22rpx;
+  color: #9F1239;
+  background: #FFF1F2;
+  border: 1rpx solid #FECDD3;
+  border-radius: 16rpx;
+  padding: 14rpx 18rpx;
+  margin-bottom: 18rpx;
+  line-height: 1.6;
+}
+
+.row-center {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.verdict-char {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.verdict-pinyin {
+  margin-left: 14rpx;
+  font-size: 22rpx;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: #78716C;
+}
+
+.tag {
+  margin-left: 14rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.tag-ok {
+  background: #DCFCE7;
+  color: #166534;
+}
+
+.tag-bad {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.verdict-strokes {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #57534E;
+}
+
+.verdict-feedback {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #57534E;
+  line-height: 1.7;
+  text-align: left;
+}
+
+.submit-btn {
+  margin-top: 24rpx;
+  width: 100%;
+}
+
+/* ---------- 报告 ---------- */
+.report {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.report-emoji {
+  font-size: 72rpx;
+  line-height: 1.2;
+}
+
+.report-title {
+  margin-top: 12rpx;
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.report-score {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #57534E;
+}
+
+.progress {
+  margin-top: 24rpx;
+  width: 100%;
+  height: 16rpx;
+  background: #F5F5F4;
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #059669;
+  border-radius: 999rpx;
+  transition: width 0.3s;
+}
+
+.report-percent {
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: #059669;
+}
+
+.report-wrong {
+  margin-top: 32rpx;
+  width: 100%;
+}
+
+.report-wrong-title {
+  display: block;
+  font-size: 22rpx;
+  color: #78716C;
+  text-align: left;
+}
+
+.wrong-row {
+  margin-top: 12rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.wrong-item {
+  width: 33.33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #FFF1F2;
+  border-radius: 20rpx;
+  padding: 16rpx 0;
+  margin-top: 12rpx;
+}
+
+.wrong-char {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #1C1917;
+}
+
+.wrong-pinyin {
+  font-size: 20rpx;
+  color: #9F1239;
+}
+
+.wrong-strokes {
+  font-size: 18rpx;
+  color: #A8A29E;
+}
+
+.report-note {
+  margin-top: 28rpx;
+  font-size: 24rpx;
+  color: #57534E;
+}
+
+/* ---------- 空字库 ---------- */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 120rpx;
+}
+
+.empty-emoji {
+  font-size: 80rpx;
+  opacity: 0.4;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #44403C;
+}
+
+.empty-sub {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #78716C;
+  line-height: 1.7;
+  max-width: 520rpx;
+}
+
+.empty-btn {
+  margin-top: 32rpx;
+  width: 60%;
+}
+
+.mt {
+  margin-top: 24rpx;
+}

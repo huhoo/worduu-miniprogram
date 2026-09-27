@@ -1,0 +1,100 @@
+<view class="page" wx:if="{{item}}">
+  <!-- 字头 -->
+  <view class="card head">
+    <view class="head-left">
+      <view class="big-char kai">{{item.char}}</view>
+      <text class="big-pinyin">{{item.pinyin || '暂无拼音'}}</text>
+    </view>
+    <view class="head-right">
+      <view class="meta-row">
+        <text class="meta-label">部首</text>
+        <text class="meta-value">{{item.radical || '—'}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-label">笔画</text>
+        <text class="meta-value">{{item.strokeCount || '—'}}</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-label">掌握</text>
+        <text class="meta-value">{{item.mastery}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-tip">
+    <view class="spinner"></view>
+    <text class="sub">正在补充这个字的详细解析…</text>
+  </view>
+
+  <view wx:if="{{notice}}" class="notice">
+    <text class="notice-text">{{notice}}</text>
+  </view>
+
+  <!-- 发音 -->
+  <view class="row audio-row">
+    <view class="btn btn-ghost audio-btn" bindtap="playRead">🔊 听发音</view>
+    <view class="btn btn-ghost audio-btn" bindtap="playSpell">🎧 慢速拼读</view>
+  </view>
+
+  <!-- 笔顺 -->
+  <view class="card">
+    <text class="title">笔顺演示</text>
+    <view class="glyph-wrap">
+      <stroke-glyph char="{{item.char}}" size="{{240}}" is-mi-zi-ge="{{false}}" />
+    </view>
+  </view>
+
+  <!-- 释义 -->
+  <view class="card" wx:if="{{item.meaning}}">
+    <text class="title">字义</text>
+    <text class="body-text">{{item.meaning}}</text>
+  </view>
+
+  <!-- 组词 -->
+  <view class="card" wx:if="{{item.hasWords}}">
+    <text class="title">组词</text>
+    <view class="words">
+      <text
+        wx:for="{{item.words}}"
+        wx:for-item="word"
+        wx:key="*this"
+        class="word"
+      >{{word}}</text>
+    </view>
+  </view>
+
+  <!-- 例句 -->
+  <view class="card" wx:if="{{item.exampleSentence}}">
+    <text class="title">例句</text>
+    <text class="body-text">{{item.exampleSentence}}</text>
+  </view>
+
+  <!-- 字源 -->
+  <view class="card" wx:if="{{item.originStory}}">
+    <text class="title">字源与口诀</text>
+    <text class="body-text">{{item.originStory}}</text>
+  </view>
+
+  <!-- 来源 -->
+  <view class="card" wx:if="{{inBank}}">
+    <text class="title">这个字的来历</text>
+    <text class="body-text">
+      {{item.source}} · {{item.sourceDetail}}
+      <block wx:if="{{item.dateEncountered}}">（{{item.dateEncountered}}遇到）</block>
+    </text>
+    <text class="body-text" wx:if="{{item.memoryNote}}">{{item.memoryNote}}</text>
+  </view>
+
+  <view wx:else class="notice">
+    <text class="notice-text">这个字还在你的字库之外，只是一个临时查字结果。</text>
+  </view>
+
+  <view class="btn btn-primary write-btn" bindtap="goWrite">练习写这个字</view>
+</view>
+
+<view class="page" wx:else>
+  <view class="empty">
+    <view class="empty-icon">📖</view>
+    <text class="sub">{{notice || '没有找到这个字'}}</text>
+  </view>
+</view>

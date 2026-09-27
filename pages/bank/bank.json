@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "我的生字库",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
+}

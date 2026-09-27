@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "字卡",
+  "usingComponents": {
+    "stroke-glyph": "/components/stroke-glyph/stroke-glyph"
+  }
+}

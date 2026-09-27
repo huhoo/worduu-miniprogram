@@ -1,0 +1,163 @@
+<view class="page">
+  <!-- 分段切换 -->
+  <view class="segment">
+    <view
+      class="seg-item {{segment === 'profile' ? 'seg-on' : ''}}"
+      data-segment="profile"
+      bindtap="switchSegment"
+    >我的识字档案</view>
+    <view
+      class="seg-item {{segment === 'parent' ? 'seg-on' : ''}}"
+      data-segment="parent"
+      bindtap="switchSegment"
+    >🛡 家长学情端</view>
+  </view>
+
+  <!-- ============ 我的识字档案 ============ -->
+  <block wx:if="{{segment === 'profile'}}">
+    <view class="card" wx:if="{{hasAny}}">
+      <view class="row-between top">
+        <view>
+          <text class="caption">当前识字量（基于阅读与测试综合评估）</text>
+          <view class="row total-row">
+            <text class="total-num">{{total}}</text>
+            <text class="total-unit">字</text>
+          </view>
+        </view>
+        <view class="seal">达</view>
+      </view>
+
+      <view class="ring-row">
+        <view class="ring-wrap" style="width:176px;height:176px">
+          <canvas
+            type="2d"
+            id="ring-canvas"
+            class="ring-canvas"
+            style="width:176px;height:176px"
+          ></canvas>
+          <view class="ring-center">
+            <text class="ring-pct">{{masteryRate}}%</text>
+            <text class="ring-label">熟练率</text>
+          </view>
+        </view>
+
+        <view class="buckets">
+          <view wx:for="{{buckets}}" wx:key="name" class="bucket">
+            <view class="row">
+              <view class="bdot" style="background:{{item.color}}"></view>
+              <text class="bname">{{item.name}}</text>
+            </view>
+            <view class="row bnum">
+              <text class="bcount">{{item.count}}</text>
+              <text class="bpct">{{item.pct}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="review-btn {{hasErrors ? '' : 'review-off'}}" bindtap="reviewErrors">
+        <text class="review-text">⚠ 立即专项复习 {{errorCount}} 个经常读错生字</text>
+        <text class="review-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 空字库 -->
+    <view class="card empty-card" wx:else>
+      <text class="empty-emoji">🌱</text>
+      <text class="empty-title">还没有识字记录</text>
+      <text class="empty-sub">拍一张课本或课外书的生字页，这里就会开始记录每个字的来源与掌握情况。</text>
+      <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
+    </view>
+
+    <!-- 生字记忆轨迹 -->
+    <view class="card" wx:if="{{hasAny}}">
+      <view class="row-between">
+        <view class="row">
+          <text class="sparkle">✨</text>
+          <text class="title">生字记忆轨迹与溯源</text>
+        </view>
+        <text class="more" bindtap="openBank">查看全部生字库 ›</text>
+      </view>
+
+      <view class="trail">
+        <view
+          wx:for="{{memoryList}}"
+          wx:key="id"
+          class="trail-item"
+          data-id="{{item.id}}"
+          bindtap="openChar"
+        >
+          <view class="row-between">
+            <view class="row">
+              <text class="trail-char kai">{{item.char}}</text>
+              <text class="trail-source">{{item.source}}</text>
+            </view>
+            <text class="tag {{item.masteryClass}}">{{item.mastery}}</text>
+          </view>
+          <text class="trail-note">{{item.note}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ 家长学情端 ============ -->
+  <block wx:else>
+    <view class="card">
+      <view class="row head">
+        <view class="avatar">👦</view>
+        <view class="head-text">
+          <text class="head-title">{{childNickname}}的学习档案看板</text>
+          <text class="head-sub">已认读 {{total}} 字，其中 {{stats.mastered}} 字达到熟练</text>
+        </view>
+      </view>
+
+      <view class="metrics">
+        <view class="metric">
+          <text class="metric-label">今日伴读</text>
+          <text class="metric-num">{{stats.studyTimeMinutes}} 分钟</text>
+        </view>
+        <view class="metric">
+          <text class="metric-label">能默写</text>
+          <text class="metric-num green">{{canDictate}} 字</text>
+        </view>
+        <view class="metric">
+          <text class="metric-label">总识字量</text>
+          <text class="metric-num">{{total}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <text class="title">识字情况小结</text>
+
+      <view class="summary" wx:if="{{!hasAny}}">
+        还没有识字记录，无法给出分析。拍一页课本开始，之后这里会根据孩子的实际朗读与默写结果给出建议。
+      </view>
+
+      <block wx:else>
+        <view class="sum-box sum-ok">
+          ✅ <text class="sum-strong">已掌握</text>：{{solidSummary}}，其中 {{canDictate}} 个已能默写。
+        </view>
+
+        <view class="sum-box sum-bad" wx:if="{{hasErrors}}">
+          ⚠️ <text class="sum-strong">需要巩固</text>：{{errorSummary}}，建议用「识字认读」重点复习。
+        </view>
+
+        <view class="sum-box sum-amber" wx:if="{{hasSlow}}">
+          ⏱ <text class="sum-strong">反应偏慢</text>：{{slowSummary}}。
+        </view>
+
+        <view class="sum-box sum-plain" wx:if="{{!hasErrors && !hasSlow}}">
+          目前没有出现读错或反应明显偏慢的字，继续保持。
+        </view>
+      </block>
+
+      <text class="foot-note">
+        以上结论全部来自孩子在本机的真实朗读、书写与默写记录，没有预估、没有预设值；
+        数据为空时这里也如实为空。
+      </text>
+    </view>
+  </block>
+
+  <tabbar current="profile" />
+</view>

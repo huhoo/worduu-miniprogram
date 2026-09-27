@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "拍照学习生字",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
+}

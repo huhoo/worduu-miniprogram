@@ -1,0 +1,118 @@
+<view class="page">
+  <!-- 第一步：选来源、拍照 -->
+  <block wx:if="{{step === 'pick'}}">
+    <view class="card">
+      <view class="row-between">
+        <text class="title">这一页来自哪里？</text>
+        <picker
+          mode="selector"
+          range="{{sources}}"
+          value="{{sourceIndex}}"
+          bindchange="onSourceChange"
+        >
+          <view class="picker">
+            <text>{{sources[sourceIndex]}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+      <text class="muted picker-note">来源会记进每个字的档案，方便日后回看孩子是在哪儿遇到它的。</text>
+    </view>
+
+    <view class="card">
+      <view class="shoot" bindtap="chooseImage">
+        <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" class="preview" />
+        <view wx:else class="shoot-empty">
+          <text class="shoot-emoji">📸</text>
+          <text class="shoot-title">拍一页课本或课外书</text>
+          <text class="muted">尽量正对纸面、光线均匀，识别更准</text>
+        </view>
+      </view>
+
+      <view wx:if="{{scanning}}" class="scanning">
+        <view class="spinner"></view>
+        <text class="sub">{{scanHint}}</text>
+      </view>
+
+      <view wx:if="{{errorMsg}}" class="notice">
+        <text class="notice-text">{{errorMsg}}</text>
+      </view>
+
+      <view class="btn btn-primary shoot-btn" bindtap="chooseImage">拍照 / 从相册选</view>
+    </view>
+  </block>
+
+  <!-- 第二步：校对识别结果 -->
+  <block wx:else>
+    <view class="card">
+      <view class="row result-head">
+        <image src="{{imagePath}}" class="thumb" mode="aspectFill" />
+        <view class="result-meta">
+          <text class="title">{{result.title || '未识别到标题'}}</text>
+          <text class="muted">共识别 {{chars.length}} 个核心汉字</text>
+        </view>
+        <text class="chip chip-stone" bindtap="reset">重新拍</text>
+      </view>
+
+      <view wx:if="{{result.rawText}}" class="rawtext">
+        <text class="rawtext-label">识别原文</text>
+        <text class="rawtext-body">{{result.rawText}}</text>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <text class="title">勾选要收入的生字</text>
+        <view class="row">
+          <text class="link" bindtap="selectAll">全选</text>
+          <text class="link link-gap" bindtap="deselectAll">全不选</text>
+        </view>
+      </view>
+
+      <view
+        wx:for="{{chars}}"
+        wx:key="char"
+        class="char-row {{item.checked ? 'checked' : ''}}"
+        data-index="{{index}}"
+        bindtap="toggleChar"
+      >
+        <view class="char-box kai">{{item.char}}</view>
+        <view class="char-info">
+          <view class="row">
+            <text class="char-pinyin">{{item.pinyin || '暂无拼音'}}</text>
+            <text wx:if="{{item.isUncertain}}" class="chip chip-amber">识别不确定</text>
+          </view>
+          <text class="char-meaning">{{item.meaning}}</text>
+          <text class="char-words" wx:if="{{item.wordsText}}">组词：{{item.wordsText}}</text>
+        </view>
+        <view class="check {{item.checked ? 'check-on' : ''}}">✓</view>
+      </view>
+
+      <view class="manual">
+        <text class="muted">AI 漏掉的字可以手动补：</text>
+        <view class="row manual-row">
+          <input
+            class="manual-input"
+            value="{{manualChar}}"
+            placeholder="输入汉字，如“雀”"
+            maxlength="1"
+            bindinput="onManualInput"
+          />
+          <view class="btn btn-ghost manual-btn" bindtap="addManualChar">
+            {{addingManual ? '查询中…' : '补充'}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{errorMsg}}" class="notice notice-standalone">
+      <text class="notice-text">{{errorMsg}}</text>
+    </view>
+
+    <view class="btn btn-primary add-btn" bindtap="addToBank">
+      收入字库（{{selectedCount}}）
+    </view>
+  </block>
+</view>
+
+<tabbar current="ocr" />
