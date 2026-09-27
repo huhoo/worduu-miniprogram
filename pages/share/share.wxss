@@ -87,7 +87,7 @@
 }
 
 .banner-sub {
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: rgba(236, 253, 245, 0.9);
   margin-top: 4rpx;
 }
@@ -120,7 +120,7 @@
 
 .cert-date {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-top: 2rpx;
 }
@@ -185,7 +185,7 @@
 }
 
 .metric-label {
-  font-size: 19rpx;
+  font-size: 22rpx;
   color: var(--ink-3);
 }
 
@@ -197,7 +197,7 @@
 }
 
 .metric-unit {
-  font-size: 18rpx;
+  font-size: 22rpx;
   font-weight: 400;
   color: var(--ink-3);
   margin-left: 2rpx;
@@ -209,7 +209,7 @@
 }
 
 .chars-label {
-  font-size: 19rpx;
+  font-size: 22rpx;
   font-weight: 800;
   color: var(--ink-3);
 }
@@ -229,6 +229,7 @@
   margin: 8rpx;
   display: flex;
   align-items: baseline;
+  min-height: 88rpx;
 }
 
 .chip-char {
@@ -239,7 +240,7 @@
 }
 
 .chip-pinyin {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-left: 10rpx;
 }
@@ -275,7 +276,7 @@
 
 .like-sub {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-top: 4rpx;
   line-height: 1.6;
@@ -285,7 +286,7 @@
   flex-shrink: 0;
   background: #FFF1F2;
   color: #BE123C;
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 800;
   padding: 6rpx 16rpx;
   border-radius: 999rpx;
@@ -294,7 +295,7 @@
 
 .step {
   display: block;
-  font-size: 21rpx;
+  font-size: 24rpx;
   font-weight: 700;
   color: var(--ink-2);
   margin: 24rpx 0 14rpx;
@@ -315,6 +316,7 @@
   padding: 16rpx 10rpx;
   display: flex;
   align-items: center;
+  min-height: 88rpx;
 }
 
 .role:nth-child(3n) {
@@ -332,7 +334,7 @@
 }
 
 .role-name {
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-2);
   font-weight: 600;
 }
@@ -361,11 +363,13 @@
   border-radius: 24rpx;
   margin-top: 24rpx;
   line-height: 1.4;
+  min-height: 88rpx;
 }
 
 .btn-primary {
   background: var(--green);
   color: #FFFFFF;
+  min-height: 88rpx;
 }
 
 .btn-like {
@@ -387,12 +391,13 @@
   display: inline-block;
   width: auto;
   padding: 20rpx 48rpx;
+  min-height: 88rpx;
 }
 
 .sync-fail {
   display: block;
   margin-top: 16rpx;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: #92400E;
   background: var(--amber-light);
   border: 1rpx solid #FDE68A;
@@ -409,7 +414,7 @@
 }
 
 .wall-title {
-  font-size: 21rpx;
+  font-size: 24rpx;
   font-weight: 700;
   color: var(--ink-2);
 }
@@ -451,13 +456,13 @@
 }
 
 .wall-time {
-  font-size: 19rpx;
+  font-size: 22rpx;
   color: var(--ink-3);
 }
 
 .wall-msg {
   display: block;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-2);
   margin-top: 4rpx;
   line-height: 1.6;
@@ -465,7 +470,7 @@
 
 .wall-empty {
   text-align: center;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   background: #FAFAF9;
   border-radius: 18rpx;
@@ -492,7 +497,7 @@
 
 .promo-text {
   display: block;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-2);
   line-height: 1.7;
   margin-top: 12rpx;

@@ -36,6 +36,7 @@
   background: #FFFFFF;
   border: 1rpx solid var(--line);
   margin-right: 16rpx;
+  min-height: 88rpx;
 }
 
 .filter-on {
@@ -59,6 +60,7 @@
   border-radius: 32rpx;
   padding: 24rpx;
   margin-bottom: 20rpx;
+  min-height: 88rpx;
 }
 
 .book:active {
@@ -97,7 +99,7 @@
 
 .tag {
   margin-left: 12rpx;
-  font-size: 18rpx;
+  font-size: 22rpx;
   padding: 2rpx 12rpx;
   border-radius: 8rpx;
   background: #F5F5F4;
@@ -116,7 +118,7 @@
 }
 
 .stat {
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-2);
   margin-right: 20rpx;
 }
@@ -164,7 +166,7 @@
 .foot {
   display: block;
   text-align: center;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-top: 24rpx;
 }

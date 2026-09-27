@@ -69,6 +69,7 @@
 
 .audio-btn {
   flex: 1;
+  min-height: 88rpx;
 }
 
 .audio-row .audio-btn:first-child {
@@ -148,4 +149,5 @@
 .write-btn {
   margin-top: 32rpx;
   width: 100%;
+  min-height: 88rpx;
 }

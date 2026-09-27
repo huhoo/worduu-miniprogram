@@ -86,12 +86,14 @@ page {
   font-size: 28rpx;
   font-weight: 600;
   transition: opacity 0.15s;
+  min-height: 88rpx;
 }
 
 .btn-primary {
   background: var(--green);
   color: #FFFFFF;
   padding: 24rpx 32rpx;
+  min-height: 88rpx;
 }
 
 .btn-ghost {
@@ -99,6 +101,7 @@ page {
   color: var(--ink-2);
   border: 1rpx solid var(--line);
   padding: 20rpx 28rpx;
+  min-height: 88rpx;
 }
 
 .btn:active {
@@ -115,15 +118,18 @@ page {
   align-items: center;
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 500;
+  min-height: 88rpx;
 }
 
 .chip-green { background: var(--green-light); color: #065F46; }
 .chip-amber { background: var(--amber-light); color: #92400E; }
 .chip-rose  { background: #FFF1F2; color: #9F1239; }
 .chip-blue  { background: #EFF6FF; color: #1E40AF; }
-.chip-stone { background: #F5F5F4; color: var(--ink-2); }
+.chip-stone { background: #F5F5F4; color: var(--ink-2);
+  min-height: 88rpx;
+}
 
 /* ---------- 田字格 ---------- */
 .tianzige {
@@ -195,6 +201,7 @@ page {
   align-items: center;
   justify-content: center;
   padding: 16rpx 0 12rpx;
+  min-height: 88rpx;
 }
 
 .tabbar-emoji {
@@ -203,7 +210,7 @@ page {
 }
 
 .tabbar-label {
-  font-size: 20rpx;
+  font-size: 24rpx;
   margin-top: 4rpx;
   color: var(--ink-3);
 }

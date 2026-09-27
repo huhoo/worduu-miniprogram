@@ -37,7 +37,7 @@
 }
 
 .banner-sub {
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: rgba(236, 253, 245, 0.9);
   margin-top: 4rpx;
 }
@@ -65,7 +65,7 @@
 
 .cert-date {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-top: 2rpx;
 }
@@ -129,7 +129,7 @@
 }
 
 .metric-label {
-  font-size: 19rpx;
+  font-size: 22rpx;
   color: var(--ink-3);
 }
 
@@ -141,7 +141,7 @@
 }
 
 .metric-unit {
-  font-size: 18rpx;
+  font-size: 22rpx;
   font-weight: 400;
   color: var(--ink-3);
   margin-left: 2rpx;
@@ -154,7 +154,7 @@
 }
 
 .chars-label {
-  font-size: 19rpx;
+  font-size: 22rpx;
   font-weight: 800;
   color: var(--ink-3);
 }
@@ -174,6 +174,7 @@
   margin: 8rpx;
   display: flex;
   align-items: baseline;
+  min-height: 88rpx;
 }
 
 .chip-char {
@@ -184,7 +185,7 @@
 }
 
 .chip-pinyin {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   margin-left: 10rpx;
 }
@@ -204,11 +205,13 @@
   margin-bottom: 18rpx;
   box-sizing: border-box;
   line-height: 1.4;
+  min-height: 88rpx;
 }
 
 .btn-primary {
   background: var(--amber);
   color: #FFFFFF;
+  min-height: 88rpx;
 }
 
 .btn-share {
@@ -223,7 +226,7 @@
 
 .hint {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   line-height: 1.6;
   text-align: center;
@@ -232,7 +235,7 @@
 .notice {
   display: block;
   margin-top: 16rpx;
-  font-size: 21rpx;
+  font-size: 24rpx;
   color: #92400E;
   background: var(--amber-light);
   border: 1rpx solid #FDE68A;
@@ -247,7 +250,7 @@
 }
 
 .truth-text {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: var(--ink-3);
   line-height: 1.7;
 }

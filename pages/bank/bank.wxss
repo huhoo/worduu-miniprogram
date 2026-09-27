@@ -36,6 +36,7 @@
   background: #FFFFFF;
   border: 1rpx solid #E7E5E4;
   margin-right: 16rpx;
+  min-height: 88rpx;
 }
 
 .tab-on {
@@ -55,6 +56,7 @@
   align-items: center;
   padding: 24rpx 0;
   border-bottom: 1rpx solid #F5F5F4;
+  min-height: 88rpx;
 }
 
 .item:last-child {
@@ -93,7 +95,7 @@
 
 .item-date {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #A8A29E;
   margin-top: 4rpx;
 }
@@ -113,7 +115,7 @@
 }
 
 .mastery {
-  font-size: 20rpx;
+  font-size: 24rpx;
   padding: 2rpx 14rpx;
   border-radius: 999rpx;
   border: 1rpx solid transparent;
@@ -148,10 +150,12 @@
   font-size: 32rpx;
   opacity: 0.6;
   padding: 4rpx;
+  min-height: 88rpx;
 }
 
 .empty-btn {
   margin-top: 28rpx;
+  min-height: 88rpx;
 }
 
 .quiz-btn {

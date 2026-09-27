@@ -22,7 +22,7 @@
 }
 
 .banner-tag-text {
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 600;
 }
 
@@ -69,7 +69,7 @@
 }
 
 .mascot-label {
-  font-size: 18rpx;
+  font-size: 22rpx;
   font-weight: 700;
   margin-top: 4rpx;
 }
@@ -90,6 +90,7 @@
   padding: 28rpx;
   margin-bottom: 24rpx;
   box-shadow: 0 1rpx 3rpx rgba(28, 25, 23, 0.04);
+  min-height: 88rpx;
 }
 
 .module:active {
@@ -119,7 +120,7 @@
 }
 
 .module-badge {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #A8A29E;
   background: #F5F5F4;
   padding: 2rpx 12rpx;
@@ -153,6 +154,7 @@
   font-size: 22rpx;
   color: #059669;
   font-weight: 600;
+  min-height: 88rpx;
 }
 
 .progress-grid {
@@ -187,7 +189,7 @@
 }
 
 .progress-label {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #78716C;
   margin-top: 4rpx;
 }
@@ -208,6 +210,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 88rpx;
 }
 
 .recent-item:active {
@@ -221,14 +224,14 @@
 }
 
 .recent-pinyin {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #78716C;
   margin-top: 4rpx;
   font-family: 'SF Mono', Menlo, monospace;
 }
 
 .recent-source {
-  font-size: 16rpx;
+  font-size: 22rpx;
   color: #A8A29E;
   margin-top: 6rpx;
 }
@@ -236,4 +239,5 @@
 .empty-btn {
   margin-top: 28rpx;
   display: inline-flex;
+  min-height: 88rpx;
 }

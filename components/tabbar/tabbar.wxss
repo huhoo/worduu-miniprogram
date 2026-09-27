@@ -17,6 +17,7 @@
   align-items: center;
   justify-content: center;
   padding: 16rpx 0 12rpx;
+  min-height: 88rpx;
 }
 
 .tabbar-item:active {
@@ -34,7 +35,7 @@
 }
 
 .tabbar-label {
-  font-size: 20rpx;
+  font-size: 24rpx;
   margin-top: 4rpx;
   color: #A8A29E;
 }

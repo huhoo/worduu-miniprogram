@@ -22,7 +22,8 @@ AI 能力跑在微信云开发上（云函数 + 云存储），不依赖自建�
 | cnchar 笔画表（`scripts/vendor/cnchar/stroke-order-{jian,trad}.json`） | 覆盖 `tools/vendor-cnchar/`，然后跑 `node tools/build-cnchar-strokes.mjs` 重新生成随包数据表 |
 | 云函数里 `handleStrokeData` 的分片解析 | 这里同样兼容旧格式，只认 `entry.m` |
 
-当前对齐的上游提交：`b3dc28a`（补繁体笔画名、`点2` 落地为「点」、双名不再取首项）。
+当前对齐的上游提交：`4350896`（补繁体笔画名、`点2` 落地为「点」、双名不再取首项、
+触摸目标 44px 与最小字号 11px 下限）。
 
 ---
 
@@ -143,8 +144,26 @@ ziban-miniprogram/
     ├── strokes/        待上传云存储的笔顺数据分片（6.9MB）
     ├── vendor-cnchar/  cnchar 原始数据与 MIT 许可（仅存档）
     ├── build-cnchar-strokes.mjs   生成 utils/data/cnchar-strokes.js
-    └── update-stroke-shards.mjs   刷新分片里的 n 字段（m 不动）
+    ├── update-stroke-shards.mjs   刷新分片里的 n 字段（m 不动）
+    └── audit-a11y.mjs             审计字号与触摸目标下限
 ```
+
+### 字号与触摸目标的下限
+
+给 6~10 岁孩子用的 app，小字和小热区是真问题，所以定了两条硬下限，
+`node tools/audit-a11y.mjs` 会静态检查（当前 0 处违规）：
+
+| 项 | 下限 | 依据 |
+|---|---|---|
+| 正文与说明文字 | 22rpx（11px @375px 宽） | 上游实测 9~10px 在手机上太小 |
+| 可点元素高度 | 88rpx（44px） | WCAG 2.5.5 |
+
+只设 `min-height` 不设 `min-width`：控件多由 padding 撑开且内容居中，补足高度
+不影响布局，横向拉宽反而会把一排 tab 挤出屏幕。同理，段落里的行内元素
+（如伴读页的可点汉字）不套这个下限，否则一句话会被撑成几行。
+
+成就卡的 canvas 绘制不受此限 —— 那是导出成图片的排版，不是屏幕上的 UI，
+字号跟着画面比例走，不按 11px 抬。
 
 ---
 

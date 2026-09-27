@@ -11,6 +11,7 @@
   font-size: 24rpx;
   font-weight: 600;
   color: #78716C;
+  min-height: 88rpx;
 }
 
 .seg-on {
@@ -27,7 +28,7 @@
 
 .caption {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #A8A29E;
 }
 
@@ -100,7 +101,7 @@
 }
 
 .ring-label {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #A8A29E;
 }
 
@@ -142,7 +143,7 @@
 
 .bpct {
   margin-left: 8rpx;
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #A8A29E;
 }
 
@@ -156,6 +157,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 88rpx;
 }
 
 .review-text {
@@ -182,6 +184,7 @@
 .more {
   font-size: 22rpx;
   color: #78716C;
+  min-height: 88rpx;
 }
 
 .trail {
@@ -194,6 +197,7 @@
   border-radius: 24rpx;
   padding: 20rpx;
   margin-top: 16rpx;
+  min-height: 88rpx;
 }
 
 .trail-char {
@@ -204,7 +208,7 @@
 
 .trail-source {
   margin-left: 14rpx;
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #57534E;
   background: #FFFFFF;
   border: 1rpx solid #E7E5E4;
@@ -213,7 +217,7 @@
 }
 
 .tag {
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 700;
   padding: 4rpx 16rpx;
   border-radius: 999rpx;
@@ -281,7 +285,7 @@
 
 .metric-label {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #78716C;
 }
 
@@ -330,7 +334,7 @@
 .foot-note {
   display: block;
   margin-top: 20rpx;
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #D6D3D1;
   line-height: 1.6;
 }
@@ -366,4 +370,5 @@
 .empty-btn {
   margin-top: 28rpx;
   width: 60%;
+  min-height: 88rpx;
 }

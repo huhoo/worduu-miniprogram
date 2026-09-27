@@ -62,7 +62,7 @@
 
 .empty-note {
   margin-top: 16rpx;
-  font-size: 20rpx;
+  font-size: 24rpx;
   line-height: 1.6;
   color: #78716C;
   text-align: center;
@@ -75,7 +75,7 @@
   right: 12rpx;
   background: #ECFDF5;
   color: #065F46;
-  font-size: 18rpx;
+  font-size: 22rpx;
   padding: 2rpx 14rpx;
   border-radius: 999rpx;
   border: 1rpx solid #A7F3D0;
@@ -89,12 +89,12 @@
 }
 
 .dot {
-  width: 44rpx;
-  height: 44rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 50%;
   background: #F5F5F4;
   color: #A8A29E;
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -126,10 +126,11 @@
   background: #FFFBEB;
   border: 1rpx solid #FDE68A;
   color: #92400E;
-  font-size: 20rpx;
+  font-size: 24rpx;
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
   margin: 6rpx;
+  min-height: 88rpx;
 }
 
 .pill-current {
@@ -156,8 +157,8 @@
 }
 
 .ctrl {
-  width: 60rpx;
-  height: 60rpx;
+  width: 88rpx;
+  height: 88rpx;
   border-radius: 18rpx;
   border: 1rpx solid #E7E5E4;
   background: #FFFFFF;
@@ -181,6 +182,7 @@
   color: #FFFFFF;
   font-size: 24rpx;
   font-weight: 700;
+  min-height: 88rpx;
 }
 
 .play:active {
@@ -190,7 +192,7 @@
 .credit {
   display: block;
   margin-top: 12rpx;
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #D6D3D1;
   text-align: center;
 }

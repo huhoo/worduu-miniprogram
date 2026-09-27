@@ -45,6 +45,7 @@
   justify-content: center;
   box-shadow: 0 0 0 12rpx #F0FDF4;
   transition: transform 0.15s, background 0.15s;
+  min-height: 88rpx;
 }
 
 .play-btn.playing {
@@ -78,10 +79,12 @@
   font-size: 22rpx;
   padding: 14rpx 26rpx;
   border-radius: 999rpx;
+  min-height: 88rpx;
 }
 
 .audio-row .audio-btn + .audio-btn {
   margin-left: 16rpx;
+  min-height: 88rpx;
 }
 
 .audio-btn.amber {
@@ -117,10 +120,12 @@
   background: #F5F5F4;
   padding: 10rpx 24rpx;
   border-radius: 999rpx;
+  min-height: 88rpx;
 }
 
 .tools .tool + .tool {
   margin-left: 16rpx;
+  min-height: 88rpx;
 }
 
 .stroke-count {
@@ -175,7 +180,7 @@
 
 .tag {
   margin-left: 14rpx;
-  font-size: 20rpx;
+  font-size: 24rpx;
   font-weight: 700;
   padding: 4rpx 14rpx;
   border-radius: 8rpx;
@@ -210,6 +215,7 @@
 .submit-btn {
   margin-top: 24rpx;
   width: 100%;
+  min-height: 88rpx;
 }
 
 /* ---------- 报告 ---------- */
@@ -289,6 +295,7 @@
   border-radius: 20rpx;
   padding: 16rpx 0;
   margin-top: 12rpx;
+  min-height: 88rpx;
 }
 
 .wrong-char {
@@ -298,12 +305,12 @@
 }
 
 .wrong-pinyin {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #9F1239;
 }
 
 .wrong-strokes {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #A8A29E;
 }
 
@@ -345,6 +352,7 @@
 .empty-btn {
   margin-top: 32rpx;
   width: 60%;
+  min-height: 88rpx;
 }
 
 .mt {

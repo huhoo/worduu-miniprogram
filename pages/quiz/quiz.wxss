@@ -65,6 +65,7 @@
   font-size: 24rpx;
   color: #A8A29E;
   text-decoration: underline;
+  min-height: 88rpx;
 }
 
 .audio-row {
@@ -74,6 +75,7 @@
 
 .audio-btn {
   flex: 1;
+  min-height: 88rpx;
 }
 
 .audio-row .audio-btn:first-child {
@@ -82,7 +84,7 @@
 
 .source {
   margin-top: 20rpx;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #A8A29E;
   background: #FAFAF9;
   padding: 6rpx 20rpx;
@@ -107,6 +109,7 @@
 
 .judge-btn {
   flex: 1;
+  min-height: 88rpx;
 }
 
 .judge-row .judge-btn:first-child {
@@ -158,6 +161,7 @@
 .next-btn {
   margin-top: 32rpx;
   width: 100%;
+  min-height: 88rpx;
 }
 
 /* ---------- 报告 ---------- */
@@ -202,6 +206,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 88rpx;
 }
 
 .wrong-char {
@@ -211,7 +216,7 @@
 }
 
 .wrong-pinyin {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: #BE123C;
   font-family: 'SF Mono', Menlo, monospace;
 }
@@ -228,4 +233,5 @@
 .empty-btn {
   margin-top: 28rpx;
   width: 60%;
+  min-height: 88rpx;
 }

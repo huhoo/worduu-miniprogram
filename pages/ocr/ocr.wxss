@@ -61,6 +61,7 @@
 .shoot-btn {
   margin-top: 24rpx;
   width: 100%;
+  min-height: 88rpx;
 }
 
 /* ---------- 识别中 ---------- */
@@ -133,7 +134,7 @@
 }
 
 .rawtext-label {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #A8A29E;
 }
 
@@ -151,6 +152,7 @@
   align-items: center;
   padding: 20rpx 0;
   border-bottom: 1rpx solid #F5F5F4;
+  min-height: 88rpx;
 }
 
 .char-row:last-of-type {
@@ -199,7 +201,7 @@
 
 .char-words {
   display: block;
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #A8A29E;
   margin-top: 4rpx;
 }
@@ -247,6 +249,7 @@
 .manual-btn {
   margin-left: 16rpx;
   padding: 16rpx 28rpx;
+  min-height: 88rpx;
 }
 
 /* ---------- 其他 ---------- */
@@ -254,6 +257,7 @@
   font-size: 22rpx;
   color: #059669;
   font-weight: 600;
+  min-height: 88rpx;
 }
 
 .link-gap {
@@ -263,4 +267,5 @@
 .add-btn {
   margin-top: 32rpx;
   width: 100%;
+  min-height: 88rpx;
 }
