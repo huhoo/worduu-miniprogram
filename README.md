@@ -22,8 +22,12 @@ AI 能力跑在微信云开发上（云函数 + 云存储），不依赖自建�
 | cnchar 笔画表（`scripts/vendor/cnchar/stroke-order-{jian,trad}.json`） | 覆盖 `tools/vendor-cnchar/`，然后跑 `node tools/build-cnchar-strokes.mjs` 重新生成随包数据表 |
 | 云函数里 `handleStrokeData` 的分片解析 | 这里同样兼容旧格式，只认 `entry.m` |
 
-当前对齐的上游提交：`4350896`（补繁体笔画名、`点2` 落地为「点」、双名不再取首项、
+当前对齐的上游提交：`4e8a7ca`（补繁体笔画名、`点2` 落地为「点」、双名不再取首项、
 触摸目标 44px 与最小字号 11px 下限）。
+
+`4e8a7ca` 本身只改了 Web 版的部署描述文件，没有需要同步的代码 ——
+它的价值在于把 `4350896` 的修复发布到了生产并逐条验证，
+顺带给出了一批可以直接复用的简介文案（见 `LAUNCH.md` 附录）。
 
 ---
 

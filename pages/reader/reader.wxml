@@ -75,7 +75,9 @@
   </view>
 
   <!-- 模式设置 -->
-  <view class="mask" wx:if="{{showSettings}}" bindtap="closeSettings">
+  <!-- catchtouchmove：遮罩是 fixed 全屏，但不拦的话滑动会穿透到下面的正文，
+       表现是「想在 setting 上划一下，结果整篇文章跟着滚了」。 -->
+  <view class="mask" wx:if="{{showSettings}}" bindtap="closeSettings" catchtouchmove="noop">
     <view class="sheet" catchtap="noop">
       <view class="sheet-head">
         <text class="sheet-title">AI 伴读模式设置</text>
