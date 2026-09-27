@@ -1,5 +1,6 @@
 const store = require('../../utils/store.js');
 const api = require('../../utils/api.js');
+const privacy = require('../../utils/privacy.js');
 
 const SOURCES = ['教材', '课外书', '绘本', '练习册', '报纸杂志', '其他'];
 
@@ -25,6 +26,19 @@ Page({
 
   /** 拍照或从相册选图。两者都走同一条识别链路。 */
   chooseImage() {
+    const that = this;
+    // 正式版未同意《用户隐私保护指引》时 chooseMedia 会直接失败，
+    // 表现为点了没反应，所以先确认授权再调。
+    privacy.ensurePrivacy().then((ok) => {
+      if (!ok) {
+        wx.showToast({ title: '需要同意隐私保护指引才能拍照', icon: 'none' });
+        return;
+      }
+      that.pickMedia();
+    });
+  },
+
+  pickMedia() {
     const that = this;
     wx.chooseMedia({
       count: 1,

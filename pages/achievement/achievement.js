@@ -10,6 +10,7 @@
 const store = require('../../utils/store.js');
 const api = require('../../utils/api.js');
 const card = require('../../utils/achievement.js');
+const privacy = require('../../utils/privacy.js');
 
 const POSTER_W = 600;
 const POSTER_H = 840;
@@ -113,6 +114,19 @@ Page({
   },
 
   saveToAlbum(filePath) {
+    const that = this;
+    // 写入相册是隐私接口，正式版未同意《用户隐私保护指引》会直接失败。
+    privacy.ensurePrivacy().then((ok) => {
+      if (!ok) {
+        // 海报已经画好了，不授权也不算白跑 —— 引导走分享。
+        that.setData({ notice: '需要同意隐私保护指引才能存相册，也可以直接点右上角分享。' });
+        return;
+      }
+      that.writeToAlbum(filePath);
+    });
+  },
+
+  writeToAlbum(filePath) {
     wx.saveImageToPhotosAlbum({
       filePath,
       success: () => {
