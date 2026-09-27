@@ -49,12 +49,11 @@
 
 注册完成后，把这两样给我：
 
-1. **真实 AppID**（后台首页或「账号设置」里有，`wx` 开头 16 位）
-2. **云开发环境 ID**（开发者工具 → 云开发 → 环境 ID，形如 `ziban-1g8xxxxxxx`）
+1. ✅ **真实 AppID**：`wxf430d901fd4c9866` —— 已填进 `project.config.json`
+2. ⬜ **云开发环境 ID**（开发者工具 → 云开发 → 环境 ID，形如 `ziban-1g8xxxxxxx`）
 
 我会：
 
-- 把 `project.config.json` 里的 AppID 换掉（现在是 `wxe3048aa17f8a2ef4`，那个不属于你）
 - 把云环境 ID 填进 `utils/config.js`
 - 接着带你走**备案**（7~20 个工作日，这是最耗时的，注册完立刻启动）
 
