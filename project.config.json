@@ -44,7 +44,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.5.5",
-  "appid": "touristappid",
+  "appid": "wxe3048aa17f8a2ef4",
   "projectname": "ziban-miniprogram",
   "cloudfunctionRoot": "cloudfunctions/",
   "miniprogramRoot": "./",
