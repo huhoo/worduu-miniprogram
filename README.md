@@ -1,9 +1,28 @@
 # 字伴 · 微信小程序
 
 儿童识字 App 的小程序版本，从 React Web 版（`字伴/ziban`）迁移而来。
-核心闭环：**拍照识字 → 生字库 → 认读测试 → 笔顺书写**。
+核心闭环：**拍照识字 → 生字库 → 认读测试 → 笔顺书写 → 听写默写 → 识字档案 →
+阅读伴读 → 成就分享**。
 
 AI 能力跑在微信云开发上（云函数 + 云存储），不依赖自建服务器、不需要备案域名。
+
+## 与 Web 版仓库的关系
+
+独立仓库，**不与 Web 版共仓**。两套技术栈没有一行共享代码
+（Web 版是 React 19 + Vite + Tailwind + Deno 后端，这里是原生 WXML/WXSS/JS + 云函数），
+共仓只会带来 monorepo 的配置成本，换不来任何复用；微信开发者工具也要求
+打开的根目录就是小程序目录。
+
+两边靠**数据**而不是代码保持一致，同步点只有笔顺与笔画名，见
+[`tools/`](#笔画名称从哪来为什么不问-ai)：
+
+| Web 版改动 | 这里怎么跟 |
+|---|---|
+| `scripts/build-stroke-data.mjs` 输出的分片（`{ m: 中心线, n: 笔画名 }`） | 覆盖 `tools/strokes/`，需重新上传云存储 |
+| cnchar 笔画表（`scripts/vendor/cnchar/stroke-order-{jian,trad}.json`） | 覆盖 `tools/vendor-cnchar/`，然后跑 `node tools/build-cnchar-strokes.mjs` 重新生成随包数据表 |
+| 云函数里 `handleStrokeData` 的分片解析 | 这里同样兼容旧格式，只认 `entry.m` |
+
+当前对齐的上游提交：`b3dc28a`（补繁体笔画名、`点2` 落地为「点」、双名不再取首项）。
 
 ---
 
@@ -117,12 +136,14 @@ ziban-miniprogram/
 │   ├── achievement.js  成就卡组装与本地点赞
 │   ├── strokes.js  笔顺数据加载与笔画名交叉校验
 │   └── data/
-│       ├── cnchar-strokes.js   笔画名称表（6,939 字，165KB，随包发布）
+│       ├── cnchar-strokes.js   笔画名称表（9,504 字，234KB，随包发布）
 │       └── articles.js         内置示例读物（4 篇）
 ├── cloudfunctions/ziban/    AI 云函数（DashScope）
-└── tools/
-    ├── strokes/        待上传云存储的笔顺数据分片（6.9MB，不进小程序包）
-    └── vendor-cnchar/  cnchar 原始数据与 MIT 许可（不进包，仅存档）
+└── tools/                   构建脚本与原始数据，不进小程序包
+    ├── strokes/        待上传云存储的笔顺数据分片（6.9MB）
+    ├── vendor-cnchar/  cnchar 原始数据与 MIT 许可（仅存档）
+    ├── build-cnchar-strokes.mjs   生成 utils/data/cnchar-strokes.js
+    └── update-stroke-shards.mjs   刷新分片里的 n 字段（m 不动）
 ```
 
 ---
