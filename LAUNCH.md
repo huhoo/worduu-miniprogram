@@ -2,6 +2,16 @@
 
 从代码到「能在微信里搜到并使用」，按这个顺序走。**阶段 0 最耗时，今天就要启动**。
 
+## 当前进度（2026-09-28）
+
+| 阶段 | 状态 |
+|---|---|
+| 阶段 0 账号与备案 | ✅ 已注册（AppID `wxf430d901fd4c9866`）、名称「字伴」、头像、简介、类目「工具 › 信息查询」已通过；**备案已提交，等 12381 短信核验 + 管局审核** |
+| 阶段 1 代码配置 | ✅ AppID、云环境 ID 已填；⬜ 云函数待部署、环境变量待配 |
+| 阶段 2 云开发 | ⬜ 云函数部署 / 笔顺分片上传 / `achievement_cards` 集合 |
+| 阶段 3 隐私合规 | ✅ 代码侧就绪（`__usePrivacyCheck__: false`）；⬜ 提审页填隐私保护指引 |
+| 阶段 4 提审发布 | ⬜ 需备案通过后提交审核 |
+
 ---
 
 ## 阶段 0：账号与备案（7~20 个工作日，先启动）
@@ -50,23 +60,64 @@
 
 ## 阶段 1：代码配置（改 4 个文件）
 
-| 文件 | 改什么 |
-|---|---|
-| `project.config.json` | `appid`：`touristappid` → 你的真实 AppID |
-| `utils/config.js` | `cloudEnv`：填云开发环境 ID（形如 `ziban-1g8xxxxxxx`） |
-| `cloudfunctions/ziban/` | 右键 → 上传并部署（云端安装依赖） |
-| 云函数环境变量 | `DASHSCOPE_API_KEY`、`DASHSCOPE_WORKSPACE_ID` |
+| 文件 | 改什么 | 状态 |
+|---|---|---|
+| `project.config.json` | `appid` → `wxf430d901fd4c9866` | ✅ 已填 |
+| `utils/config.js` | `cloudEnv` → `cloudbase-d4gxrglmjdcacd33c` | ✅ 已填 |
+| `cloudfunctions/ziban/` | 右键 → 上传并部署（云端安装依赖） | ⬜ 待做 |
+| 云函数环境变量 | `DASHSCOPE_API_KEY`、`DASHSCOPE_WORKSPACE_ID`、`STROKE_FILE_PREFIX` | ⬜ 待做 |
 
 > 游客模式（`touristappid`）**不能用云开发**，AI 相关功能全部不可用，必须换真实 AppID。
 
 ---
 
-## 阶段 2：云开发部署
+## 阶段 2：云开发部署（约 10 分钟，全在开发者工具里）
 
-1. 开通云开发（个人主体可用，有免费额度）
-2. 部署 `ziban` 云函数 → 配置上面两个环境变量
-3. 云存储建 `strokes/` 目录，上传 `tools/strokes/` 下 99 个分片（不做则**没有笔顺动画**）
-4. 云数据库建集合 `achievement_cards`（不做则**成就卡分享保存失败**）
+环境已开通：**`cloudbase`**（环境 ID `cloudbase-d4gxrglmjdcacd33c`）。按顺序做四件事：
+
+### 2.1 部署云函数
+
+开发者工具里 `cloudfunctions/ziban` 目录上**右键 → 上传并部署：云端安装依赖**。
+（选「云端安装」而不是「所有文件」，否则本地 node_modules 会被一起传上去。）
+
+### 2.2 配环境变量
+
+云开发控制台 → 云函数 → `ziban` → **配置 → 环境变量**：
+
+| 变量名 | 值 | 说明 |
+|---|---|---|
+| `DASHSCOPE_API_KEY` | sk-… | **必填**，阿里云百炼密钥，只放这里，不进代码库 |
+| `DASHSCOPE_WORKSPACE_ID` | ws_… | **必填**，百炼业务空间 ID |
+| `STROKE_FILE_PREFIX` | `cloud://…/strokes` | 笔顺数据前缀，取值方法见 2.3 第 4 步 |
+| `DASHSCOPE_REGION` | `cn-beijing` | 可省略，默认就是这个 |
+
+改完环境变量需要**重新部署一次**云函数才生效。
+
+### 2.3 上传笔顺分片（不做则**没有笔顺动画**）
+
+1. 云开发控制台 → **云存储** → 新建目录 `strokes`
+2. 进 `strokes`，上传 `tools/strokes/` 下的 **99 个 .json**（7.1MB，共 9,574 字；可以一次全选）
+3. 上传完点**任意一个文件**，复制它的**文件 ID**（形如 `cloud://cloudbase-d4gxrglmjdcacd33c.636c-xxx-1301234567/strokes/4e.json`）
+4. 去掉末尾的 `/4e.json`，剩下的部分（`cloud://cloudbase-d4gxrglmjdcacd33c.636c-xxx-1301234567/strokes`）就是 `STROKE_FILE_PREFIX`
+
+> 文件 ID 里的 bucket（`636c-xxx-1301234567`）是平台分配的，猜不出来，**必须去控制台复制**。
+
+### 2.4 建数据库集合（不做则**成就卡分享保存失败**）
+
+云开发控制台 → **数据库** → 新建集合 **`achievement_cards`**。
+云函数读写走管理端权限，不受集合权限规则限制，权限保持默认即可。
+
+### 2.5 部署后自检（别等审核员帮你测）
+
+云开发控制台 → 云函数 → `ziban` → **云端测试**，逐个跑：
+
+| 入参 | 期望 |
+|---|---|
+| `{"action":"health"}` | `ai` 为 `"ready"`，`strokes` 为 `true` |
+| `{"action":"character-info","char":"蝶"}` | 返回拼音、释义、组词 |
+| `{"action":"stroke-data","char":"雨"}` | `medians` 是**非空数组**（为空说明分片没传或前缀填错） |
+
+`health` 里 `ai` 为 `"unconfigured"` 就是环境变量没读到，`strokes` 为 `false` 就是前缀没填。
 
 ---
 

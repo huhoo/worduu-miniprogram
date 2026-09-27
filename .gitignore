@@ -14,3 +14,8 @@ Thumbs.db
 # 本地日志 / 临时产物
 *.log
 .miniprogram-tmp/
+
+# 身份证件照片 —— 绝对禁止进入版本库
+id-card-*.jpg
+id-card-*.png
+*身份证*

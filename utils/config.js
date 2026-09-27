@@ -6,7 +6,7 @@
  */
 module.exports = {
   /** 云开发环境 ID，形如 ziban-1g8xxxxxxx。留空则所有 AI 能力不可用，本地功能仍可运行。 */
-  cloudEnv: '',
+  cloudEnv: 'cloudbase-d4gxrglmjdcacd33c',
 
   /** 云函数名，必须与 cloudfunctions/ 下的目录名一致。 */
   cloudFunction: 'ziban',
