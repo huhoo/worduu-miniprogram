@@ -269,3 +269,85 @@
   width: 100%;
   min-height: 88rpx;
 }
+
+/* ---------- 框选裁剪 ---------- */
+.crop-stage {
+  position: relative;
+  width: 100%;
+  margin-top: 20rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: #1C1917;
+}
+
+.crop-img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 选框：一整块大 box-shadow 把框外压暗，比铺四块遮罩省事也更跟手。 */
+.crop-sel {
+  position: absolute;
+  box-shadow: 0 0 0 9999rpx rgba(28, 25, 23, 0.55);
+  border: 3rpx solid #34D399;
+  border-radius: 6rpx;
+}
+
+/* 44px 见方的透明热区，中间才是看得见的圆点——手指够得着，也满足最小可点尺寸。 */
+.grip {
+  position: absolute;
+  width: 88rpx;
+  height: 88rpx;
+  min-height: 88rpx;
+  background: transparent;
+}
+
+.grip-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28rpx;
+  height: 28rpx;
+  margin: -14rpx 0 0 -14rpx;
+  background: #34D399;
+  border: 4rpx solid #FFFFFF;
+  border-radius: 50%;
+}
+
+.grip-nw { left: -44rpx; top: -44rpx; }
+.grip-ne { right: -44rpx; top: -44rpx; }
+.grip-sw { left: -44rpx; bottom: -44rpx; }
+.grip-se { right: -44rpx; bottom: -44rpx; }
+
+.crop-busy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(28, 25, 23, 0.6);
+}
+
+.crop-busy-text {
+  color: #FFFFFF;
+  font-size: 26rpx;
+}
+
+.crop-btn {
+  margin-top: 20rpx;
+}
+
+/* 离屏：裁剪画布只做像素处理，不占任何版面 */
+.crop-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: 0;
+  width: 100rpx;
+  height: 100rpx;
+}

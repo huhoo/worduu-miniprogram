@@ -42,7 +42,50 @@
     </view>
   </block>
 
-  <!-- 第二步：校对识别结果 -->
+  <!-- 第二步：框出要学的那一段 -->
+  <block wx:elif="{{step === 'crop'}}">
+    <view class="card">
+      <view class="row-between">
+        <text class="title">框出要学的那一段</text>
+        <text class="chip chip-stone" bindtap="chooseImage">重拍</text>
+      </view>
+      <text class="muted picker-note">拖动选框或拽四个角调整范围，只识别框里的字，桌上的其他东西就不会混进来。</text>
+
+      <view
+        class="crop-stage"
+        style="height:{{stageH}}px"
+        bindtouchstart="onCropTouchStart"
+        bindtouchmove="onCropTouchMove"
+        bindtouchend="onCropTouchEnd"
+        bindtouchcancel="onCropTouchEnd"
+      >
+        <image src="{{imagePath}}" class="crop-img" mode="aspectFit" />
+
+        <view
+          wx:if="{{rectPx}}"
+          class="crop-sel"
+          style="left:{{rectPx.left}}px;top:{{rectPx.top}}px;width:{{rectPx.width}}px;height:{{rectPx.height}}px"
+        >
+          <view class="grip grip-nw"><view class="grip-dot"></view></view>
+          <view class="grip grip-ne"><view class="grip-dot"></view></view>
+          <view class="grip grip-sw"><view class="grip-dot"></view></view>
+          <view class="grip grip-se"><view class="grip-dot"></view></view>
+        </view>
+
+        <view wx:if="{{scanning || cropping}}" class="crop-busy">
+          <view class="spinner"></view>
+          <text class="crop-busy-text">{{scanHint}}</text>
+        </view>
+      </view>
+
+      <view class="btn btn-primary crop-btn" bindtap="cropAndScan">
+        {{cropping ? '正在裁剪…' : '就识别这里'}}
+      </view>
+      <view class="btn btn-ghost crop-btn" bindtap="useWholePage">整页识别</view>
+    </view>
+  </block>
+
+  <!-- 第三步：校对识别结果 -->
   <block wx:else>
     <view class="card">
       <view class="row result-head">
@@ -114,5 +157,8 @@
     </view>
   </block>
 </view>
+
+<!-- 裁剪用的离屏画布：只做像素处理，不参与布局 -->
+<canvas type="2d" id="cropCanvas" class="crop-canvas" />
 
 <tabbar current="ocr" />
