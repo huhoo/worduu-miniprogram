@@ -240,45 +240,65 @@ async function handleTts(config, body) {
 }
 
 /* ------------------------------------------------------------------ *
- * 笔顺数据（从云存储按需取，避免占小程序包体）
+ * 笔顺数据
+ *
+ * 数据来源按优先级：
+ *   1. 云存储（配置了 STROKE_FILE_PREFIX 时）—— 改数据不用重新部署函数；
+ *   2. 函数包内自带的 data/ 分片 —— 部署时随包带上，开箱即用。
+ * 两种来源格式一致，都省去了把 7MB 数据塞进小程序主包。
  * ------------------------------------------------------------------ */
+const fs = require('fs');
+const path = require('path');
+
+/** 读函数包内自带的分片（部署时把 tools/strokes/*.json 复制到 data/ 即可）。 */
+function readBundledShard(shard) {
+  try {
+    const file = path.join(__dirname, 'data', `${shard}.json`);
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (error) {
+    return null;
+  }
+}
+
+/** 从分片表里取一个字的 medians / names，兼容旧版（纯数组）与新版（{m,n}）两种格式。 */
+function extractEntry(table, char) {
+  const entry = table[char];
+  if (Array.isArray(entry)) return { medians: entry, names: null };
+  if (entry && Array.isArray(entry.m)) {
+    return { medians: entry.m, names: Array.isArray(entry.n) ? entry.n.slice(0, 60) : null };
+  }
+  return { medians: null, names: null };
+}
+
 async function handleStrokeData(config, body) {
   const char = clampString(body.char, 4);
   if (!char || !/^[\u4e00-\u9fff]$/.test(char)) return fail('invalid_char', '请提供单个汉字');
 
-  if (!config || !config.strokeFilePrefix) {
-    return fail('stroke_data_unconfigured', '笔顺数据未配置');
-  }
-
   const shard = (char.codePointAt(0) >> 8).toString(16);
-  const fileID = `${config.strokeFilePrefix.replace(/\/$/, '')}/${shard}.json`;
 
-  try {
-    const cloud = require('wx-server-sdk');
-    cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
-    const res = await cloud.downloadFile({ fileID });
-    const table = JSON.parse(res.fileContent.toString('utf8'));
-    const entry = table[char];
-
-    // 两种分片格式都认：
-    //   旧版 —— table[char] 直接是 medians 数组；
-    //   新版 —— { m: medians, n: 笔画名 }，笔画名由构建脚本交叉校验后写入。
-    let medians = null;
-    let names = null;
-    if (Array.isArray(entry)) {
-      medians = entry;
-    } else if (entry && Array.isArray(entry.m)) {
-      medians = entry.m;
-      names = Array.isArray(entry.n) ? entry.n.slice(0, 60) : null;
+  // 来源 1：云存储
+  if (config && config.strokeFilePrefix) {
+    const fileID = `${config.strokeFilePrefix.replace(/\/$/, '')}/${shard}.json`;
+    try {
+      const cloud = require('wx-server-sdk');
+      cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
+      const res = await cloud.downloadFile({ fileID });
+      const table = JSON.parse(res.fileContent.toString('utf8'));
+      const { medians, names } = extractEntry(table, char);
+      if (medians && medians.length) return ok({ char, medians, names });
+      // 存储里查无此字：数据集未覆盖是正常情况，继续落到包内数据再试一次
+    } catch (error) {
+      // 分片不存在 / 存储不可用都落到包内数据
+      console.error('[字伴] 云存储笔画数据读取失败，回退到包内分片', shard, error && error.message);
     }
-
-    if (!medians || !medians.length) return ok({ char, medians: null, names: null });
-    return ok({ char, medians, names });
-  } catch (error) {
-    // 分片文件不存在也是正常情况：数据集并未覆盖全部汉字。
-    console.error('[字伴] 笔画数据读取失败', shard, error && error.message);
-    return ok({ char, medians: null });
   }
+
+  // 来源 2：函数包内自带分片
+  const table = readBundledShard(shard);
+  if (!table) return ok({ char, medians: null, names: null });
+  const { medians, names } = extractEntry(table, char);
+  if (!medians || !medians.length) return ok({ char, medians: null, names: null });
+  return ok({ char, medians, names });
 }
 
 /* ------------------------------------------------------------------ *
@@ -298,6 +318,23 @@ function database() {
   const cloud = require('wx-server-sdk');
   cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
   return cloud.database();
+}
+
+/**
+ * 成就卡操作统一入口。集合没建（首次部署常见）时自动 createCollection 后重试一次，
+ * 省掉「部署完还要去控制台手工建集合」这一步。只有报「集合不存在」才重试，
+ * 其他错误原样抛出，避免重试造成重复写入。
+ */
+async function withCards(operation) {
+  const db = database();
+  try {
+    return await operation(db.collection(CARD_COLLECTION), db);
+  } catch (error) {
+    const message = String((error && error.message) || '');
+    if (!/-502005|not exist|不存在/i.test(message)) throw error;
+    await db.createCollection(CARD_COLLECTION).catch(() => {});
+    return await operation(db.collection(CARD_COLLECTION), db);
+  }
 }
 
 function str(value, max) {
@@ -367,13 +404,13 @@ async function handleSaveCard(config, body) {
   card.id = id;
 
   try {
-    await database().collection(CARD_COLLECTION).add({
-      data: Object.assign({}, card, { createdAt: Date.now() }),
-    });
+    await withCards((collection) =>
+      collection.add({ data: Object.assign({}, card, { createdAt: Date.now() }) })
+    );
     return ok({ id });
   } catch (error) {
     console.error('[字伴] 成就卡保存失败', error && error.message);
-    return fail('card_save_failed', '奖状没能保存，请确认云开发数据库里已创建 achievement_cards 集合');
+    return fail('card_save_failed', '奖状没能保存，请稍后再试');
   }
 }
 
@@ -382,7 +419,7 @@ async function handleGetCard(config, body) {
   if (!id) return fail('invalid_card', '链接里没有奖状编号');
 
   try {
-    const res = await database().collection(CARD_COLLECTION).doc(id).get();
+    const res = await withCards((collection) => collection.doc(id).get());
     const card = res && res.data ? sanitizeCard(res.data) : null;
     if (!card) return fail('card_not_found', '没有找到这张奖状');
     return ok({ card });
@@ -398,14 +435,16 @@ async function handleLikeCard(config, body) {
   if (!id || !like.roleName) return fail('invalid_like', '请先选择您的身份');
 
   try {
-    const collection = database().collection(CARD_COLLECTION);
-    const res = await collection.doc(id).get();
-    if (!res || !res.data) return fail('card_not_found', '没有找到这张奖状');
-
-    const likes = [like].concat(Array.isArray(res.data.likes) ? res.data.likes : []).slice(0, MAX_LIKES);
-    await collection.doc(id).update({ data: { likes } });
+    const likes = await withCards(async (collection) => {
+      const res = await collection.doc(id).get();
+      if (!res || !res.data) throw new Error('CARD_NOT_FOUND');
+      const merged = [like].concat(Array.isArray(res.data.likes) ? res.data.likes : []).slice(0, MAX_LIKES);
+      await collection.doc(id).update({ data: { likes: merged } });
+      return merged;
+    });
     return ok({ likes });
   } catch (error) {
+    if (error && error.message === 'CARD_NOT_FOUND') return fail('card_not_found', '没有找到这张奖状');
     console.error('[字伴] 点赞失败', error && error.message);
     return fail('like_failed', '点赞没有保存成功，请稍后再试');
   }
@@ -423,7 +462,9 @@ exports.main = async (event) => {
       status: 'ok',
       app: 'ziban-miniprogram',
       ai: config ? 'ready' : 'unconfigured',
-      strokes: !!(config && config.strokeFilePrefix),
+      strokes:
+        !!(config && config.strokeFilePrefix) ||
+        fs.existsSync(path.join(__dirname, 'data', '4e.json')),
     });
   }
 

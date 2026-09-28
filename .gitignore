@@ -19,3 +19,6 @@ Thumbs.db
 id-card-*.jpg
 id-card-*.png
 *身份证*
+
+# 云函数本地密钥注入（部署时随包上传到云端，但绝不进版本库）
+cloudfunctions/*/secrets.local.json

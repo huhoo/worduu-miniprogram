@@ -1,19 +1,48 @@
 /**
  * 从环境变量构建上游配置。
  *
- * 环境变量在「云开发控制台 → 云函数 → ziban → 配置 → 环境变量」中录入，
- * 不进代码库。必填两项：DASHSCOPE_API_KEY、DASHSCOPE_WORKSPACE_ID。
+ * 凭据有两个来源，按优先级：
+ *   1. 云函数环境变量（「云开发控制台 → 云函数 → ziban → 配置 → 环境变量」）——推荐；
+ *   2. 同目录 secrets.local.json（已 gitignore，部署时随包上传到云端，不进仓库、不进前端）。
+ *
+ * 必填两项：DASHSCOPE_API_KEY、DASHSCOPE_WORKSPACE_ID。
  */
 
+const fs = require('fs');
+const path = require('path');
+
+let localSecretsCache = null;
+
+/** 读部署包内的本地密钥文件（仅存在于部署机，git 里没有）。 */
+function readLocalSecret(name) {
+  if (localSecretsCache === null) {
+    localSecretsCache = {};
+    try {
+      const file = path.join(__dirname, 'secrets.local.json');
+      localSecretsCache = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (error) {
+      // 文件不存在是正常情况（用环境变量的部署就没有它）
+      localSecretsCache = {};
+    }
+  }
+  const value = localSecretsCache[name];
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function getenv2(getenv, name) {
+  const fromEnv = (getenv(name) || '').trim();
+  return fromEnv || readLocalSecret(name);
+}
+
 function buildConfigFromEnv(getenv) {
-  const apiKey = (getenv('DASHSCOPE_API_KEY') || '').trim();
+  const apiKey = getenv2(getenv, 'DASHSCOPE_API_KEY');
   if (!apiKey) return null;
 
-  const workspaceId = (getenv('DASHSCOPE_WORKSPACE_ID') || '').trim();
-  const region = (getenv('DASHSCOPE_REGION') || 'cn-beijing').trim() || 'cn-beijing';
+  const workspaceId = getenv2(getenv, 'DASHSCOPE_WORKSPACE_ID');
+  const region = getenv2(getenv, 'DASHSCOPE_REGION') || 'cn-beijing';
 
-  const baseOverride = (getenv('DASHSCOPE_BASE_URL') || '').trim();
-  const ttsOverride = (getenv('DASHSCOPE_TTS_URL') || '').trim();
+  const baseOverride = getenv2(getenv, 'DASHSCOPE_BASE_URL');
+  const ttsOverride = getenv2(getenv, 'DASHSCOPE_TTS_URL');
 
   const baseUrl =
     baseOverride ||
@@ -37,13 +66,14 @@ function buildConfigFromEnv(getenv) {
     apiKey,
     baseUrl: baseUrl.replace(/\/+$/, ''),
     ttsUrl,
-    visionModel: (getenv('QWEN_VISION_MODEL') || '').trim() || 'qwen3-vl-plus',
-    textModel: (getenv('QWEN_TEXT_MODEL') || '').trim() || 'qwen-plus',
-    ttsModel: (getenv('QWEN_TTS_MODEL') || '').trim() || 'cosyvoice-v3-flash',
-    ttsVoiceTeacher: (getenv('QWEN_TTS_VOICE_TEACHER') || '').trim() || 'longxiaochun_v3',
-    ttsVoiceBrother: (getenv('QWEN_TTS_VOICE_BROTHER') || '').trim() || 'longcheng_v3',
-    /** 笔画数据在云存储中的 fileID 前缀，形如 cloud://env.bucket/strokes/ */
-    strokeFilePrefix: (getenv('STROKE_FILE_PREFIX') || '').trim(),
+    visionModel: getenv2(getenv, 'QWEN_VISION_MODEL') || 'qwen3-vl-plus',
+    textModel: getenv2(getenv, 'QWEN_TEXT_MODEL') || 'qwen-plus',
+    ttsModel: getenv2(getenv, 'QWEN_TTS_MODEL') || 'cosyvoice-v3-flash',
+    ttsVoiceTeacher: getenv2(getenv, 'QWEN_TTS_VOICE_TEACHER') || 'longxiaochun_v3',
+    ttsVoiceBrother: getenv2(getenv, 'QWEN_TTS_VOICE_BROTHER') || 'longcheng_v3',
+    /** 笔画数据在云存储中的 fileID 前缀，形如 cloud://env.bucket/strokes/。
+     *  留空则回退到函数包内自带的 data/ 分片（见 index.js）。 */
+    strokeFilePrefix: getenv2(getenv, 'STROKE_FILE_PREFIX'),
   };
 }
 
