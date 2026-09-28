@@ -405,7 +405,7 @@ async function handleSaveCard(config, body) {
 
   try {
     await withCards((collection) =>
-      collection.add({ data: Object.assign({}, card, { createdAt: Date.now() }) })
+      collection.add({ data: Object.assign({}, card, { _id: id, createdAt: Date.now() }) })
     );
     return ok({ id });
   } catch (error) {
