@@ -2,6 +2,6 @@
   "navigationBarTitleText": "规范写字与笔顺",
   "usingComponents": {
     "tabbar": "/components/tabbar/tabbar",
-    "stroke-glyph": "/components/stroke-glyph/stroke-glyph"
+    "stroke-glyph": "/learn/components/stroke-glyph/stroke-glyph"
   }
 }

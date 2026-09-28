@@ -435,7 +435,7 @@ Page({
         cancelText: '稍后再说',
         success(res) {
           if (res.confirm) {
-            wx.redirectTo({ url: '/pages/quiz/quiz' });
+            wx.redirectTo({ url: '/learn/pages/quiz/quiz' });
           } else {
             that.setData({ step: 'pick', imagePath: '', result: null, chars: [], selectedCount: 0 });
           }

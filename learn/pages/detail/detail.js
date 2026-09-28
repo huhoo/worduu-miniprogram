@@ -1,6 +1,6 @@
-const store = require('../../utils/store.js');
-const api = require('../../utils/api.js');
-const audio = require('../../utils/audio.js');
+const store = require('../../../utils/store.js');
+const api = require('../../../utils/api.js');
+const audio = require('../../../utils/audio.js');
 
 Page({
   data: {
@@ -125,6 +125,6 @@ Page({
   goWrite() {
     const item = this.data.item;
     if (!item) return;
-    wx.navigateTo({ url: `/pages/write/write?char=${encodeURIComponent(item.char)}` });
+    wx.navigateTo({ url: `/learn/pages/write/write?char=${encodeURIComponent(item.char)}` });
   },
 });

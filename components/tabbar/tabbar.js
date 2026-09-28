@@ -9,7 +9,7 @@ const TABS = [
   { key: 'index', label: '首页', emoji: '🏠', url: '/pages/index/index' },
   { key: 'ocr', label: '拍照识字', emoji: '📷', url: '/pages/ocr/ocr' },
   { key: 'bank', label: '生字库', emoji: '📚', url: '/pages/bank/bank' },
-  { key: 'write', label: '规范写字', emoji: '✍️', url: '/pages/write/write' },
+  { key: 'write', label: '规范写字', emoji: '✍️', url: '/learn/pages/write/write' },
   { key: 'profile', label: '识字档案', emoji: '📈', url: '/pages/profile/profile' },
 ];
 

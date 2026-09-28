@@ -119,13 +119,13 @@ Page({
     const key = e.currentTarget.dataset.key;
     const map = {
       ocr: '/pages/ocr/ocr',
-      quiz: '/pages/quiz/quiz',
-      write: '/pages/write/write',
-      dictation: '/pages/dictation/dictation',
+      quiz: '/learn/pages/quiz/quiz',
+      write: '/learn/pages/write/write',
+      dictation: '/learn/pages/dictation/dictation',
       bank: '/pages/bank/bank',
       profile: '/pages/profile/profile',
-      shelf: '/pages/shelf/shelf',
-      achievement: '/pages/achievement/achievement',
+      shelf: '/learn/pages/shelf/shelf',
+      achievement: '/learn/pages/achievement/achievement',
     };
     if (map[key]) wx.navigateTo({ url: map[key] });
   },
@@ -136,6 +136,6 @@ Page({
 
   openChar(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    wx.navigateTo({ url: `/learn/pages/detail/detail?id=${id}` });
   },
 });

@@ -1,6 +1,6 @@
-const store = require('../../utils/store.js');
-const api = require('../../utils/api.js');
-const audio = require('../../utils/audio.js');
+const store = require('../../../utils/store.js');
+const api = require('../../../utils/api.js');
+const audio = require('../../../utils/audio.js');
 
 const SIZE = 300; // 画布逻辑边长（px）
 

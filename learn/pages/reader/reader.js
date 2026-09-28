@@ -10,9 +10,9 @@
  *    孩子可以自己读。伴读是辅助，静默失败会让家长以为播过了。
  */
 
-const store = require('../../utils/store.js');
-const audio = require('../../utils/audio.js');
-const ARTICLES = require('../../utils/data/articles.js');
+const store = require('../../../utils/store.js');
+const audio = require('../../../utils/audio.js');
+const ARTICLES = require('../../../utils/data/articles.js');
 
 const MODES = [
   { key: 'sentence', label: '逐句朗读', hint: '伴读机器人按句子逐句朗读并高亮，适合低年级跟读。' },
@@ -251,6 +251,6 @@ Page({
   openChar(e) {
     const ch = e.currentTarget.dataset.char;
     if (!ch || PUNCT.test(ch)) return;
-    wx.navigateTo({ url: `/pages/detail/detail?char=${encodeURIComponent(ch)}` });
+    wx.navigateTo({ url: `/learn/pages/detail/detail?char=${encodeURIComponent(ch)}` });
   },
 });

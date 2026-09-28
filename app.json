@@ -3,16 +3,28 @@
     "pages/index/index",
     "pages/ocr/ocr",
     "pages/bank/bank",
-    "pages/detail/detail",
-    "pages/quiz/quiz",
-    "pages/dictation/dictation",
-    "pages/write/write",
     "pages/profile/profile",
-    "pages/shelf/shelf",
-    "pages/reader/reader",
-    "pages/achievement/achievement",
     "pages/share/share"
   ],
+  "subPackages": [
+    {
+      "root": "learn",
+      "name": "learn",
+      "pages": [
+        "pages/detail/detail",
+        "pages/quiz/quiz",
+        "pages/write/write",
+        "pages/dictation/dictation",
+        "pages/shelf/shelf",
+        "pages/reader/reader",
+        "pages/achievement/achievement"
+      ]
+    }
+  ],
+  "preloadRule": {
+    "pages/index/index": { "network": "all", "packages": ["learn"] },
+    "pages/bank/bank": { "network": "all", "packages": ["learn"] }
+  },
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#FCFAF7",

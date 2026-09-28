@@ -5,8 +5,8 @@
  * 不写在文章数据里 —— 否则换一个孩子打开，同一个字库会看到别人的进度。
  */
 
-const store = require('../../utils/store.js');
-const ARTICLES = require('../../utils/data/articles.js');
+const store = require('../../../utils/store.js');
+const ARTICLES = require('../../../utils/data/articles.js');
 
 const CJK = /[㐀-鿿]/;
 
@@ -71,6 +71,6 @@ Page({
 
   openArticle(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/reader/reader?id=${id}` });
+    wx.navigateTo({ url: `/learn/pages/reader/reader?id=${id}` });
   },
 });

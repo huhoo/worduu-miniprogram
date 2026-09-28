@@ -18,7 +18,7 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const ROOT = join(import.meta.dirname, "..");
 const DIR = join(ROOT, "tools", "strokes");
-const cnchar = require(join(ROOT, "utils", "data", "cnchar-strokes.js"));
+const cnchar = require(join(ROOT, "learn", "utils", "data", "cnchar-strokes.js"));
 
 let files = 0;
 let total = 0;

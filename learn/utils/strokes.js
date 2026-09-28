@@ -15,7 +15,7 @@
  * 首笔为基本笔画的字里，cnchar 的名字能预测 hanzi-writer 实际绘制方向的占 99.6%~100%。
  */
 
-const api = require('./api.js');
+const api = require('../../utils/api.js');
 const cnchar = require('./data/cnchar-strokes.js');
 
 /** 源坐标系尺寸：medians 的数值都在这个方框里。 */

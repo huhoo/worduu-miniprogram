@@ -14,6 +14,25 @@ const { buildConfigFromEnv } = require('./config.js');
 const MAX_TEXT_CHARS = 20000;
 const MAX_BASE64_CHARS = 10 * 1024 * 1024;
 
+/* ------------------------------------------------------------------ *
+ * 语音合成缓存（容器级）。
+ *
+ * 孩子会反复点同一个字的发音，一个字合成一次要 1~2 秒，
+ * 同一句话重复合成毫无必要。这里按「音色 + 文本」缓存 base64，
+ * 只收短文本（单字 / 短句），长课文不进缓存，免得把内存挤爆。
+ * ------------------------------------------------------------------ */
+const TTS_CACHE_LIMIT = 60;
+const TTS_CACHE_MAX_TEXT = 200;
+const ttsCache = new Map(); // `${voice}|${speech}` -> audioBase64
+
+function rememberTts(key, base64) {
+  if (key.length > TTS_CACHE_MAX_TEXT + 10) return;
+  if (ttsCache.size >= TTS_CACHE_LIMIT) {
+    ttsCache.delete(ttsCache.keys().next().value);
+  }
+  ttsCache.set(key, base64);
+}
+
 const TEACHER_SYSTEM =
   '你是一位小学语文资深特级教师，也是严谨的中文文字识别专家。你面对的是中国小学低年级学生和家长，' +
   '回答必须准确、温和、适合儿童。你只输出一个合法的 JSON 对象，不输出解释、Markdown 或代码围栏。';
@@ -234,9 +253,18 @@ async function handleTts(config, body) {
     speech = freeText || (char ? `${char}。${sampleWord}` : '你好呀，小朋友！');
   }
 
+  // 同一个字、同一句话，孩子会反复点。容器还活着的时候没必要再合成一次：
+  // 命中缓存直接回，省掉 1~2 秒的合成往返。
+  const ttsKey = `${voice}|${speech}`;
+  const hit = ttsCache.get(ttsKey);
+  if (hit) return ok({ audioBase64: hit, mimeType: 'audio/wav', text: speech, cached: true });
+
   const wav = await synthesize(mustConfig(config), { text: speech, voice });
+  const base64 = wav.toString('base64');
+  rememberTts(ttsKey, base64);
+
   // 云函数只能回 JSON/字符串，音频以 base64 回传，前端落临时文件后播放。
-  return ok({ audioBase64: wav.toString('base64'), mimeType: 'audio/wav', text: speech });
+  return ok({ audioBase64: base64, mimeType: 'audio/wav', text: speech });
 }
 
 /* ------------------------------------------------------------------ *
@@ -250,14 +278,46 @@ async function handleTts(config, body) {
 const fs = require('fs');
 const path = require('path');
 
+/* ------------------------------------------------------------------ *
+ * 容器级缓存。
+ *
+ * 云函数容器会被复用，但每次调用都从云存储重新下载 70KB 的笔顺分片、
+ * 重新 JSON.parse，是纯浪费 —— 一次写字页动不动就要查十几个字。
+ * 分片总量 7MB，容器内存够用；这里再设一个上限，防止极端情况把内存吃满。
+ * ------------------------------------------------------------------ */
+const SHARD_CACHE_LIMIT = 40;
+const shardCache = new Map(); // shard -> table | null
+
+/** 云 SDK 只初始化一次：重复 init 会多做一次鉴权往返。 */
+let cloudSdk = null;
+function getCloudSdk() {
+  if (!cloudSdk) {
+    cloudSdk = require('wx-server-sdk');
+    cloudSdk.init({ env: cloudSdk.DYNAMIC_CURRENT_ENV });
+  }
+  return cloudSdk;
+}
+
+function rememberShard(shard, table) {
+  if (shardCache.size >= SHARD_CACHE_LIMIT) {
+    // 简单 FIFO：缓存的是分片而不是热点字，命中率差别不大，不值得做 LRU。
+    shardCache.delete(shardCache.keys().next().value);
+  }
+  shardCache.set(shard, table);
+}
+
 /** 读函数包内自带的分片（部署时把 tools/strokes/*.json 复制到 data/ 即可）。 */
 function readBundledShard(shard) {
+  if (shardCache.has(shard)) return shardCache.get(shard);
+  let table = null;
   try {
     const file = path.join(__dirname, 'data', `${shard}.json`);
-    return JSON.parse(fs.readFileSync(file, 'utf8'));
+    table = JSON.parse(fs.readFileSync(file, 'utf8'));
   } catch (error) {
-    return null;
+    table = null;
   }
+  rememberShard(shard, table);
+  return table;
 }
 
 /** 从分片表里取一个字的 medians / names，兼容旧版（纯数组）与新版（{m,n}）两种格式。 */
@@ -280,10 +340,12 @@ async function handleStrokeData(config, body) {
   if (config && config.strokeFilePrefix) {
     const fileID = `${config.strokeFilePrefix.replace(/\/$/, '')}/${shard}.json`;
     try {
-      const cloud = require('wx-server-sdk');
-      cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
-      const res = await cloud.downloadFile({ fileID });
-      const table = JSON.parse(res.fileContent.toString('utf8'));
+      let table = shardCache.get(shard);
+      if (!table) {
+        const res = await getCloudSdk().downloadFile({ fileID });
+        table = JSON.parse(res.fileContent.toString('utf8'));
+        rememberShard(shard, table);
+      }
       const { medians, names } = extractEntry(table, char);
       if (medians && medians.length) return ok({ char, medians, names });
       // 存储里查无此字：数据集未覆盖是正常情况，继续落到包内数据再试一次

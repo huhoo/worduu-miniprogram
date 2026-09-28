@@ -162,7 +162,7 @@ Page({
 
   reviewErrors() {
     if (!this.data.hasErrors) return;
-    wx.navigateTo({ url: '/pages/quiz/quiz' });
+    wx.navigateTo({ url: '/learn/pages/quiz/quiz' });
   },
 
   openBank() {
@@ -171,7 +171,7 @@ Page({
 
   openChar(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    wx.navigateTo({ url: `/learn/pages/detail/detail?id=${id}` });
   },
 
   goOcr() {

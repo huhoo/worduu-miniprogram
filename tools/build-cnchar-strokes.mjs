@@ -1,5 +1,5 @@
 /**
- * 生成 utils/data/cnchar-strokes.js（随包发布的笔画名称表）。
+ * 生成 learn/utils/data/cnchar-strokes.js（随包发布的笔画名称表）。
  *
  * 输入是 tools/vendor-cnchar/ 下 cnchar 的三份原始数据（MIT，未修改）：
  *   stroke-table.json      字母 -> 笔画名 / 形状 / 类型
@@ -25,7 +25,7 @@ import { join } from "node:path";
 
 const ROOT = join(import.meta.dirname, "..");
 const VENDOR = join(ROOT, "tools", "vendor-cnchar");
-const OUT = join(ROOT, "utils", "data", "cnchar-strokes.js");
+const OUT = join(ROOT, "learn", "utils", "data", "cnchar-strokes.js");
 
 /** cnchar 表里不是笔画名、需要落地成真实笔画名的条目。 */
 const NAME_FIXES = { "点2": "点" };

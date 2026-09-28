@@ -69,6 +69,29 @@ function saveSpeechPreferences(pref) {
   return updated;
 }
 
+/** 缓存文件的落盘路径只由 cacheKey 决定，所以换一次冷启动也能直接命中。 */
+function cachedPath(cacheKey) {
+  return `${AUDIO_DIR}/${Math.abs(hash(cacheKey))}.wav`;
+}
+
+/**
+ * 磁盘上已经有这段音频就直接播，不再请求云端。
+ *
+ * fileCache 只在内存里，小程序冷启动后是空的 —— 没有这一步，
+ * 孩子第二天再点同一个字，明明本地有文件却要重新合成一遍（1~2 秒）。
+ */
+function findCachedFile(cacheKey) {
+  if (fileCache.has(cacheKey)) return fileCache.get(cacheKey);
+  const filePath = cachedPath(cacheKey);
+  try {
+    wx.getFileSystemManager().accessSync(filePath);
+    fileCache.set(cacheKey, filePath);
+    return filePath;
+  } catch (e) {
+    return null;
+  }
+}
+
 function getPlayer() {
   if (!player) {
     player = wx.createInnerAudioContext();
@@ -129,8 +152,9 @@ function playCharAudio(options) {
 
   stopSpeaking();
 
-  if (fileCache.has(cacheKey)) {
-    playFile(fileCache.get(cacheKey), { onStart, onEnd, speed });
+  const cached = findCachedFile(cacheKey);
+  if (cached) {
+    playFile(cached, { onStart, onEnd, speed });
     return Promise.resolve(true);
   }
 
@@ -146,7 +170,7 @@ function playCharAudio(options) {
 
       ensureDir();
       trimCache();
-      const filePath = `${AUDIO_DIR}/${Math.abs(hash(cacheKey))}.wav`;
+      const filePath = cachedPath(cacheKey);
       const fs = wx.getFileSystemManager();
       fs.writeFileSync(filePath, base64, 'base64');
       fileCache.set(cacheKey, filePath);
@@ -192,8 +216,9 @@ function playSentence(options) {
 
   stopSpeaking();
 
-  if (fileCache.has(cacheKey)) {
-    playFile(fileCache.get(cacheKey), { onStart, onEnd, rate });
+  const cached = findCachedFile(cacheKey);
+  if (cached) {
+    playFile(cached, { onStart, onEnd, rate });
     return Promise.resolve(true);
   }
 
@@ -209,7 +234,7 @@ function playSentence(options) {
 
       ensureDir();
       trimCache();
-      const filePath = `${AUDIO_DIR}/${Math.abs(hash(cacheKey))}.wav`;
+      const filePath = cachedPath(cacheKey);
       const fs = wx.getFileSystemManager();
       fs.writeFileSync(filePath, base64, 'base64');
       fileCache.set(cacheKey, filePath);

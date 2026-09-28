@@ -7,10 +7,10 @@
  * 海报用 canvas 现画：小程序没有 DOM，不能像 Web 那样把卡片截图导出。
  */
 
-const store = require('../../utils/store.js');
-const api = require('../../utils/api.js');
-const card = require('../../utils/achievement.js');
-const privacy = require('../../utils/privacy.js');
+const store = require('../../../utils/store.js');
+const api = require('../../../utils/api.js');
+const card = require('../../../utils/achievement.js');
+const privacy = require('../../../utils/privacy.js');
 
 const POSTER_W = 600;
 const POSTER_H = 840;

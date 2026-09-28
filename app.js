@@ -33,9 +33,28 @@ App({
     try {
       wx.cloud.init({ env: cloudEnv, traceUser: true });
       this.globalData.cloudReady = true;
+      this.warmUpCloud();
     } catch (error) {
       console.error('[字伴] 云开发初始化失败', error);
     }
+  },
+
+  /**
+   * 预热云函数容器。
+   *
+   * 冷启动一次要一两秒，孩子点「拍照识字」时才开始等就太慢了。
+   * 这里在首屏渲染之后发一个最轻的 health 请求把容器拉起来，
+   * 结果不关心、失败也不提示 —— 只是让后面的真实调用少等一次冷启动。
+   */
+  warmUpCloud() {
+    setTimeout(() => {
+      wx.cloud
+        .callFunction({ name: 'ziban', data: { action: 'health' } })
+        .then(() => {})
+        .catch(() => {
+          /* 预热失败不影响任何功能，真正调用时会再试 */
+        });
+    }, 800);
   },
 
   onShow() {
@@ -46,6 +65,8 @@ App({
 
   onHide() {
     this.settleStudy(false);
+    // 字库是合并写的（见 store.saveState），切后台必须补一次落盘，否则这 300ms 内的改动会丢。
+    store.flushState();
   },
 
   /**

@@ -1,6 +1,6 @@
-const store = require('../../utils/store.js');
-const api = require('../../utils/api.js');
-const audio = require('../../utils/audio.js');
+const store = require('../../../utils/store.js');
+const api = require('../../../utils/api.js');
+const audio = require('../../../utils/audio.js');
 
 const SIZE = 280; // 画布逻辑边长（px）
 const PER_SESSION = 5; // 一次听写 5 个字，与原 Web 版一致
@@ -383,7 +383,7 @@ Page({
     const praise = '落笔规范，笔画严谨，汉字写得越来越端正！';
 
     wx.navigateTo({
-      url: `/pages/achievement/achievement?type=dictation&title=${encodeURIComponent(title)}`
+      url: `/learn/pages/achievement/achievement?type=dictation&title=${encodeURIComponent(title)}`
         + `&score=${encodeURIComponent(score)}&praise=${encodeURIComponent(praise)}`
         + `&chars=${encodeURIComponent(chars)}`,
     });

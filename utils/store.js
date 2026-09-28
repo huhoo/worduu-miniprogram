@@ -44,12 +44,26 @@ function readRaw() {
   }
 }
 
+/* ------------------------------------------------------------------ *
+ * 进程内缓存。
+ *
+ * 每个页面 onShow 都要读一次字库：原本每次都是 getStorageSync + JSON.parse，
+ * 字库攒到几百字时这一下是能感觉出来的卡顿。字库只在小程序里改，
+ * 所以读一次就够，后面都走缓存；写的时候先更新缓存，再合并落盘。
+ * ------------------------------------------------------------------ */
+let stateCache = null;
+let saveTimer = null;
+let secondsCache = null; // { day, seconds } —— 今日伴读秒数
+
 /** 损坏、为空或跨天的数据都回落到种子值，绝不抛错。 */
 function loadState() {
+  if (stateCache) return stateCache;
+
   const parsed = readRaw();
   const base = seed();
   if (!parsed || parsed.version !== VERSION || !Array.isArray(parsed.characters)) {
-    return base;
+    stateCache = base;
+    return stateCache;
   }
 
   const state = {
@@ -68,16 +82,47 @@ function loadState() {
     state.stats.todayReviewCount = 0;
   }
 
-  return state;
+  stateCache = state;
+  return stateCache;
 }
 
-function saveState(state) {
+/** 真正写盘。合并写之后由 flushState 兜底调用。 */
+function persistState(state) {
   try {
     wx.setStorageSync(storageKeys.state, JSON.stringify(state));
     return true;
   } catch (e) {
     return false;
   }
+}
+
+/**
+ * 保存字库。
+ *
+ * 一页答题会连着写好几次（每题一次），每次都同步序列化整个字库是纯粹的白等，
+ * 所以这里只保证「缓存立刻生效」，落盘合并到 300ms 后做一次。
+ * 小程序被切后台时由 app.onHide 调 flushState 立刻补写，不丢数据。
+ */
+function saveState(state) {
+  stateCache = state || stateCache;
+
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    if (stateCache) persistState(stateCache);
+  }, 300);
+
+  return true;
+}
+
+/** 把还没落盘的字库立刻写掉。切后台、退出前调用。 */
+function flushState() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  if (stateCache) return persistState(stateCache);
+  return false;
 }
 
 /**
@@ -235,22 +280,31 @@ function findById(state, id) {
 /* ---------------- 今日学习时长（仅统计前台可见时间） ---------------- */
 
 function readTodaySeconds() {
+  const day = todayLabel();
+  // 首页、档案页都要读这个数，缓存住就省掉重复的读盘与解析。
+  if (secondsCache && secondsCache.day === day) return secondsCache.seconds;
+
+  let seconds = 0;
   try {
     const raw = wx.getStorageSync(storageKeys.study);
-    if (!raw) return 0;
-    const saved = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    if (saved && saved.day === todayLabel() && Number.isFinite(saved.seconds)) {
-      return Math.max(0, saved.seconds);
+    if (raw) {
+      const saved = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      if (saved && saved.day === day && Number.isFinite(saved.seconds)) {
+        seconds = Math.max(0, saved.seconds);
+      }
     }
   } catch (e) {
     /* 读不到就按 0 起算 */
   }
-  return 0;
+
+  secondsCache = { day, seconds };
+  return seconds;
 }
 
 function writeTodaySeconds(seconds) {
+  secondsCache = { day: todayLabel(), seconds };
   try {
-    wx.setStorageSync(storageKeys.study, JSON.stringify({ day: todayLabel(), seconds }));
+    wx.setStorageSync(storageKeys.study, JSON.stringify(secondsCache));
   } catch (e) {
     /* 存储被拒也不影响本次会话的计时 */
   }
@@ -265,6 +319,7 @@ module.exports = {
   todayLabel,
   loadState,
   saveState,
+  flushState,
   deriveMasteryCounts,
   buildStats,
   addCharacters,

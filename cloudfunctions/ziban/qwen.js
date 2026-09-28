@@ -9,6 +9,22 @@ const https = require('https');
 
 const REQUEST_TIMEOUT_MS = 55000;
 
+/**
+ * 复用 TLS 连接。
+ *
+ * 云函数容器会被连续多次调用（一次拍照识字 = OCR + 逐字查义 + 发音），
+ * 默认每次 https.request 都要重新握手，光握手就是几百毫秒。
+ * 这里用一个模块级 agent 让同一容器内的请求走 keep-alive，
+ * 同时限制并发连接数，避免把一个容器的 socket 全占满。
+ */
+const keepAliveAgent = new https.Agent({
+  keepAlive: true,
+  keepAliveMsecs: 30000,
+  maxSockets: 8,
+  maxFreeSockets: 4,
+  timeout: REQUEST_TIMEOUT_MS,
+});
+
 class UpstreamError extends Error {
   constructor(status, code, message) {
     super(message);
@@ -36,6 +52,8 @@ function request(urlStr, { method = 'POST', headers = {}, body = null, timeout =
         method,
         headers,
         timeout,
+        // http:// 的 URL 不能用 https.Agent，交给默认 agent 处理
+        agent: url.protocol === 'https:' ? keepAliveAgent : undefined,
       },
       (res) => {
         const chunks = [];

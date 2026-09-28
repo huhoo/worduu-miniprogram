@@ -79,7 +79,7 @@ Page({
   },
 
   openDetail(e) {
-    wx.navigateTo({ url: `/pages/detail/detail?id=${e.currentTarget.dataset.id}` });
+    wx.navigateTo({ url: `/learn/pages/detail/detail?id=${e.currentTarget.dataset.id}` });
   },
 
   playChar(e) {
@@ -99,7 +99,7 @@ Page({
       wx.showToast({ title: '字库还是空的，先去拍照识字', icon: 'none' });
       return;
     }
-    wx.navigateTo({ url: '/pages/quiz/quiz' });
+    wx.navigateTo({ url: '/learn/pages/quiz/quiz' });
   },
 
   goOcr() {

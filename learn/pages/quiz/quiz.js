@@ -1,5 +1,5 @@
-const store = require('../../utils/store.js');
-const audio = require('../../utils/audio.js');
+const store = require('../../../utils/store.js');
+const audio = require('../../../utils/audio.js');
 
 const MAX_QUESTIONS = 10;
 
@@ -190,7 +190,7 @@ Page({
       : '坚持练习，每一个汉字都记得更牢固了！';
 
     wx.navigateTo({
-      url: `/pages/achievement/achievement?type=reading_test&title=${encodeURIComponent(title)}`
+      url: `/learn/pages/achievement/achievement?type=reading_test&title=${encodeURIComponent(title)}`
         + `&score=${encodeURIComponent(score)}&praise=${encodeURIComponent(praise)}`
         + `&chars=${encodeURIComponent(chars)}`,
     });
