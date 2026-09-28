@@ -38,6 +38,7 @@
 
       <view wx:if="{{errorMsg}}" class="notice">
         <text class="notice-text">{{errorMsg}}</text>
+        <text class="notice-help" bindtap="goHelp">还是不行？告诉我们 ›</text>
       </view>
 
       <view class="btn btn-primary shoot-btn" bindtap="chooseImage">拍照 / 从相册选</view>
@@ -177,6 +178,7 @@
 
     <view wx:if="{{errorMsg}}" class="notice notice-standalone">
       <text class="notice-text">{{errorMsg}}</text>
+      <text class="notice-help" bindtap="goHelp">还是不行？告诉我们 ›</text>
     </view>
 
     <view class="btn btn-primary add-btn" bindtap="addToBank">

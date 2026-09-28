@@ -4,7 +4,8 @@
     "pages/ocr/ocr",
     "pages/bank/bank",
     "pages/profile/profile",
-    "pages/share/share"
+    "pages/share/share",
+    "pages/help/help"
   ],
   "subPackages": [
     {

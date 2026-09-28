@@ -33,6 +33,8 @@ const MESSAGES = {
   card_save_failed: '奖状没能保存，请确认云开发数据库已创建 achievement_cards 集合。',
   invalid_like: '请先选择您的身份再点赞。',
   like_failed: '点赞没有保存成功，请稍后再试。',
+  invalid_feedback: '请先简单描述一下遇到的问题。',
+  feedback_failed: '反馈没能保存，请稍后再试。',
 };
 
 function resolveMessage(code) {
@@ -102,4 +104,5 @@ module.exports = {
   saveAchievementCard: (card) => call('save-achievement-card', { card }),
   getAchievementCard: (id) => call('get-achievement-card', { id }),
   likeAchievementCard: (id, like) => call('like-achievement-card', { id, like }),
+  submitFeedback: (payload) => call('submit-feedback', payload),
 };

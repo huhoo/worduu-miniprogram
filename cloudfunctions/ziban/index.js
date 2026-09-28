@@ -373,6 +373,7 @@ async function handleStrokeData(config, body) {
  * 入库前做一次 sanitize —— 卡片数据来自客户端，不能直接落库再原样渲染。
  * ------------------------------------------------------------------ */
 const CARD_COLLECTION = 'achievement_cards';
+const FEEDBACK_COLLECTION = 'feedbacks';
 const CARD_TYPES = ['reading_test', 'dictation', 'handwriting', 'daily'];
 const MAX_LIKES = 20;
 
@@ -383,20 +384,24 @@ function database() {
 }
 
 /**
- * 成就卡操作统一入口。集合没建（首次部署常见）时自动 createCollection 后重试一次，
+ * 数据库操作统一入口。集合没建（首次部署常见）时自动 createCollection 后重试一次，
  * 省掉「部署完还要去控制台手工建集合」这一步。只有报「集合不存在」才重试，
  * 其他错误原样抛出，避免重试造成重复写入。
  */
-async function withCards(operation) {
+async function withCollection(name, operation) {
   const db = database();
   try {
-    return await operation(db.collection(CARD_COLLECTION), db);
+    return await operation(db.collection(name), db);
   } catch (error) {
     const message = String((error && error.message) || '');
     if (!/-502005|not exist|不存在/i.test(message)) throw error;
-    await db.createCollection(CARD_COLLECTION).catch(() => {});
-    return await operation(db.collection(CARD_COLLECTION), db);
+    await db.createCollection(name).catch(() => {});
+    return await operation(db.collection(name), db);
   }
+}
+
+function withCards(operation) {
+  return withCollection(CARD_COLLECTION, operation);
 }
 
 function str(value, max) {
@@ -512,6 +517,50 @@ async function handleLikeCard(config, body) {
   }
 }
 
+const FEEDBACK_CATEGORIES = ['识别不准', '没有声音', '笔顺或写字', '闪退或白屏', '想要新功能', '其他'];
+
+/**
+ * 用户反馈入库。
+ *
+ * 有意不记录 openid：一个给孩子的识字小程序，不该在用户不知情的情况下
+ * 攒一份「谁反馈了什么」的名单。要回复只能靠用户自愿留的联系方式，
+ * 或微信客服（由用户主动发起会话）。
+ */
+async function handleSubmitFeedback(config, event) {
+  const content = typeof event.content === 'string' ? event.content.trim() : '';
+  if (!content) return fail('invalid_feedback', '请先简单描述一下遇到的问题');
+  if (content.length > 1000) return fail('invalid_feedback', '描述太长了，请精简到 1000 字以内');
+
+  const category = FEEDBACK_CATEGORIES.indexOf(event.category) >= 0 ? event.category : '其他';
+  const contact = typeof event.contact === 'string' ? event.contact.trim().slice(0, 60) : '';
+  const env = event.env && typeof event.env === 'object' ? event.env : {};
+
+  const doc = {
+    category,
+    content: content.slice(0, 1000),
+    contact,
+    env: {
+      version: str(env.version, 32),
+      envVersion: str(env.envVersion, 16),
+      model: str(env.model, 48),
+      system: str(env.system, 48),
+      wechat: str(env.wechat, 24),
+      charCount: Number(env.charCount) || 0,
+    },
+    createdAt: Date.now(),
+  };
+
+  try {
+    const res = await withCollection(FEEDBACK_COLLECTION, (collection) =>
+      collection.add({ data: doc })
+    );
+    return ok({ id: (res && res._id) || '' });
+  } catch (error) {
+    console.error('[字伴] 反馈保存失败', error && error.message);
+    return fail('feedback_failed', '反馈没能保存，请稍后再试');
+  }
+}
+
 /* ------------------------------------------------------------------ *
  * 入口
  * ------------------------------------------------------------------ */
@@ -548,6 +597,8 @@ exports.main = async (event) => {
         return await handleGetCard(config, event);
       case 'like-achievement-card':
         return await handleLikeCard(config, event);
+      case 'submit-feedback':
+        return await handleSubmitFeedback(config, event);
       default:
         return fail('not_found', '未知的接口');
     }

@@ -4,6 +4,6 @@
   "description": "字伴 · AI 能力云函数（拍照识字 / 查字 / 书写批改 / 语音合成 / 笔顺数据）",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "~2.6.3"
+    "wx-server-sdk": "^2.6.3"
   }
 }

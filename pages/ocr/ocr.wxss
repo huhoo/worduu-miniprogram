@@ -356,3 +356,13 @@
 .source-row {
   min-height: 88rpx;
 }
+
+/* ---------- 出错时的求助出口 ---------- */
+.notice-help {
+  display: flex;
+  align-items: center;
+  min-height: 88rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #92400E;
+}

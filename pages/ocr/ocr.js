@@ -514,4 +514,9 @@ Page({
       cropping: false,
     });
   },
+
+  /** 识别出错时的求助出口。 */
+  goHelp() {
+    wx.navigateTo({ url: '/pages/help/help' });
+  },
 });

@@ -372,3 +372,13 @@
   width: 60%;
   min-height: 88rpx;
 }
+
+/* ---------- 帮助与反馈入口 ---------- */
+.help-row {
+  min-height: 88rpx;
+}
+
+.help-emoji {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}

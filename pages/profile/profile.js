@@ -177,4 +177,8 @@ Page({
   goOcr() {
     wx.navigateTo({ url: '/pages/ocr/ocr' });
   },
+
+  goHelp() {
+    wx.navigateTo({ url: '/pages/help/help' });
+  },
 });

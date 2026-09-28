@@ -159,5 +159,19 @@
     </view>
   </block>
 
+  <!-- 帮助与反馈：常驻在两个分段下面，任何一屏都能找到出口 -->
+  <view class="card help-card">
+    <view class="row-between help-row" bindtap="goHelp">
+      <view class="row">
+        <text class="help-emoji">💬</text>
+        <text class="title">帮助与反馈</text>
+      </view>
+      <text class="more">常见问题 ›</text>
+    </view>
+    <text class="foot-note">
+      识别不准、没声音、笔顺不显示……先看常见问题，解决不了可以直接告诉我们。
+    </text>
+  </view>
+
   <tabbar current="profile" />
 </view>

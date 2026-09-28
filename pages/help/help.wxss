@@ -1,0 +1,217 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro .sub {
+  margin-top: 12rpx;
+}
+
+/* ---------- 常见问题 ---------- */
+.faq-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid var(--line);
+  min-height: 88rpx;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 88rpx;
+}
+
+.faq-q {
+  flex: 1;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.faq-arrow {
+  width: 48rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: var(--ink-3);
+}
+
+.faq-a {
+  display: block;
+  margin-top: 8rpx;
+  padding-right: 20rpx;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+
+/* ---------- 表单 ---------- */
+.field {
+  margin-top: 24rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--ink-2);
+  margin-bottom: 12rpx;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  background: var(--paper);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.picker-arrow {
+  color: var(--ink-3);
+  font-size: 32rpx;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 180rpx;
+  padding: 20rpx 24rpx;
+  background: var(--paper);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+.input {
+  width: 100%;
+  min-height: 88rpx;
+  padding: 0 24rpx;
+  background: var(--paper);
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: var(--ink);
+}
+
+.ph {
+  color: var(--ink-3);
+  font-size: 26rpx;
+}
+
+/* ---------- 提示 ---------- */
+.notice {
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: #FFF1F2;
+  border-radius: 20rpx;
+}
+
+.notice-text {
+  display: block;
+  font-size: 26rpx;
+  color: #9F1239;
+  line-height: 1.6;
+}
+
+.notice-link {
+  display: flex;
+  align-items: center;
+  min-height: 88rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #9F1239;
+}
+
+.foot-note {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+.submit-btn {
+  margin-top: 28rpx;
+  width: 100%;
+}
+
+/* ---------- 提交成功 ---------- */
+.thanks {
+  padding: 12rpx 0 4rpx;
+  text-align: center;
+}
+
+.thanks-emoji {
+  font-size: 64rpx;
+}
+
+.thanks-title {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.thanks-sub {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  line-height: 1.7;
+}
+
+/* ---------- 联系 ---------- */
+.contact-row {
+  display: flex;
+  margin-top: 20rpx;
+}
+
+.contact-btn {
+  flex: 1;
+  margin: 0;
+  padding: 20rpx 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.contact-btn + .contact-btn {
+  margin-left: 20rpx;
+}
+
+.contact-btn::after {
+  border: none;
+}
+
+/* ---------- 环境信息 ---------- */
+.copy-link {
+  display: flex;
+  align-items: center;
+  min-height: 88rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.env {
+  display: block;
+  margin-top: 8rpx;
+  padding: 20rpx 24rpx;
+  background: var(--paper);
+  border-radius: 20rpx;
+  font-family: 'SF Mono', 'Menlo', monospace;
+  font-size: 24rpx;
+  color: var(--ink-2);
+  line-height: 1.9;
+  white-space: pre-wrap;
+}

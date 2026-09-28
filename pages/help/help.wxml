@@ -1,0 +1,125 @@
+<view class="page">
+  <!-- 开头一句话：先自己解决，解决不了再找人 -->
+  <view class="card intro">
+    <text class="title">遇到问题先看这里</text>
+    <text class="sub">
+      下面 6 个问题占了绝大多数情况。没找到答案的话，直接告诉我们 —— 每一条都会看到。
+    </text>
+  </view>
+
+  <!-- ============ 常见问题 ============ -->
+  <view class="card">
+    <text class="title">常见问题</text>
+
+    <view
+      wx:for="{{faqs}}"
+      wx:key="q"
+      class="faq-item"
+      data-index="{{index}}"
+      bindtap="toggleFaq"
+    >
+      <view class="faq-head">
+        <text class="faq-q">{{item.q}}</text>
+        <text class="faq-arrow">{{item.open ? '−' : '+'}}</text>
+      </view>
+      <text wx:if="{{item.open}}" class="faq-a">{{item.a}}</text>
+    </view>
+  </view>
+
+  <!-- ============ 告诉我们 ============ -->
+  <view class="card">
+    <text class="title">还没解决？告诉我们</text>
+
+    <block wx:if="{{!submitted}}">
+      <view class="field">
+        <text class="field-label">问题类型</text>
+        <picker
+          mode="selector"
+          range="{{categories}}"
+          value="{{categoryIndex}}"
+          bindchange="onCategoryChange"
+        >
+          <view class="picker">
+            <text>{{categories[categoryIndex]}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="field">
+        <text class="field-label">遇到了什么（必填）</text>
+        <textarea
+          class="textarea"
+          value="{{content}}"
+          bindinput="onContentInput"
+          maxlength="1000"
+          placeholder="比如：拍语文课本第 12 页，只认出 3 个字，其实一页有 10 个"
+          placeholder-class="ph"
+          auto-height
+        ></textarea>
+      </view>
+
+      <view class="field">
+        <text class="field-label">联系方式（选填）</text>
+        <input
+          class="input"
+          value="{{contact}}"
+          bindinput="onContactInput"
+          maxlength="60"
+          placeholder="微信号或邮箱，只用于回复你这个问题"
+          placeholder-class="ph"
+        />
+      </view>
+
+      <view wx:if="{{submitError}}" class="notice">
+        <text class="notice-text">{{submitError}}</text>
+        <text class="notice-link" bindtap="copyAll">复制内容，发给客服 ›</text>
+      </view>
+
+      <view class="btn btn-primary submit-btn {{submitting ? 'btn-disabled' : ''}}" bindtap="submit">
+        {{submitting ? '正在提交…' : '提交反馈'}}
+      </view>
+
+      <text class="foot-note">
+        我们不会读取你的微信身份信息，反馈内容只用于改进这个小程序。
+        留了联系方式才可能收到回复。
+      </text>
+    </block>
+
+    <block wx:else>
+      <view class="thanks">
+        <text class="thanks-emoji">📮</text>
+        <text class="thanks-title">收到了，谢谢你</text>
+        <text class="thanks-sub">
+          这条反馈已经记下了。如果留了联系方式，我们会在处理好后联系你；
+          想立刻聊，也可以用下面的客服。
+        </text>
+      </view>
+      <view class="btn btn-ghost submit-btn" bindtap="feedbackAgain">再反馈一条</view>
+    </block>
+  </view>
+
+  <!-- ============ 直接联系 ============ -->
+  <view class="card">
+    <text class="title">直接联系我们</text>
+    <view class="contact-row">
+      <button class="btn btn-ghost contact-btn" open-type="contact" bindcontact="onContact">
+        微信客服
+      </button>
+      <button class="btn btn-ghost contact-btn" open-type="feedback">意见反馈</button>
+    </view>
+    <text class="foot-note">
+      客服由微信转接，我们看到的只是你发过来的消息；若提示无法使用，用上面的表单留话也一样能收到。
+    </text>
+  </view>
+
+  <!-- ============ 环境信息 ============ -->
+  <view class="card">
+    <view class="row-between">
+      <text class="title">当前版本与环境</text>
+      <text class="copy-link" bindtap="copyEnv">复制 ›</text>
+    </view>
+    <text class="env">{{envSummary}}</text>
+    <text class="foot-note">反馈时附上这段，我们能更快定位问题。</text>
+  </view>
+</view>
