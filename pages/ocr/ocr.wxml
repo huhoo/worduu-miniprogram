@@ -34,6 +34,8 @@
         <text class="sub">{{scanHint}}</text>
       </view>
 
+      <view wx:if="{{scanning}}" class="btn btn-ghost crop-btn" bindtap="cancelScan">取消识别，返回重拍</view>
+
       <view wx:if="{{errorMsg}}" class="notice">
         <text class="notice-text">{{errorMsg}}</text>
       </view>
@@ -82,6 +84,7 @@
         {{cropping ? '正在裁剪…' : '就识别这里'}}
       </view>
       <view class="btn btn-ghost crop-btn" bindtap="useWholePage">整页识别</view>
+      <view wx:if="{{scanning}}" class="btn btn-ghost crop-btn" bindtap="cancelScan">取消识别，返回重拍</view>
     </view>
   </block>
 
@@ -146,6 +149,30 @@
           </view>
         </view>
       </view>
+    </view>
+
+    <!--
+      出处在这一步之前只能回到第一步改：而真正把它写进每个字档案的是下面这个按钮。
+      所以在这里把将要记录的值摆出来，并且允许当场改 —— 改完立刻生效（入库读的就是当前值）。
+    -->
+    <view class="card">
+      <view class="row-between source-row">
+        <text class="title">生字出处</text>
+        <picker
+          mode="selector"
+          range="{{sources}}"
+          value="{{sourceIndex}}"
+          bindchange="onSourceChange"
+        >
+          <view class="picker">
+            <text>{{sources[sourceIndex]}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+      <text class="muted picker-note">
+        这 {{selectedCount}} 个字将标记为「{{sources[sourceIndex]}}」，记进各自的字卡档案。
+      </text>
     </view>
 
     <view wx:if="{{errorMsg}}" class="notice notice-standalone">

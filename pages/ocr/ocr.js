@@ -9,6 +9,13 @@ const SOURCES = ['教材', '课外书', '绘本', '练习册', '报纸杂志', '
 const MAX_STAGE_H = 420;
 /** 四角把手的命中半径（px），比可见圆点大，手指好按。 */
 const GRIP_HIT = 26;
+/**
+ * 识别超过这个秒数就提示可以取消。
+ *
+ * 云函数上限是 60 秒。在此之前孩子只能盯着转圈，
+ * 所以到点就把提示换成「可以取消后重拍」，而不是继续假装一切正常。
+ */
+const SLOW_SCAN_SECONDS = 45;
 
 Page({
   data: {
@@ -257,7 +264,16 @@ Page({
    */
   scan(tempPath, skipCompress) {
     const that = this;
+    this.aborted = false;
+    this.clearSlowTimer();
     this.setData({ scanning: true, errorMsg: '', scanHint: skipCompress ? 'AI 正在逐字识别…' : '正在压缩图片…' });
+
+    // 到点还没回来就明说可以取消，别让孩子以为卡死了。
+    this.slowTimer = setTimeout(() => {
+      if (that.data.scanning) {
+        that.setData({ scanHint: '识别有点久，可以取消后重拍' });
+      }
+    }, SLOW_SCAN_SECONDS * 1000);
 
     if (skipCompress) {
       try {
@@ -300,11 +316,40 @@ Page({
     });
   },
 
+  clearSlowTimer() {
+    if (this.slowTimer) {
+      clearTimeout(this.slowTimer);
+      this.slowTimer = null;
+    }
+  },
+
+  /**
+   * 取消识别，回到上一步。
+   *
+   * 云调用本身没有 abort，这里做的是「放弃这次结果」：
+   * 打上 aborted 标记，请求回来时直接丢弃，不跳结果页也不弹错误 ——
+   * 取消是孩子自己的选择，不是一次失败。
+   */
+  cancelScan() {
+    this.aborted = true;
+    this.clearSlowTimer();
+    this.setData({
+      scanning: false,
+      cropping: false,
+      scanHint: '',
+      errorMsg: '',
+      step: this.data.imagePath ? 'crop' : 'pick',
+    });
+  },
+
   requestOcr(base64) {
     const that = this;
     api
       .ocrScan(base64, SOURCES[this.data.sourceIndex])
       .then((res) => {
+        // 已经取消了：结果再好也不该覆盖界面。
+        if (that.aborted) return;
+        that.clearSlowTimer();
         // WXML 表达式不支持 .join()，组词文本在这里先拼好。
         const chars = (res.recognizedCharacters || []).map((c) =>
           Object.assign({}, c, {
@@ -325,6 +370,9 @@ Page({
         }
       })
       .catch((err) => {
+        // 取消之后回来的失败同样不该弹 —— 那是我们自己放弃的。
+        if (that.aborted) return;
+        that.clearSlowTimer();
         that.setData({
           scanning: false,
           scanHint: '',
@@ -444,9 +492,14 @@ Page({
     }, 800);
   },
 
+  onUnload() {
+    this.clearSlowTimer();
+  },
+
   reset() {
     this._rect = null;
     this._drag = null;
+    this.clearSlowTimer();
     this.setData({
       step: 'pick',
       imagePath: '',

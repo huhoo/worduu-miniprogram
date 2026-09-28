@@ -351,3 +351,8 @@
   width: 100rpx;
   height: 100rpx;
 }
+
+/* ---------- 第三步：出库确认 ---------- */
+.source-row {
+  min-height: 88rpx;
+}
