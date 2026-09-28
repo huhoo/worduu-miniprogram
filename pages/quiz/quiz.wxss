@@ -197,7 +197,7 @@
 }
 
 .wrong-item {
-  width: calc(25% - 12rpx);
+  width: calc(25% - 16rpx);
   margin: 0 8rpx 16rpx;
   background: #FFF1F2;
   border: 1rpx solid #FECDD3;
@@ -231,7 +231,7 @@
 }
 
 .empty-btn {
-  margin-top: 28rpx;
+  margin: 28rpx auto 0;
   width: 60%;
   min-height: 88rpx;
 }

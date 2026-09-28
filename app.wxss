@@ -2,6 +2,17 @@
  * 全局样式 · 沿用 Web 版「字伴」配色
  * 宣纸底 #FCFAF7 / 页面底 #F8F9F5 / 主色 竹绿 #059669 / 田字格朱红 #E26D5C
  */
+/* 统一盒模型：padding/border 计入 width，避免 calc 百分比栅格溢出换行 */
+view,
+text,
+image,
+button,
+input,
+textarea,
+canvas {
+  box-sizing: border-box;
+}
+
 page {
   --paper: #FCFAF7;
   --page: #F8F9F5;

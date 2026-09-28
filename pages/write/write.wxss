@@ -190,7 +190,7 @@
 }
 
 .empty-btn {
-  margin-top: 28rpx;
+  margin: 28rpx auto 0;
   width: 60%;
   min-height: 88rpx;
 }
