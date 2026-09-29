@@ -162,3 +162,12 @@
   margin-top: 32rpx;
   width: 100%;
 }
+
+/* ---------- 卡片操作：读音 + 练写并排 ---------- */
+.item-actions {
+  margin-top: 12rpx;
+}
+
+.item-actions .play {
+  margin-top: 0;
+}

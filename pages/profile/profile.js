@@ -161,6 +161,7 @@ Page({
   },
 
   reviewErrors() {
+    // 0 错误时按钮已不渲染，这里兜一层，防状态在跳转间隙变化。
     if (!this.data.hasErrors) return;
     wx.navigateTo({ url: '/learn/pages/quiz/quiz' });
   },

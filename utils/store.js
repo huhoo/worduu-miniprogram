@@ -55,6 +55,46 @@ let stateCache = null;
 let saveTimer = null;
 let secondsCache = null; // { day, seconds } —— 今日伴读秒数
 
+/**
+ * 修复单条字库记录。
+ *
+ * 存储是边界：老版本半条记录、quota 截断的 JSON、或手改的缓存值，都可能让
+ * 一条记录缺了页面会直接取用的字段。逐条补默认值而不是整库丢弃 ——
+ * 丢一条记录比丢整个孩子的字库好，补一个字段又比丢一条记录好。
+ * 只有 char 本身不可用（空/非字符串）才返回 null 剔除。
+ */
+function normalizeCharacter(raw, index) {
+  if (!raw || typeof raw !== 'object') return null;
+  const char = typeof raw.char === 'string' ? raw.char.trim() : '';
+  if (!char) return null;
+
+  const str = (v, fallback) => (typeof v === 'string' ? v : fallback || '');
+  const num = (v, fallback) => (Number.isFinite(Number(v)) ? Number(v) : fallback || 0);
+
+  return {
+    id: str(raw.id) || `repaired-${char}-${index}`,
+    char,
+    pinyin: str(raw.pinyin),
+    tone: num(raw.tone, 0),
+    radical: str(raw.radical),
+    strokeCount: num(raw.strokeCount, 0),
+    meaning: str(raw.meaning),
+    words: Array.isArray(raw.words) ? raw.words.filter((w) => typeof w === 'string') : [],
+    exampleSentence: str(raw.exampleSentence),
+    originStory: str(raw.originStory),
+    source: str(raw.source) || '其他',
+    sourceDetail: str(raw.sourceDetail),
+    dateEncountered: str(raw.dateEncountered) || todayLabel(),
+    mastery: str(raw.mastery) || '不熟',
+    reactionTimeSeconds: num(raw.reactionTimeSeconds, 0),
+    errorCount: num(raw.errorCount, 0),
+    canRead: raw.canRead === true,
+    canWrite: raw.canWrite === true,
+    canDictate: raw.canDictate === true,
+    memoryNote: str(raw.memoryNote),
+  };
+}
+
 /** 损坏、为空或跨天的数据都回落到种子值，绝不抛错。 */
 function loadState() {
   if (stateCache) return stateCache;
@@ -68,7 +108,7 @@ function loadState() {
 
   const state = {
     version: VERSION,
-    characters: parsed.characters,
+    characters: parsed.characters.map(normalizeCharacter).filter(Boolean),
     stats: Object.assign({}, base.stats, parsed.stats || {}),
     childNickname: typeof parsed.childNickname === 'string' ? parsed.childNickname.slice(0, 12) : '',
     day: typeof parsed.day === 'string' ? parsed.day : base.day,

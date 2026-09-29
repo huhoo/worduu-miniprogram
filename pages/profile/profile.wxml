@@ -55,9 +55,13 @@
         </view>
       </view>
 
-      <view class="review-btn {{hasErrors ? '' : 'review-off'}}" bindtap="reviewErrors">
+      <view wx:if="{{hasErrors}}" class="review-btn" bindtap="reviewErrors">
         <text class="review-text">⚠ 立即专项复习 {{errorCount}} 个经常读错生字</text>
         <text class="review-arrow">›</text>
+      </view>
+      <!-- 没有错字时不能摆一个点了没反应的按钮 -->
+      <view wx:else class="review-ok">
+        <text class="review-ok-text">✓ 暂时没有经常读错的字，继续保持</text>
       </view>
     </view>
 

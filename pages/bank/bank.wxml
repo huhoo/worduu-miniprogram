@@ -41,7 +41,11 @@
       </view>
       <view class="item-right">
         <text class="mastery mastery-{{item.masteryClass}}">{{item.mastery}}</text>
-        <view class="play" data-id="{{item.id}}" catchtap="playChar">🔊</view>
+        <view class="row item-actions">
+          <view class="play" data-id="{{item.id}}" catchtap="playChar">🔊</view>
+          <!-- 练写直达：原来只能先进字卡再跳书写，多绕一步 -->
+          <view class="play" data-char="{{item.char}}" catchtap="goWrite">✍️</view>
+        </view>
       </view>
     </view>
 

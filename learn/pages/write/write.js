@@ -1,6 +1,7 @@
 const store = require('../../../utils/store.js');
 const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
+const { loadStrokeData } = require('../../utils/strokes.js');
 
 const SIZE = 300; // 画布逻辑边长（px）
 
@@ -53,6 +54,20 @@ Page({
       ready: true,
     });
     wx.setNavigationBarTitle({ title: `写“${item.char}”` });
+
+    // 「标准笔画数」不信任模型给的值：上游实测同一字温度 0 也能给出 13/14/12 三个答案，
+    // 而这个数既要展示给孩子、又是批改的判定基准。笔顺 medians 是权威值，
+    // 拉到后覆盖；字没有权威数据时才退回字库里存的数。
+    this.authoritativeCount = 0;
+    const that = this;
+    loadStrokeData(item.char).then((glyph) => {
+      const count = glyph && Array.isArray(glyph.medians) ? glyph.medians.length : 0;
+      if (!count) return;
+      that.authoritativeCount = count;
+      if (that.data.item && that.data.item.char === item.char) {
+        that.setData({ standardStrokeCount: count });
+      }
+    });
 
     // 等这一帧渲染完，选择器才拿得到 canvas 节点。
     if (wx.nextTick) wx.nextTick(() => this.initCanvas());
@@ -273,11 +288,13 @@ Page({
   requestEvaluate(base64) {
     const that = this;
     const item = this.data.item;
+    // 批改的期望笔画数用权威值（笔顺数据），模型值只做兜底。
+    const standardCount = this.authoritativeCount || item.strokeCount || 0;
 
     api
       .evaluateWriting({
         char: item.char,
-        strokeCount: item.strokeCount,
+        strokeCount: standardCount,
         // 字段名沿用原 Web 版的 written —— 顶层已有 strokeCount，再重复一次只会让模型混淆。
         strokeOrderLogs: [{ written: this.strokes.length }],
         canvasBase64: `data:image/png;base64,${base64}`,
@@ -308,7 +325,8 @@ Page({
       })
       .catch((err) => {
         // 不编造分数。只报一个本地确实能验证的事实：笔画数对不对。
-        const countMatches = Math.abs(that.strokes.length - (item.strokeCount || 0)) <= 1;
+        const standardCount = this.authoritativeCount || item.strokeCount || 0;
+        const countMatches = Math.abs(that.strokes.length - standardCount) <= 1;
         that.setData({
           evaluating: false,
           note: (err && err.message) || 'AI 书写点评暂时不可用。',
@@ -319,7 +337,7 @@ Page({
             feedback: 'AI 书写点评暂时不可用，稍后再试。',
             improvementsText: countMatches
               ? `笔画数对了（${that.strokes.length} 笔），但字形还需 AI 或老师当面确认。`
-              : `标准笔画数是 ${item.strokeCount} 笔，你写了 ${that.strokes.length} 笔，先数对笔画。`,
+              : `标准笔画数是 ${standardCount} 笔，你写了 ${that.strokes.length} 笔，先数对笔画。`,
             hasImprovements: true,
           },
         });

@@ -94,6 +94,13 @@ Page({
     });
   },
 
+  /** 从生字库直达书写页，不必先进字卡绕一步。 */
+  goWrite(e) {
+    const char = e.currentTarget.dataset.char;
+    if (!char) return;
+    wx.navigateTo({ url: `/learn/pages/write/write?char=${encodeURIComponent(char)}` });
+  },
+
   goQuiz() {
     if (this.all.length === 0) {
       wx.showToast({ title: '字库还是空的，先去拍照识字', icon: 'none' });

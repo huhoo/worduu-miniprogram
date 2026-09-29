@@ -151,3 +151,29 @@
   width: 100%;
   min-height: 88rpx;
 }
+
+/* ---------- 字源「记一记」：AI 生成内容必须带出处标注 ---------- */
+.origin {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+}
+
+.origin-label {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1E40AF;
+}
+
+.origin-tag {
+  font-size: 22rpx;
+  color: #1E40AF;
+  opacity: 0.8;
+}
+
+.origin-note {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  line-height: 1.7;
+}

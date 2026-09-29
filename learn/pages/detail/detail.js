@@ -1,6 +1,7 @@
 const store = require('../../../utils/store.js');
 const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
+const { loadStrokeData } = require('../../utils/strokes.js');
 
 Page({
   data: {
@@ -54,9 +55,14 @@ Page({
   fetchInfo(char, standalone) {
     const that = this;
     this.setData({ loading: true });
-    api
-      .characterInfo(char)
-      .then((info) => {
+    // 笔画数不信任模型：上游实测同一字多次调用能给出 13/14/12 三个答案，
+    // 而这个数会写在字卡上、还会当书写批改的「标准」。笔顺 medians 是权威值，
+    // 查字时并行拉一份（loadStrokeData 自带缓存，笔顺动画那一步不会再请求）。
+    Promise.all([api.characterInfo(char), loadStrokeData(char)])
+      .then(([info, glyph]) => {
+        const authoritative = glyph && Array.isArray(glyph.medians) ? glyph.medians.length : 0;
+        const strokeCount = authoritative || Number(info.strokeCount) || 0;
+
         if (standalone) {
           that.setData({
             loading: false,
@@ -66,7 +72,7 @@ Page({
               char,
               pinyin: info.pinyin || '',
               radical: info.radical || '',
-              strokeCount: Number(info.strokeCount) || 0,
+              strokeCount,
               meaning: info.meaning || '',
               words: info.words || [],
               wordsText: (info.words || []).join('、'),
@@ -86,7 +92,7 @@ Page({
         const state = that.state || store.loadState();
         const target = store.findByChar(state, char);
         if (target) {
-          store.enrichCharacter(state, target.id, info);
+          store.enrichCharacter(state, target.id, Object.assign({}, info, { strokeCount }));
           store.saveState(state);
           that.render(target);
         }

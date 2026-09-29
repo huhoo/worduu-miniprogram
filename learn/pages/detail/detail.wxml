@@ -69,10 +69,14 @@
     <text class="body-text">{{item.exampleSentence}}</text>
   </view>
 
-  <!-- 字源 -->
-  <view class="card" wx:if="{{item.originStory}}">
-    <text class="title">字源与口诀</text>
+  <!-- 字源：模型讲过错的字源（曾把「雪」说成象形字），必须标注为 AI 启发而非知识 -->
+  <view class="card origin" wx:if="{{item.originStory}}">
+    <view class="row-between">
+      <text class="origin-label">记一记</text>
+      <text class="origin-tag">AI 讲的字源，仅供启发</text>
+    </view>
     <text class="body-text">{{item.originStory}}</text>
+    <text class="origin-note">说法可能与课本不同，最终以老师讲的为准。</text>
   </view>
 
   <!-- 来源 -->
