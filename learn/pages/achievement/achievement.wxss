@@ -1,6 +1,6 @@
 /* ---------- 顶部横幅 ---------- */
 .banner {
-  background: linear-gradient(135deg, #047857, #0F766E);
+  background: linear-gradient(135deg, #3F8E5D, #2F6B50);
   border-radius: 28rpx;
   padding: 28rpx;
   margin-bottom: 24rpx;
@@ -71,8 +71,8 @@
 }
 
 .cert-name {
-  background: #D1FAE5;
-  color: #065F46;
+  background: var(--green-light);
+  color: var(--indigo);
   font-size: 22rpx;
   font-weight: 800;
   padding: 6rpx 20rpx;
@@ -87,7 +87,7 @@
 .cert-title {
   display: inline-block;
   background: rgba(245, 158, 11, 0.18);
-  color: #92400E;
+  color: var(--amber-ink);
   font-size: 24rpx;
   font-weight: 900;
   padding: 8rpx 24rpx;
@@ -236,9 +236,9 @@
   display: block;
   margin-top: 16rpx;
   font-size: 24rpx;
-  color: #92400E;
+  color: var(--amber-ink);
   background: var(--amber-light);
-  border: 1rpx solid #FDE68A;
+  border: 1rpx solid var(--amber-line);
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
   line-height: 1.6;

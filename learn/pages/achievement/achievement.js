@@ -226,11 +226,11 @@ function paint(ctx, data) {
   ctx.stroke();
 
   // 头部
-  ctx.fillStyle = '#1C1917';
+  ctx.fillStyle = '#2B3A30';
   ctx.font = 'bold 26px sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText('字伴 · 识字荣誉', 52, 78);
-  ctx.fillStyle = '#A8A29E';
+  ctx.fillStyle = '#93A397';
   ctx.font = '20px sans-serif';
   ctx.fillText(c.date || '', 52, 108);
 
@@ -241,11 +241,11 @@ function paint(ctx, data) {
   ctx.fillStyle = '#FFFFFF';
   roundRect(ctx, POSTER_W - 52 - nameW, 58, nameW, 40, 20);
   ctx.fill();
-  ctx.strokeStyle = '#E7E5E4';
+  ctx.strokeStyle = '#DCE8D9';
   ctx.lineWidth = 1;
   roundRect(ctx, POSTER_W - 52 - nameW, 58, nameW, 40, 20);
   ctx.stroke();
-  ctx.fillStyle = '#065F46';
+  ctx.fillStyle = '#2F6B50';
   ctx.font = 'bold 20px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(`${name} 宝贝`, POSTER_W - 52 - nameW / 2, 84);
@@ -258,16 +258,16 @@ function paint(ctx, data) {
   ctx.fillStyle = 'rgba(245, 158, 11, 0.18)';
   roundRect(ctx, POSTER_W / 2 - titleW / 2, 150, titleW, 46, 23);
   ctx.fill();
-  ctx.fillStyle = '#92400E';
+  ctx.fillStyle = '#8C6D1F';
   ctx.fillText(title, POSTER_W / 2, 181);
 
   // 成绩
-  ctx.fillStyle = '#1C1917';
+  ctx.fillStyle = '#2B3A30';
   ctx.font = 'bold 56px sans-serif';
   ctx.fillText(c.scoreText || '', POSTER_W / 2, 258);
 
   // 评语
-  ctx.fillStyle = '#57534E';
+  ctx.fillStyle = '#57685B';
   ctx.font = 'italic 21px sans-serif';
   ctx.fillText(`“${c.praiseComment || ''}”`, POSTER_W / 2, 300);
 
@@ -283,7 +283,7 @@ function paint(ctx, data) {
     ctx.fillStyle = '#FFFFFF';
     roundRect(ctx, x, 330, boxW, 110, 20);
     ctx.fill();
-    ctx.strokeStyle = '#E7E5E4';
+    ctx.strokeStyle = '#DCE8D9';
     ctx.lineWidth = 1;
     roundRect(ctx, x, 330, boxW, 110, 20);
     ctx.stroke();
@@ -293,18 +293,18 @@ function paint(ctx, data) {
     ctx.textAlign = 'center';
     ctx.fillText(m.label, x + boxW / 2, 364);
 
-    ctx.fillStyle = '#1C1917';
+    ctx.fillStyle = '#2B3A30';
     ctx.font = 'bold 34px sans-serif';
     ctx.fillText(m.value, x + boxW / 2, 404);
     ctx.font = '16px sans-serif';
-    ctx.fillStyle = '#A8A29E';
+    ctx.fillStyle = '#93A397';
     ctx.fillText(m.unit, x + boxW / 2, 428);
   });
 
   // 生字
   const chars = c.highlightChars || [];
   if (chars.length) {
-    ctx.fillStyle = '#A8A29E';
+    ctx.fillStyle = '#93A397';
     ctx.font = 'bold 18px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('✨ 今日掌握的新汉字', POSTER_W / 2, 480);
@@ -322,7 +322,7 @@ function paint(ctx, data) {
       roundRect(ctx, x, 500, chipW, 84, 18);
       ctx.stroke();
 
-      ctx.fillStyle = '#1C1917';
+      ctx.fillStyle = '#2B3A30';
       ctx.font = 'bold 40px sans-serif';
       ctx.fillText(item.char, x + chipW / 2, 542);
       if (item.pinyin) {
@@ -335,7 +335,7 @@ function paint(ctx, data) {
   }
 
   // 落款
-  ctx.fillStyle = '#A8A29E';
+  ctx.fillStyle = '#93A397';
   ctx.font = '19px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('「字伴」让每个汉字都成为孩子的好朋友', POSTER_W / 2, POSTER_H - 96);

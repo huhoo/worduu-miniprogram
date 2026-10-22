@@ -28,12 +28,12 @@
   },
   "window": {
     "backgroundTextStyle": "dark",
-    "navigationBarBackgroundColor": "#FCFAF7",
+    "navigationBarBackgroundColor": "#F5FAF3",
     "navigationBarTitleText": "字伴",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F8F9F5",
-    "backgroundColorTop": "#F8F9F5",
-    "backgroundColorBottom": "#F8F9F5"
+    "backgroundColor": "#F5FAF3",
+    "backgroundColorTop": "#F5FAF3",
+    "backgroundColorBottom": "#F5FAF3"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

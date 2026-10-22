@@ -19,16 +19,16 @@ function toCanvasPoints(median, size) {
 }
 
 function drawGrid(ctx, size, isMiZiGe) {
-  ctx.fillStyle = '#FCFAF7';
+  ctx.fillStyle = '#FFFFFF';
   ctx.fillRect(0, 0, size, size);
 
   ctx.lineWidth = 2.5;
-  ctx.strokeStyle = '#E26D5C';
+  ctx.strokeStyle = '#6DB589';
   ctx.strokeRect(2, 2, size - 4, size - 4);
 
   ctx.save();
   ctx.lineWidth = 1;
-  ctx.strokeStyle = '#F3AFA6';
+  ctx.strokeStyle = '#BFE3C9';
   ctx.setLineDash([5, 5]);
 
   ctx.beginPath();
@@ -215,7 +215,7 @@ Component({
       }
 
       // 已写出的笔画
-      ctx.strokeStyle = '#1C1917';
+      ctx.strokeStyle = '#2B3A30';
       ctx.lineWidth = (30 / BOX) * size;
       for (let i = 0; i < shown - 1 && i < points.length; i += 1) {
         tracePath(ctx, points[i], points[i].length - 1);

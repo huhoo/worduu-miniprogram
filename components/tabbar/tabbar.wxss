@@ -5,7 +5,7 @@
   bottom: 0;
   display: flex;
   background: #FFFFFF;
-  border-top: 1rpx solid #E7E5E4;
+  border-top: 1rpx solid #DCE8D9;
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 100;
 }
@@ -37,10 +37,10 @@
 .tabbar-label {
   font-size: 24rpx;
   margin-top: 4rpx;
-  color: #A8A29E;
+  color: #93A397;
 }
 
 .tabbar-item.active .tabbar-label {
-  color: #059669;
+  color: #3F8E5D;
   font-weight: 700;
 }

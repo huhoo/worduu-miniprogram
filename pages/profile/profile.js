@@ -70,9 +70,9 @@ Page({
     const canDictate = characters.filter((c) => c.canDictate).length;
 
     const buckets = [
-      { name: '熟练', color: '#10B981', count: stats.mastered, pct: pct(stats.mastered) },
-      { name: '基本掌握', color: '#60A5FA', count: stats.basic, pct: pct(stats.basic) },
-      { name: '不熟', color: '#FBBF24', count: stats.unfamiliar, pct: pct(stats.unfamiliar) },
+      { name: '熟练', color: '#3F8E5D', count: stats.mastered, pct: pct(stats.mastered) },
+      { name: '基本掌握', color: '#6DB589', count: stats.basic, pct: pct(stats.basic) },
+      { name: '不熟', color: '#B8862E', count: stats.unfamiliar, pct: pct(stats.unfamiliar) },
       { name: '经常读错', color: '#F43F5E', count: stats.frequentError, pct: pct(stats.frequentError) },
     ];
 
@@ -151,7 +151,7 @@ Page({
         ctx.stroke();
 
         if (percent > 0) {
-          ctx.strokeStyle = '#059669';
+          ctx.strokeStyle = '#3F8E5D';
           ctx.beginPath();
           // 从 12 点方向顺时针画到对应百分比。
           ctx.arc(cx, cy, radius, -Math.PI / 2, -Math.PI / 2 + (percent / 100) * Math.PI * 2);

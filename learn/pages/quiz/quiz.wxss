@@ -1,7 +1,7 @@
 /* ---------- 顶部进度条 ---------- */
 .bar {
   background: #FFFFFF;
-  border: 1rpx solid #E7E5E4;
+  border: 1rpx solid var(--line);
   border-radius: 24rpx;
   padding: 18rpx 28rpx;
 }
@@ -9,15 +9,15 @@
 .bar-title {
   font-size: 24rpx;
   font-weight: 700;
-  color: #57534E;
+  color: var(--ink-2);
 }
 
 .bar-progress {
   font-size: 24rpx;
   font-weight: 700;
   font-family: 'SF Mono', Menlo, monospace;
-  color: #065F46;
-  background: #ECFDF5;
+  color: var(--indigo);
+  background: var(--green-light);
   padding: 4rpx 18rpx;
   border-radius: 999rpx;
 }
@@ -43,7 +43,7 @@
   position: relative;
   font-size: 220rpx;
   font-weight: 800;
-  color: #1C1917;
+  color: var(--ink);
   line-height: 1;
 }
 
@@ -63,7 +63,7 @@
 
 .pinyin-link {
   font-size: 24rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   text-decoration: underline;
   min-height: 88rpx;
 }
@@ -85,7 +85,7 @@
 .source {
   margin-top: 20rpx;
   font-size: 24rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   background: #FAFAF9;
   padding: 6rpx 20rpx;
   border-radius: 999rpx;
@@ -123,13 +123,13 @@
 }
 
 .result-ok {
-  background: #ECFDF5;
-  border-color: #A7F3D0;
+  background: var(--green-light);
+  border-color: var(--line-2);
 }
 
 .result-bad {
-  background: #FFFBEB;
-  border-color: #FDE68A;
+  background: var(--amber-light);
+  border-color: var(--amber-line);
 }
 
 .result-icon {
@@ -174,7 +174,7 @@
   font-size: 80rpx;
   font-weight: 800;
   font-family: 'SF Mono', Menlo, monospace;
-  color: #059669;
+  color: var(--green);
 }
 
 .report-line {
@@ -182,7 +182,7 @@
   margin-top: 8rpx;
   font-size: 28rpx;
   font-weight: 700;
-  color: #1C1917;
+  color: var(--ink);
 }
 
 .warn-icon {

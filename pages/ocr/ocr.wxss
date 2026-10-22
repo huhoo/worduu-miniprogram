@@ -11,7 +11,7 @@
 
 .picker-arrow {
   margin-left: 8rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   font-size: 22rpx;
 }
 
@@ -26,7 +26,7 @@
   width: 100%;
   min-height: 420rpx;
   border-radius: 28rpx;
-  background: #FCFAF7;
+  background: var(--app-surface);
   border: 2rpx dashed #D6D3D1;
   display: flex;
   align-items: center;
@@ -75,8 +75,8 @@
 .spinner {
   width: 36rpx;
   height: 36rpx;
-  border: 4rpx solid #D1FAE5;
-  border-top-color: #059669;
+  border: 4rpx solid var(--green-light);
+  border-top-color: var(--green);
   border-radius: 50%;
   margin-right: 16rpx;
   animation: spin 0.8s linear infinite;
@@ -91,8 +91,8 @@
 /* ---------- 提示条 ---------- */
 .notice {
   margin-top: 24rpx;
-  background: #FFFBEB;
-  border: 1rpx solid #FDE68A;
+  background: var(--amber-light);
+  border: 1rpx solid var(--amber-line);
   border-radius: 20rpx;
   padding: 20rpx 24rpx;
 }
@@ -103,7 +103,7 @@
 
 .notice-text {
   font-size: 24rpx;
-  color: #92400E;
+  color: var(--amber-ink);
   line-height: 1.6;
 }
 
@@ -135,14 +135,14 @@
 
 .rawtext-label {
   font-size: 24rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
 }
 
 .rawtext-body {
   display: block;
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #57534E;
+  color: var(--ink-2);
   line-height: 1.7;
 }
 
@@ -167,14 +167,14 @@
   width: 88rpx;
   height: 88rpx;
   border-radius: 20rpx;
-  background: #FCFAF7;
-  border: 1rpx solid #E26D5C;
+  background: var(--app-surface);
+  border: 1rpx solid var(--vermilion);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 48rpx;
   font-weight: 800;
-  color: #1C1917;
+  color: var(--ink);
   flex-shrink: 0;
 }
 
@@ -188,7 +188,7 @@
   font-size: 26rpx;
   font-weight: 700;
   font-family: 'SF Mono', Menlo, monospace;
-  color: #1C1917;
+  color: var(--ink);
 }
 
 .char-meaning {
@@ -202,7 +202,7 @@
 .char-words {
   display: block;
   font-size: 24rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   margin-top: 4rpx;
 }
 
@@ -221,8 +221,8 @@
 }
 
 .check-on {
-  background: #059669;
-  border-color: #059669;
+  background: var(--green);
+  border-color: var(--green);
   color: #FFFFFF;
 }
 
@@ -240,7 +240,7 @@
 .manual-input {
   flex: 1;
   background: #FAFAF9;
-  border: 1rpx solid #E7E5E4;
+  border: 1rpx solid var(--line);
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
   font-size: 26rpx;
@@ -255,7 +255,7 @@
 /* ---------- 其他 ---------- */
 .link {
   font-size: 22rpx;
-  color: #059669;
+  color: var(--green);
   font-weight: 600;
   min-height: 88rpx;
 }
@@ -277,7 +277,7 @@
   margin-top: 20rpx;
   border-radius: 24rpx;
   overflow: hidden;
-  background: #1C1917;
+  background: var(--ink);
 }
 
 .crop-img {
@@ -291,8 +291,8 @@
 /* 选框：一整块大 box-shadow 把框外压暗，比铺四块遮罩省事也更跟手。 */
 .crop-sel {
   position: absolute;
-  box-shadow: 0 0 0 9999rpx rgba(28, 25, 23, 0.55);
-  border: 3rpx solid #34D399;
+  box-shadow: 0 0 0 9999rpx rgba(43, 58, 48, 0.55);
+  border: 3rpx solid var(--green);
   border-radius: 6rpx;
 }
 
@@ -312,7 +312,7 @@
   width: 28rpx;
   height: 28rpx;
   margin: -14rpx 0 0 -14rpx;
-  background: #34D399;
+  background: var(--green);
   border: 4rpx solid #FFFFFF;
   border-radius: 50%;
 }
@@ -331,7 +331,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(28, 25, 23, 0.6);
+  background: rgba(43, 58, 48, 0.6);
 }
 
 .crop-busy-text {
@@ -364,5 +364,5 @@
   min-height: 88rpx;
   font-size: 26rpx;
   font-weight: 600;
-  color: #92400E;
+  color: var(--amber-ink);
 }

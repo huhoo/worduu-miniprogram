@@ -146,16 +146,16 @@ Page({
     const ctx = this.ctx;
     if (!ctx) return;
 
-    ctx.fillStyle = '#FCFAF7';
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, SIZE, SIZE);
 
     ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#E26D5C';
+    ctx.strokeStyle = '#6DB589';
     ctx.strokeRect(3, 3, SIZE - 6, SIZE - 6);
 
     ctx.save();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = '#F3AFA6';
+    ctx.strokeStyle = '#BFE3C9';
     ctx.setLineDash([5, 5]);
     ctx.beginPath();
     ctx.moveTo(3, SIZE / 2);

@@ -43,8 +43,8 @@ const MODULES = [
     subtitle: '查字、复习、听发音',
     emoji: '📚',
     badge: '生字管理',
-    bg: '#D1FAE5',
-    fg: '#047857',
+    bg: '#E9F4E5',
+    fg: '#2F6B50',
   },
   {
     key: 'profile',

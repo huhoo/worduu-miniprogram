@@ -2,7 +2,7 @@
 .banner {
   position: relative;
   border-radius: 36rpx;
-  background: linear-gradient(135deg, #10B981 0%, #059669 55%, #0F766E 100%);
+  background: linear-gradient(135deg, #4E9E6E 0%, #3F8E5D 55%, #2F6B50 100%);
   color: #FFFFFF;
   padding: 40rpx 32rpx 32rpx;
   overflow: hidden;
@@ -85,11 +85,11 @@
 .module {
   width: calc(50% - 12rpx);
   background: #FFFFFF;
-  border: 1rpx solid #E7E5E4;
+  border: 1rpx solid var(--line);
   border-radius: 36rpx;
   padding: 28rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 1rpx 3rpx rgba(28, 25, 23, 0.04);
+  box-shadow: 0 1rpx 3rpx rgba(43, 58, 48, 0.04);
   min-height: 88rpx;
 }
 
@@ -121,7 +121,7 @@
 
 .module-badge {
   font-size: 22rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   background: #F5F5F4;
   padding: 2rpx 12rpx;
   border-radius: 8rpx;
@@ -130,7 +130,7 @@
 .module-title {
   font-size: 30rpx;
   font-weight: 700;
-  color: #1C1917;
+  color: var(--ink);
 }
 
 .module-sub {
@@ -152,7 +152,7 @@
 
 .more {
   font-size: 22rpx;
-  color: #059669;
+  color: var(--green);
   font-weight: 600;
   min-height: 88rpx;
 }
@@ -167,7 +167,7 @@
 .progress-cell {
   flex: 1;
   text-align: center;
-  border-right: 1rpx solid #E7E5E4;
+  border-right: 1rpx solid var(--line);
 }
 
 .progress-cell:last-child {
@@ -181,11 +181,11 @@
 }
 
 .progress-num.green {
-  color: #059669;
+  color: var(--green);
 }
 
 .progress-num.amber {
-  color: #D97706;
+  color: var(--amber);
 }
 
 .progress-label {
@@ -203,8 +203,8 @@
 
 .recent-item {
   width: calc(25% - 10rpx);
-  background: #FCFAF7;
-  border: 1rpx solid #E7E5E4;
+  background: var(--app-surface);
+  border: 1rpx solid var(--line);
   border-radius: 24rpx;
   padding: 16rpx 0;
   display: flex;
@@ -214,13 +214,13 @@
 }
 
 .recent-item:active {
-  background: #ECFDF5;
+  background: var(--green-light);
 }
 
 .recent-char {
   font-size: 52rpx;
   font-weight: 800;
-  color: #1C1917;
+  color: var(--ink);
 }
 
 .recent-pinyin {
@@ -232,7 +232,7 @@
 
 .recent-source {
   font-size: 22rpx;
-  color: #A8A29E;
+  color: var(--ink-3);
   margin-top: 6rpx;
 }
 

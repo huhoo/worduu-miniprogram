@@ -18,8 +18,8 @@
 }
 
 .tianzige {
-  background: #FCFAF7;
-  border: 4rpx solid #E26D5C;
+  background: #FFFFFF;
+  border: 4rpx solid #6DB589;
 }
 
 .glyph-canvas {
@@ -31,14 +31,14 @@
   align-items: center;
   justify-content: center;
   background: #FAFAF9;
-  border: 1rpx solid #E7E5E4;
+  border: 1rpx solid #DCE8D9;
 }
 
 .spinner {
   width: 48rpx;
   height: 48rpx;
-  border: 6rpx solid #D1FAE5;
-  border-top-color: #059669;
+  border: 6rpx solid #E9F4E5;
+  border-top-color: #3F8E5D;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -73,12 +73,12 @@
   position: absolute;
   top: 12rpx;
   right: 12rpx;
-  background: #ECFDF5;
-  color: #065F46;
+  background: #E9F4E5;
+  color: #2F6B50;
   font-size: 22rpx;
   padding: 2rpx 14rpx;
   border-radius: 999rpx;
-  border: 1rpx solid #A7F3D0;
+  border: 1rpx solid #C0D3BD;
 }
 
 .dots {
@@ -93,7 +93,7 @@
   height: 88rpx;
   border-radius: 50%;
   background: #F5F5F4;
-  color: #A8A29E;
+  color: #93A397;
   font-size: 24rpx;
   font-weight: 600;
   display: flex;
@@ -103,14 +103,14 @@
 }
 
 .dot-done {
-  background: #E7E5E4;
-  color: #57534E;
+  background: #DCE8D9;
+  color: #57685B;
 }
 
 .dot-current {
-  background: #059669;
+  background: #3F8E5D;
   color: #FFFFFF;
-  box-shadow: 0 0 0 6rpx #A7F3D0;
+  box-shadow: 0 0 0 6rpx #BFE3C9;
 }
 
 /* ---------- 笔画名 ---------- */
@@ -123,9 +123,9 @@
 }
 
 .pill {
-  background: #FFFBEB;
-  border: 1rpx solid #FDE68A;
-  color: #92400E;
+  background: #F6EEDD;
+  border: 1rpx solid #E9D8AC;
+  color: #8C6D1F;
   font-size: 24rpx;
   padding: 4rpx 14rpx;
   border-radius: 999rpx;
@@ -134,8 +134,8 @@
 }
 
 .pill-current {
-  background: #D97706;
-  border-color: #D97706;
+  background: #B8862E;
+  border-color: #B8862E;
   color: #FFFFFF;
   font-weight: 700;
 }
@@ -145,7 +145,7 @@
   margin-top: 12rpx;
   font-size: 24rpx;
   font-weight: 700;
-  color: #57534E;
+  color: #57685B;
   text-align: center;
 }
 
@@ -160,9 +160,9 @@
   width: 88rpx;
   height: 88rpx;
   border-radius: 18rpx;
-  border: 1rpx solid #E7E5E4;
+  border: 1rpx solid #DCE8D9;
   background: #FFFFFF;
-  color: #57534E;
+  color: #57685B;
   font-size: 34rpx;
   font-weight: 700;
   display: flex;
@@ -178,7 +178,7 @@
   margin: 0 24rpx;
   padding: 14rpx 32rpx;
   border-radius: 999rpx;
-  background: #059669;
+  background: #3F8E5D;
   color: #FFFFFF;
   font-size: 24rpx;
   font-weight: 700;

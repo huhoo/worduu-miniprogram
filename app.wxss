@@ -1,6 +1,6 @@
 /**
- * 全局样式 · 沿用 Web 版「字伴」配色
- * 宣纸底 #FCFAF7 / 页面底 #F8F9F5 / 主色 竹绿 #059669 / 田字格朱红 #E26D5C
+ * 全局样式 · 白 + 护眼绿（R1 换色，规范见 ziban-prd/BASELINE.md 第 4 节）
+ * 页面底 #F5FAF3 / 卡片 #FFFFFF / 次级面 #ECF4E9 / 主绿 #3F8E5D / 辅绿 #6DB589
  */
 /* 统一盒模型：padding/border 计入 width，避免 calc 百分比栅格溢出换行 */
 view,
@@ -14,18 +14,31 @@ canvas {
 }
 
 page {
-  --paper: #FCFAF7;
-  --page: #F8F9F5;
-  --ink: #1C1917;
-  --ink-2: #57534E;
-  --ink-3: #A8A29E;
-  --line: #E7E5E4;
-  --green: #059669;
-  --green-light: #ECFDF5;
-  --vermilion: #E26D5C;
-  --vermilion-light: #F3AFA6;
-  --amber: #D97706;
-  --amber-light: #FFFBEB;
+  /* 基准色板（BASELINE.md 命名）＋ 旧名别名，各页可逐步迁移到基准名 */
+  --app-bg: #F5FAF3;
+  --page: #F5FAF3;
+  --app-surface: #FFFFFF;
+  --app-surface-2: #ECF4E9;
+  --paper: #FFFFFF;
+  --ink: #2B3A30;
+  --ink-2: #57685B;
+  --ink-3: #93A397;
+  --line: #DCE8D9;
+  --line-2: #C0D3BD;
+  --green: #3F8E5D;
+  --green-2: #6DB589;
+  --green-light: #E9F4E5;
+  --indigo: #2F6B50;
+  --moss: #5FA778;
+  /* 田字格：原朱红位改为绿系（边框辅绿、虚线浅绿） */
+  --vermilion: #6DB589;
+  --vermilion-light: #BFE3C9;
+  /* 语义点缀：复习提醒 / 限时 / 繁体标签（BASELINE：gold / amber） */
+  --amber: #B8862E;
+  --amber-light: #F6EEDD;
+  --amber-ink: #8C6D1F;
+  --amber-line: #E9D8AC;
+  --gold: #A8913F;
 
   background: var(--page);
   color: var(--ink);
@@ -134,8 +147,8 @@ page {
   min-height: 88rpx;
 }
 
-.chip-green { background: var(--green-light); color: #065F46; }
-.chip-amber { background: var(--amber-light); color: #92400E; }
+.chip-green { background: var(--green-light); color: var(--indigo); }
+.chip-amber { background: var(--amber-light); color: var(--amber-ink); }
 .chip-rose  { background: #FFF1F2; color: #9F1239; }
 .chip-blue  { background: #EFF6FF; color: #1E40AF; }
 .chip-stone { background: #F5F5F4; color: var(--ink-2);

@@ -15,7 +15,7 @@
   display: inline-block;
   font-size: 24rpx;
   font-weight: 700;
-  color: #065F46;
+  color: var(--indigo);
   background: var(--green-light);
   padding: 4rpx 14rpx;
   border-radius: 12rpx;
@@ -32,7 +32,7 @@
 .mode-btn {
   flex-shrink: 0;
   background: var(--green-light);
-  color: #047857;
+  color: var(--indigo);
   font-size: 22rpx;
   font-weight: 700;
   padding: 12rpx 24rpx;
@@ -74,9 +74,9 @@
 }
 
 .ch-vocab {
-  color: #065F46;
+  color: var(--indigo);
   font-weight: 700;
-  background: #D1FAE5;
+  background: var(--green-light);
   border-bottom: 4rpx solid #6EE7B7;
 }
 
@@ -161,7 +161,7 @@
 
 .rate-on {
   background: #FFFFFF;
-  color: #065F46;
+  color: var(--indigo);
   font-weight: 800;
 }
 
@@ -200,7 +200,7 @@
 .ctrl-on {
   border-color: #6EE7B7;
   background: var(--green-light);
-  color: #047857;
+  color: var(--indigo);
 }
 
 .play {
@@ -228,9 +228,9 @@
   display: block;
   margin-top: 20rpx;
   font-size: 24rpx;
-  color: #92400E;
+  color: var(--amber-ink);
   background: var(--amber-light);
-  border: 1rpx solid #FDE68A;
+  border: 1rpx solid var(--amber-line);
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
   line-height: 1.6;
@@ -243,7 +243,7 @@
   top: 0;
   right: 0;
   bottom: 0;
-  background: rgba(28, 25, 23, 0.45);
+  background: rgba(43, 58, 48, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,7 +310,7 @@
 .mode-item-on {
   border-color: var(--green);
   background: var(--green-light);
-  color: #065F46;
+  color: var(--indigo);
   font-weight: 800;
 }
 
