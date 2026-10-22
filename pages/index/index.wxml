@@ -1,92 +1,66 @@
 <view class="page">
-  <!-- 顶部横幅 -->
-  <view class="banner">
-    <view class="banner-body">
-      <view class="banner-tag">
-        <text class="banner-tag-text">字伴 · 孩子专属语文AI伙伴</text>
-      </view>
-      <view class="banner-title">
-        <text>{{childNickname ? childNickname + '，' : ''}}让每个汉字\n都成为好朋友！</text>
-      </view>
-      <view class="banner-sub">
-        <text class="dot"></text>
-        <text>今日伴读 {{stats.studyTimeMinutes}} 分钟 · 新学 {{stats.todayLearnedCount}} 字 · 已掌握 {{stats.mastered}} 字</text>
-      </view>
+  <!-- 品牌头（原型 home-reading）：字伴 + 口号 + 搜索/设置 -->
+  <view class="home-head">
+    <view class="hh-brand">
+      <view class="hh-name">字伴</view>
+      <view class="hh-slogan">让每个汉字都成为伙伴</view>
+      <view class="hh-url">WORDUU.COM</view>
     </view>
-    <view class="banner-mascot">
-      <text class="mascot-emoji">🐣</text>
-      <text class="mascot-label">字伴小精灵</text>
+    <view class="hh-acts">
+      <view class="icon-btn" bindtap="openBank">🔍</view>
+      <view class="icon-btn" bindtap="openProfile">⚙️</view>
     </view>
   </view>
 
-  <!-- 功能模块 -->
-  <view class="grid">
-    <view
-      wx:for="{{modules}}"
-      wx:key="key"
-      class="module"
-      data-key="{{item.key}}"
-      bindtap="goModule"
-    >
-      <view class="module-head">
-        <view class="module-icon" style="background:{{item.bg}};color:{{item.fg}}">{{item.emoji}}</view>
-        <text class="module-badge">{{item.badge}}</text>
+  <!-- 四大入口（原型顺序：拍 / 写 / 库 / 默） -->
+  <view class="home-entries">
+    <view class="card home-entry" data-key="ocr" bindtap="goModule">
+      <view class="he-ic cam">📷</view>
+      <view class="he-main">
+        <view class="he-t">拍照识字</view>
+        <view class="he-s">拍课本或课外书，生字自动进字库</view>
       </view>
-      <view class="module-title">{{item.title}}</view>
-      <view class="module-sub">{{item.subtitle}}</view>
+      <text class="he-chevron">›</text>
+    </view>
+
+    <view class="card home-entry" data-key="write" bindtap="goModule">
+      <view class="he-ic soft">✍️</view>
+      <view class="he-main">
+        <view class="he-t">写字识字</view>
+        <view class="he-s">田字格练写，笔顺动画加 AI 批改</view>
+      </view>
+      <text class="he-chevron">›</text>
+    </view>
+
+    <view class="card home-entry" data-key="bank" bindtap="goModule">
+      <view class="he-ic soft">📚</view>
+      <view class="he-main">
+        <view class="he-t">生字库</view>
+        <view class="he-s">查字、听发音、掌握度一目了然</view>
+      </view>
+      <text class="he-chevron">›</text>
+    </view>
+
+    <view class="card home-entry" data-key="dictation" bindtap="goModule">
+      <view class="he-ic soft">📝</view>
+      <view class="he-main">
+        <view class="he-t">默写</view>
+        <view class="he-s">AI 报字听写，自动批改巩固</view>
+      </view>
+      <text class="he-chevron">›</text>
     </view>
   </view>
 
-  <!-- 今日学习进展 -->
-  <view class="card">
-    <view class="row-between progress-head">
-      <view class="row">
-        <text class="flame">🔥</text>
-        <text class="title">今日学习进展</text>
-      </view>
-      <text class="more" bindtap="openBank">查看详情 ›</text>
+  <!-- 阅读伴读（现有能力：书架内置读物。
+       没有真实阅读进度数据，不放假进度条——原型此槽位是「继续阅读」，
+       等 R6 拍照阅读上线后再换回真进度） -->
+  <view class="card home-row" data-key="shelf" bindtap="goModule">
+    <view class="hr-cov">📖</view>
+    <view class="he-main">
+      <view class="he-t">阅读伴读</view>
+      <view class="he-s">内置读物逐句朗读，点字查义</view>
     </view>
-    <view class="progress-grid">
-      <view class="progress-cell">
-        <view class="progress-num">{{stats.todayLearnedCount}}</view>
-        <view class="progress-label">已学汉字</view>
-      </view>
-      <view class="progress-cell">
-        <view class="progress-num green">{{stats.todayMasteredCount}}</view>
-        <view class="progress-label">掌握</view>
-      </view>
-      <view class="progress-cell">
-        <view class="progress-num amber">{{stats.todayReviewCount}}</view>
-        <view class="progress-label">待复习</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 最近学习的生字 -->
-  <view class="card">
-    <view class="row-between">
-      <text class="title">最近学习的生字</text>
-      <text class="more" bindtap="openBank">全部生字 ({{total}}) ›</text>
-    </view>
-    <view class="recent-grid" wx:if="{{recentChars.length > 0}}">
-      <view
-        wx:for="{{recentChars}}"
-        wx:key="id"
-        class="recent-item"
-        data-id="{{item.id}}"
-        bindtap="openChar"
-      >
-        <text class="recent-char kai">{{item.char}}</text>
-        <text class="recent-pinyin">{{item.pinyin}}</text>
-        <text class="recent-source">{{item.source}}</text>
-      </view>
-    </view>
-    <view class="empty" wx:else>
-      <view class="empty-icon">🌱</view>
-      <text class="sub">字库还是空的</text>
-      <text class="muted">先拍一页课本或课外书，把生字收进来</text>
-      <view class="btn btn-primary empty-btn" data-key="ocr" bindtap="goModule">去拍照认字</view>
-    </view>
+    <text class="he-chevron">›</text>
   </view>
 </view>
 

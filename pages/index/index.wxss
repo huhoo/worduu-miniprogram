@@ -1,243 +1,143 @@
-/* ---------- 顶部横幅 ---------- */
-.banner {
-  position: relative;
-  border-radius: 36rpx;
-  background: linear-gradient(135deg, #4E9E6E 0%, #3F8E5D 55%, #2F6B50 100%);
-  color: #FFFFFF;
-  padding: 40rpx 32rpx 32rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 16rpx rgba(5, 150, 105, 0.18);
-}
+/* ===== 首页 Hub（R1，照原型 home-reading：品牌头 + 四大入口 + 阅读行）===== */
 
-.banner-body {
-  position: relative;
-  z-index: 2;
-}
-
-.banner-tag {
-  display: inline-flex;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 4rpx 16rpx;
-  border-radius: 999rpx;
-}
-
-.banner-tag-text {
-  font-size: 24rpx;
-  font-weight: 600;
-}
-
-.banner-title {
-  margin-top: 16rpx;
-  font-size: 40rpx;
-  font-weight: 800;
-  line-height: 1.35;
-  white-space: pre-wrap;
-}
-
-.banner-sub {
-  margin-top: 12rpx;
-  display: flex;
-  align-items: center;
-  font-size: 22rpx;
-  color: rgba(236, 253, 245, 0.95);
-}
-
-.dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  background: #FCD34D;
-  margin-right: 12rpx;
-}
-
-.banner-mascot {
-  position: absolute;
-  right: 24rpx;
-  top: 32rpx;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1rpx solid rgba(255, 255, 255, 0.28);
-  border-radius: 28rpx;
-  padding: 12rpx 16rpx;
-}
-
-.mascot-emoji {
-  font-size: 56rpx;
-}
-
-.mascot-label {
-  font-size: 22rpx;
-  font-weight: 700;
-  margin-top: 4rpx;
-}
-
-/* ---------- 模块宫格 ---------- */
-.grid {
-  margin-top: 24rpx;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.module {
-  width: calc(50% - 12rpx);
-  background: #FFFFFF;
-  border: 1rpx solid var(--line);
-  border-radius: 36rpx;
-  padding: 28rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 1rpx 3rpx rgba(43, 58, 48, 0.04);
-  min-height: 88rpx;
-}
-
-.module:active {
-  background: #FAFAF9;
-}
-
-/* 奇数个模块时最后一格占满整行，免得底部留半行空白 */
-.module:last-child:nth-child(odd) {
-  width: 100%;
-}
-
-.module-head {
+/* ---------- 品牌头 ---------- */
+.home-head {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 24rpx;
+  padding: 12rpx 0 8rpx;
 }
 
-.module-icon {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 28rpx;
+.hh-name {
+  font-size: 47rpx;
+  font-weight: 800;
+  letter-spacing: 6rpx;
+  color: var(--green);
+  line-height: 1.1;
+}
+
+.hh-slogan {
+  font-size: 22rpx;
+  color: var(--ink-2);
+  margin-top: 10rpx;
+}
+
+.hh-url {
+  font-size: 19rpx;
+  color: var(--ink-3);
+  margin-top: 6rpx;
+  letter-spacing: 4rpx;
+}
+
+.hh-acts {
+  margin-left: auto;
+  display: flex;
+  gap: 16rpx;
+}
+
+.icon-btn {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: var(--app-surface);
+  border: 1rpx solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 44rpx;
+  font-size: 32rpx;
+  color: var(--ink-2);
 }
 
-.module-badge {
+.icon-btn:active {
+  background: var(--app-surface-2);
+}
+
+/* ---------- 入口卡 ---------- */
+.home-entries {
+  margin-top: 20rpx;
+}
+
+.home-entry {
+  display: flex;
+  align-items: center;
+  gap: 26rpx;
+  padding: 32rpx 30rpx;
+  border-radius: 30rpx;
+  /* 卡片间距由全局 .card + .card 的 24rpx 上边距负责，这里不重复加 */
+}
+
+.home-entry:active {
+  background: var(--app-surface-2);
+}
+
+.he-ic {
+  width: 98rpx;
+  height: 98rpx;
+  border-radius: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  font-size: 48rpx;
+}
+
+/* 第一个入口用实心绿，与其余软绿底区分主次（原型规范） */
+.he-ic.cam {
+  background: var(--green);
+  box-shadow: 0 12rpx 24rpx -12rpx rgba(63, 142, 93, 0.55);
+}
+
+.he-ic.soft {
+  background: #E7F3E9;
+}
+
+.he-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.he-t {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 2rpx;
+}
+
+.he-s {
   font-size: 22rpx;
   color: var(--ink-3);
-  background: #F5F5F4;
-  padding: 2rpx 12rpx;
-  border-radius: 8rpx;
-}
-
-.module-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.module-sub {
-  font-size: 22rpx;
-  color: #78716C;
   margin-top: 8rpx;
   line-height: 1.5;
 }
 
-/* ---------- 今日进展 ---------- */
-.progress-head {
-  margin-bottom: 20rpx;
-}
-
-.flame {
-  font-size: 30rpx;
-  margin-right: 10rpx;
-}
-
-.more {
-  font-size: 22rpx;
-  color: var(--green);
-  font-weight: 600;
-  min-height: 88rpx;
-}
-
-.progress-grid {
-  display: flex;
-  background: #FAFAF9;
-  border-radius: 28rpx;
-  padding: 20rpx 0;
-}
-
-.progress-cell {
-  flex: 1;
-  text-align: center;
-  border-right: 1rpx solid var(--line);
-}
-
-.progress-cell:last-child {
-  border-right: none;
-}
-
-.progress-num {
-  font-size: 44rpx;
-  font-weight: 800;
-  font-family: 'SF Mono', Menlo, monospace;
-}
-
-.progress-num.green {
-  color: var(--green);
-}
-
-.progress-num.amber {
-  color: var(--amber);
-}
-
-.progress-label {
-  font-size: 24rpx;
-  color: #78716C;
-  margin-top: 4rpx;
-}
-
-/* ---------- 最近生字 ---------- */
-.recent-grid {
-  margin-top: 24rpx;
-  display: flex;
-  justify-content: space-between;
-}
-
-.recent-item {
-  width: calc(25% - 10rpx);
-  background: var(--app-surface);
-  border: 1rpx solid var(--line);
-  border-radius: 24rpx;
-  padding: 16rpx 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 88rpx;
-}
-
-.recent-item:active {
-  background: var(--green-light);
-}
-
-.recent-char {
-  font-size: 52rpx;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-.recent-pinyin {
-  font-size: 22rpx;
-  color: #78716C;
-  margin-top: 4rpx;
-  font-family: 'SF Mono', Menlo, monospace;
-}
-
-.recent-source {
-  font-size: 22rpx;
+.he-chevron {
+  font-size: 34rpx;
   color: var(--ink-3);
-  margin-top: 6rpx;
+  flex: none;
+  font-weight: 300;
 }
 
-.empty-btn {
+/* ---------- 阅读伴读行卡 ---------- */
+.home-row {
+  display: flex;
+  align-items: center;
+  gap: 26rpx;
   margin-top: 28rpx;
-  display: inline-flex;
-  min-height: 88rpx;
+  padding: 26rpx 30rpx;
+  border-radius: 30rpx;
+}
+
+.home-row:active {
+  background: var(--app-surface-2);
+}
+
+.hr-cov {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 20rpx;
+  background: var(--app-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42rpx;
+  flex: none;
 }
