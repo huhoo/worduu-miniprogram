@@ -8,12 +8,12 @@
 .head-meta {
   margin-left: 20rpx;
   font-size: 22rpx;
-  color: #78716C;
+  color: #57685B;
 }
 
 .tabs {
   margin-top: 24rpx;
-  background: #F5F5F4;
+  background: #ECF4E9;
   border-radius: 20rpx;
   padding: 6rpx;
 }
@@ -25,7 +25,7 @@
   border-radius: 16rpx;
   font-size: 24rpx;
   font-weight: 600;
-  color: #78716C;
+  color: #57685B;
   min-height: 88rpx;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .mode-switch {
-  background: #F5F5F4;
+  background: #ECF4E9;
   border-radius: 14rpx;
   padding: 4rpx;
 }
@@ -125,7 +125,7 @@
 /* ---------- 结果 ---------- */
 .result {
   margin-top: 28rpx;
-  background: #FAFAF9;
+  background: #F5FAF3;
   border: 1rpx solid var(--line);
   border-radius: 24rpx;
   padding: 24rpx;

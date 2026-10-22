@@ -145,7 +145,7 @@ Page({
         ctx.lineCap = 'round';
         ctx.lineWidth = 14;
 
-        ctx.strokeStyle = '#F5F5F4';
+        ctx.strokeStyle = '#DCE8D9';
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.stroke();

@@ -96,9 +96,9 @@
     </view>
   </view>
 
-  <!-- 笔顺动画 -->
+  <!-- 笔顺动画：这个页签就是来看动画的，进入即自动逐笔演示 -->
   <view class="card" wx:else>
-    <stroke-glyph char="{{item.char}}" size="{{280}}" is-mi-zi-ge="{{true}}" />
+    <stroke-glyph char="{{item.char}}" size="{{280}}" is-mi-zi-ge="{{true}}" auto-play="{{tab === 'animate'}}" />
     <view class="btn btn-primary animate-btn" bindtap="switchTab" data-tab="write">去田字格练习</view>
   </view>
 </view>

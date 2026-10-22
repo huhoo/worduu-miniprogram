@@ -10,7 +10,7 @@
   border-radius: 20rpx;
   font-size: 24rpx;
   font-weight: 600;
-  color: #78716C;
+  color: #57685B;
   min-height: 88rpx;
 }
 
@@ -196,7 +196,7 @@
 
 .more {
   font-size: 22rpx;
-  color: #78716C;
+  color: #57685B;
   min-height: 88rpx;
 }
 
@@ -286,7 +286,7 @@
 .metrics {
   margin-top: 24rpx;
   display: flex;
-  background: #FAFAF9;
+  background: #F5FAF3;
   border-radius: 24rpx;
   padding: 16rpx 0;
   text-align: center;
@@ -299,7 +299,7 @@
 .metric-label {
   display: block;
   font-size: 24rpx;
-  color: #78716C;
+  color: #57685B;
 }
 
 .metric-num {
@@ -320,7 +320,7 @@
   margin-top: 16rpx;
   font-size: 22rpx;
   color: var(--ink-2);
-  background: #FAFAF9;
+  background: #F5FAF3;
   border: 1rpx solid var(--line);
   border-radius: 20rpx;
   padding: 20rpx 24rpx;
@@ -342,13 +342,13 @@
 .sum-ok { background: var(--green-light); border: 1rpx solid var(--line-2); color: var(--indigo); }
 .sum-bad { background: #FFF1F2; border: 1rpx solid #FECDD3; color: #9F1239; }
 .sum-amber { background: var(--amber-light); border: 1rpx solid var(--amber-line); color: var(--amber-ink); }
-.sum-plain { background: #FAFAF9; border: 1rpx solid var(--line); color: var(--ink-2); }
+.sum-plain { background: #F5FAF3; border: 1rpx solid var(--line); color: var(--ink-2); }
 
 .foot-note {
   display: block;
   margin-top: 20rpx;
   font-size: 22rpx;
-  color: #D6D3D1;
+  color: #93A397;
   line-height: 1.6;
 }
 
@@ -370,13 +370,13 @@
   margin-top: 20rpx;
   font-size: 28rpx;
   font-weight: 700;
-  color: #44403C;
+  color: #2B3A30;
 }
 
 .empty-sub {
   margin-top: 12rpx;
   font-size: 24rpx;
-  color: #78716C;
+  color: #57685B;
   line-height: 1.7;
 }
 

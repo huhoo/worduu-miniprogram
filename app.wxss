@@ -151,7 +151,7 @@ page {
 .chip-amber { background: var(--amber-light); color: var(--amber-ink); }
 .chip-rose  { background: #FFF1F2; color: #9F1239; }
 .chip-blue  { background: #EFF6FF; color: #1E40AF; }
-.chip-stone { background: #F5F5F4; color: var(--ink-2);
+.chip-plain { background: var(--app-surface-2); color: var(--ink-2);
   min-height: 88rpx;
 }
 

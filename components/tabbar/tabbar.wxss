@@ -21,7 +21,7 @@
 }
 
 .tabbar-item:active {
-  background: #F5F5F4;
+  background: #ECF4E9;
 }
 
 .tabbar-emoji {

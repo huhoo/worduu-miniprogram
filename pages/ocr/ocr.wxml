@@ -50,7 +50,7 @@
     <view class="card">
       <view class="row-between">
         <text class="title">框出要学的那一段</text>
-        <text class="chip chip-stone" bindtap="chooseImage">重拍</text>
+        <text class="chip chip-plain" bindtap="chooseImage">重拍</text>
       </view>
       <text class="muted picker-note">拖动选框或拽四个角调整范围，只识别框里的字，桌上的其他东西就不会混进来。</text>
 
@@ -98,7 +98,7 @@
           <text class="title">{{result.title || '未识别到标题'}}</text>
           <text class="muted">共识别 {{chars.length}} 个核心汉字</text>
         </view>
-        <text class="chip chip-stone" bindtap="reset">重新拍</text>
+        <text class="chip chip-plain" bindtap="reset">重新拍</text>
       </view>
 
       <view wx:if="{{result.rawText}}" class="rawtext">

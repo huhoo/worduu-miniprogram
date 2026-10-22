@@ -137,13 +137,13 @@ Page({
     ctx.stroke();
     ctx.restore();
 
-    // 跟写模式的描红底字
+    // 跟写模式的描红底字：浅绿字印（BASELINE：字卡字印浅绿 #BFE3C9）
     if (this.data.mode === 'trace' && this.data.item) {
       ctx.save();
       ctx.font = `${Math.round(SIZE * 0.72)}px "Kaiti SC", serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(180, 160, 150, 0.28)';
+      ctx.fillStyle = '#BFE3C9';
       ctx.fillText(this.data.item.char, SIZE / 2, SIZE / 2 + SIZE * 0.05);
       ctx.restore();
     }

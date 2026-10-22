@@ -145,7 +145,7 @@
 
 .rates {
   display: flex;
-  background: #F5F5F4;
+  background: #ECF4E9;
   border-radius: 16rpx;
   padding: 4rpx;
 }
@@ -167,7 +167,7 @@
 
 .progress {
   height: 8rpx;
-  background: #F5F5F4;
+  background: #ECF4E9;
   border-radius: 999rpx;
   overflow: hidden;
   margin: 20rpx 0;
@@ -221,7 +221,7 @@
 }
 
 .play-off {
-  background: #D6D3D1;
+  background: #C0D3BD;
 }
 
 .notice {

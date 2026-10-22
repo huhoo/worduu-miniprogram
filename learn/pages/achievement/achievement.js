@@ -203,9 +203,9 @@ function paint(ctx, data) {
 
   // 宣纸底
   const bg = ctx.createLinearGradient(0, 0, 0, POSTER_H);
-  bg.addColorStop(0, '#FFFDF9');
-  bg.addColorStop(0.5, '#FAF6F0');
-  bg.addColorStop(1, '#F5EFE6');
+  bg.addColorStop(0, '#FFFFFF');
+  bg.addColorStop(0.5, '#F5FAF3');
+  bg.addColorStop(1, '#ECF4E9');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, POSTER_W, POSTER_H);
 
@@ -220,7 +220,7 @@ function paint(ctx, data) {
   ctx.fill();
 
   // 边框
-  ctx.strokeStyle = '#E9DFD0';
+  ctx.strokeStyle = '#DCE8D9';
   ctx.lineWidth = 4;
   roundRect(ctx, 16, 16, POSTER_W - 32, POSTER_H - 32, 32);
   ctx.stroke();
@@ -288,7 +288,7 @@ function paint(ctx, data) {
     roundRect(ctx, x, 330, boxW, 110, 20);
     ctx.stroke();
 
-    ctx.fillStyle = '#78716C';
+    ctx.fillStyle = '#57685B';
     ctx.font = '18px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(m.label, x + boxW / 2, 364);
@@ -317,7 +317,7 @@ function paint(ctx, data) {
       ctx.fillStyle = '#FFFFFF';
       roundRect(ctx, x, 500, chipW, 84, 18);
       ctx.fill();
-      ctx.strokeStyle = '#E9DFD0';
+      ctx.strokeStyle = '#DCE8D9';
       ctx.lineWidth = 2;
       roundRect(ctx, x, 500, chipW, 84, 18);
       ctx.stroke();
@@ -326,7 +326,7 @@ function paint(ctx, data) {
       ctx.font = 'bold 40px sans-serif';
       ctx.fillText(item.char, x + chipW / 2, 542);
       if (item.pinyin) {
-        ctx.fillStyle = '#78716C';
+        ctx.fillStyle = '#2F6B50';
         ctx.font = '17px sans-serif';
         ctx.fillText(item.pinyin, x + chipW / 2, 570);
       }

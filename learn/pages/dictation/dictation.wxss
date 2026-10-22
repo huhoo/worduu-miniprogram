@@ -117,7 +117,7 @@
 .tool {
   font-size: 22rpx;
   color: var(--ink-2);
-  background: #F5F5F4;
+  background: #ECF4E9;
   padding: 10rpx 24rpx;
   border-radius: 999rpx;
   min-height: 88rpx;
@@ -139,7 +139,7 @@
 .verdict {
   margin-top: 24rpx;
   width: 100%;
-  background: #FAFAF9;
+  background: #F5FAF3;
   border: 1rpx solid var(--line);
   border-radius: 24rpx;
   padding: 24rpx;
@@ -175,7 +175,7 @@
   margin-left: 14rpx;
   font-size: 22rpx;
   font-family: 'SF Mono', Menlo, monospace;
-  color: #78716C;
+  color: var(--indigo);
 }
 
 .tag {
@@ -248,7 +248,7 @@
   margin-top: 24rpx;
   width: 100%;
   height: 16rpx;
-  background: #F5F5F4;
+  background: #ECF4E9;
   border-radius: 999rpx;
   overflow: hidden;
 }
@@ -276,7 +276,7 @@
 .report-wrong-title {
   display: block;
   font-size: 22rpx;
-  color: #78716C;
+  color: #57685B;
   text-align: left;
 }
 
@@ -338,13 +338,13 @@
   margin-top: 24rpx;
   font-size: 28rpx;
   font-weight: 700;
-  color: #44403C;
+  color: #2B3A30;
 }
 
 .empty-sub {
   margin-top: 12rpx;
   font-size: 24rpx;
-  color: #78716C;
+  color: #57685B;
   line-height: 1.7;
   max-width: 520rpx;
 }

@@ -34,7 +34,7 @@
       <view class="item-body">
         <view class="row">
           <text class="item-pinyin">{{item.pinyin || '暂无拼音'}}</text>
-          <text class="chip chip-stone">{{item.source}}</text>
+          <text class="chip chip-plain">{{item.source}}</text>
         </view>
         <text class="item-date">{{item.dateEncountered}} 遇到</text>
         <text class="item-words" wx:if="{{item.wordsText}}">组词：{{item.wordsText}}</text>

@@ -44,8 +44,8 @@
 
 /* ---------- 奖状 ---------- */
 .cert {
-  background: linear-gradient(180deg, #FFFDF9, #FAF6F0 55%, #F5EFE6);
-  border: 3rpx solid #E9DFD0;
+  background: linear-gradient(180deg, #FFFFFF, #F5FAF3 55%, #ECF4E9);
+  border: 3rpx solid #DCE8D9;
   border-radius: 32rpx;
   padding: 32rpx;
 }
@@ -168,7 +168,7 @@
 
 .chip {
   background: #FFFFFF;
-  border: 1rpx solid #E9DFD0;
+  border: 1rpx solid #DCE8D9;
   border-radius: 20rpx;
   padding: 12rpx 20rpx;
   margin: 8rpx;
@@ -186,7 +186,7 @@
 
 .chip-pinyin {
   font-size: 24rpx;
-  color: var(--ink-3);
+  color: var(--indigo);
   margin-left: 10rpx;
 }
 
@@ -221,7 +221,7 @@
 }
 
 .btn-off {
-  background: #D6D3D1;
+  background: #C0D3BD;
 }
 
 .hint {

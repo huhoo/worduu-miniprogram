@@ -106,6 +106,8 @@ Component({
     isMiZiGe: { type: Boolean, value: false },
     /** 是否显示播放控制条。书写页只想要静态的字形时可以关掉。 */
     showControls: { type: Boolean, value: true },
+    /** 加载后自动逐笔演示。详情字卡保持静止（默认关），「看笔顺动画」这类主动要看动画的场景才开。 */
+    autoPlay: { type: Boolean, value: false },
   },
 
   data: {
@@ -160,8 +162,12 @@ Component({
           hasNames: names.length === medians.length,
           dots: medians.map((_, i) => i + 1),
         });
-        this.applyShown(medians.length);
-        this.prepareCanvas(() => this.render(medians.length, 1));
+        // BASELINE：笔顺描画默认隐藏，静止态只留田字格 + 浅绿字印；点播放才动画。
+        this.applyShown(0);
+        this.prepareCanvas(() => {
+          this.render(0, 0);
+          if (this.data.autoPlay) this.play();
+        });
       });
     },
 
@@ -207,8 +213,8 @@ Component({
 
       drawGrid(ctx, size, this.data.isMiZiGe);
 
-      // 极淡的完整字形作为目标轮廓
-      ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+      // 浅绿色字印作底（BASELINE：字卡字印浅绿 #BFE3C9），黑色笔顺逐笔覆盖
+      ctx.strokeStyle = '#BFE3C9';
       ctx.lineWidth = (30 / BOX) * size;
       for (let i = 0; i < points.length; i += 1) {
         tracePath(ctx, points[i], points[i].length - 1);

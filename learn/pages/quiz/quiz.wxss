@@ -59,6 +59,7 @@
   font-weight: 700;
   font-family: 'SF Mono', Menlo, monospace;
   letter-spacing: 4rpx;
+  color: var(--indigo);
 }
 
 .pinyin-link {
@@ -86,7 +87,7 @@
   margin-top: 20rpx;
   font-size: 24rpx;
   color: var(--ink-3);
-  background: #FAFAF9;
+  background: #F5FAF3;
   padding: 6rpx 20rpx;
   border-radius: 999rpx;
 }

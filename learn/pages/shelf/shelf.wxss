@@ -32,7 +32,7 @@
   border-radius: 999rpx;
   font-size: 24rpx;
   font-weight: 600;
-  color: #78716C;
+  color: #57685B;
   background: #FFFFFF;
   border: 1rpx solid var(--line);
   margin-right: 16rpx;
@@ -64,7 +64,7 @@
 }
 
 .book:active {
-  background: #FAFAF9;
+  background: #F5FAF3;
 }
 
 .cover {
@@ -102,8 +102,8 @@
   font-size: 22rpx;
   padding: 2rpx 12rpx;
   border-radius: 8rpx;
-  background: #F5F5F4;
-  color: #78716C;
+  background: #ECF4E9;
+  color: #57685B;
 }
 
 .line2 {
