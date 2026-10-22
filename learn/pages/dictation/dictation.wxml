@@ -107,3 +107,6 @@
     </view>
   </view>
 </view>
+
+<!-- 底栏四项之一：高亮「默写」 -->
+<tabbar current="dictation" />

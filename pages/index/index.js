@@ -21,7 +21,7 @@ const MODULES = [
   },
   {
     key: 'write',
-    title: '规范写字',
+    title: '写字识字',
     subtitle: '笔顺动画，跟写与独立写',
     emoji: '✍️',
     badge: '笔画核对',

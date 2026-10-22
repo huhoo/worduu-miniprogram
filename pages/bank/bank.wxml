@@ -65,4 +65,5 @@
   </view>
 </view>
 
-<tabbar current="bank" />
+<!-- 二级页：底栏保留（回主页走底栏），但不高亮任何 tab -->
+<tabbar current="" />

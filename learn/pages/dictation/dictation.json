@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "听写默写测试",
-  "usingComponents": {}
+  "navigationBarTitleText": "默写",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
 }
