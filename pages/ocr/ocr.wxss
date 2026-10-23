@@ -278,6 +278,10 @@
   border-radius: 24rpx;
   overflow: hidden;
   background: var(--ink);
+  /* 拖选框时别让页面跟着滚：canvas 有官方 disable-scroll 属性，view 没有，
+     用标准 CSS touch-action 达到同样效果（老内核不支持会被忽略，不会更坏）。
+     注意 _stage 只在进裁剪态时量一次，页面若滚动选框会相对手指飘。 */
+  touch-action: none;
 }
 
 .crop-img {

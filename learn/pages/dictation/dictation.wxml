@@ -73,6 +73,7 @@
         id="dictation-canvas"
         class="canvas"
         style="width: 280px; height: 280px;"
+        disable-scroll="{{true}}"
         bindtouchstart="onTouchStart"
         bindtouchmove="onTouchMove"
         bindtouchend="onTouchEnd"

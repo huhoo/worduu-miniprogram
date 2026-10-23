@@ -37,15 +37,17 @@
         >{{item}}</view>
       </view>
 
-      <!-- 笔画名：只在两个数据源对笔画数一致时才出现 -->
+      <!-- 笔画名：只在两个数据源对笔画数一致时才出现。
+           子元素必须用 view：微信的 text 是行内元素，做 flex 子项时不换行也不居中，
+           整行会撑出卡片右缘（2026-10-24 实测，改成 view 后正常）。 -->
       <view class="pills" wx:if="{{hasNames}}">
-        <text
+        <view
           wx:for="{{names}}"
           wx:key="index"
           class="pill {{shown === index + 1 ? 'pill-current' : ''}}"
           data-index="{{index}}"
           bindtap="gotoStroke"
-        >{{item}}</text>
+        >{{item}}</view>
       </view>
 
       <text class="stroke-name" wx:if="{{hasNames && currentName}}">第 {{shown}} 笔：{{currentName}}</text>

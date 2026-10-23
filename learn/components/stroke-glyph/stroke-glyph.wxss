@@ -132,6 +132,10 @@
   border-radius: 999rpx;
   margin: 6rpx;
   min-height: 88rpx;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pill-current {

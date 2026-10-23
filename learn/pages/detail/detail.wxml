@@ -54,12 +54,13 @@
   <view class="card" wx:if="{{item.hasWords}}">
     <text class="title">组词</text>
     <view class="words">
-      <text
+      <!-- 子元素用 view：text 做 flex-wrap 容器子项时不换行（同 stroke-glyph 的 pills） -->
+      <view
         wx:for="{{item.words}}"
         wx:for-item="word"
         wx:key="*this"
         class="word"
-      >{{word}}</text>
+      >{{word}}</view>
     </view>
   </view>
 

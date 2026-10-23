@@ -54,6 +54,7 @@
           id="write-canvas"
           class="write-canvas"
           style="width:{{300}}px;height:{{300}}px"
+          disable-scroll="{{true}}"
           bindtouchstart="onTouchStart"
           bindtouchmove="onTouchMove"
           bindtouchend="onTouchEnd"
