@@ -27,7 +27,9 @@
 }
 
 .tab {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 12rpx 24rpx;
   border-radius: 20rpx;
   font-size: 22rpx;

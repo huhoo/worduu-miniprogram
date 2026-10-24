@@ -81,8 +81,8 @@
     </view>
 
     <view class="row tools">
-      <text class="tool" bindtap="undo">撤销一笔</text>
-      <text class="tool" bindtap="clear">重写</text>
+      <view class="tool" bindtap="undo">撤销一笔</view>
+      <view class="tool" bindtap="clear">重写</view>
       <text class="stroke-count">已写 {{writtenStrokes}} 笔</text>
     </view>
 

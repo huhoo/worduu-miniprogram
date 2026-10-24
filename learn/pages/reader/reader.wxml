@@ -44,13 +44,13 @@
       </view>
 
       <view class="rates">
-        <text
+        <view
           wx:for="{{rates}}"
           wx:key="*this"
           class="rate {{rate === item ? 'rate-on' : ''}}"
           data-rate="{{item}}"
           bindtap="pickRate"
-        >{{item}}x</text>
+        >{{item}}x</view>
       </view>
     </view>
 
@@ -86,13 +86,13 @@
 
       <text class="sheet-label">朗读方式</text>
       <view class="modes">
-        <text
+        <view
           wx:for="{{modes}}"
           wx:key="key"
           class="mode-item {{mode === item.key ? 'mode-item-on' : ''}}"
           data-key="{{item.key}}"
           bindtap="pickMode"
-        >{{item.label}}</text>
+        >{{item.label}}</view>
       </view>
       <text class="sheet-hint">{{modeHint}}</text>
 

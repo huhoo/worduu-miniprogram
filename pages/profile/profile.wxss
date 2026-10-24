@@ -6,6 +6,9 @@
 }
 
 .seg-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 14rpx 32rpx;
   border-radius: 20rpx;
   font-size: 24rpx;
