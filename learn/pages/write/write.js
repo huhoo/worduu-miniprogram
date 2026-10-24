@@ -174,8 +174,11 @@ Page({
   },
 
   toCanvasPoint(touch) {
-    let x = touch.x;
-    let y = touch.y;
+    // 微信 Touch 的标准字段是 pageX/pageY/clientX/clientY（官方文档没有 x/y）。
+    // 只给 pageX/pageY 的环境里读 x/y 会得 undefined，坐标变 NaN 后被 canvas 静默
+    // 丢弃 —— 现象是「笔会计数但不显示」。回退保命，两种字段都有的环境行为不变。
+    let x = touch.x != null ? touch.x : touch.pageX;
+    let y = touch.y != null ? touch.y : touch.pageY;
     const rect = this.rect;
     // 页面坐标落在画布尺寸之外时，说明拿到的是页面坐标，减掉画布偏移。
     if (rect && (x > SIZE || y > SIZE || x < 0 || y < 0)) {
