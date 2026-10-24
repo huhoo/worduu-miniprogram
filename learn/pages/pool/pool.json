@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "待巩固默写库",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
+}

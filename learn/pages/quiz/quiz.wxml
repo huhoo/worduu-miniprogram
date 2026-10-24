@@ -32,7 +32,7 @@
         <text class="wrong-pinyin">{{item.pinyin}}</text>
       </view>
     </view>
-    <text class="muted">点上面的字可以听正确读音。这些字已标为「经常读错」，之后会优先安排复习。</text>
+    <text class="muted">点上面的字可以听正确读音。这些字已记进错题本，之后会优先安排复习。</text>
   </view>
 
   <view class="card perfect" wx:else>

@@ -32,7 +32,7 @@ function buildCard(state, options) {
 
   let source = opts.chars;
   if (!Array.isArray(source) || !source.length) {
-    source = characters.filter((c) => c.mastery === '熟练' || c.mastery === '基本掌握');
+    source = characters.filter((c) => c.mastery === store.MASTERY.MASTERED);
   }
   // 本次练习的字可能不在字库里（例如刚拍的照片），这时补上字库最近的字。
   if (source.length < MAX_HIGHLIGHT) {

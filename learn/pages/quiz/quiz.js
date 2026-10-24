@@ -1,6 +1,7 @@
 const store = require('../../../utils/store.js');
 const audio = require('../../../utils/audio.js');
 
+const M = store.MASTERY;
 const MAX_QUESTIONS = 10;
 
 Page({
@@ -20,20 +21,38 @@ Page({
     percent: 0,
   },
 
-  onLoad() {
+  onLoad(options) {
     const state = store.loadState();
     this.state = state;
 
-    // 出卷：优先「经常读错」和「不熟」，错的越多的字越该先考。
-    const pool = state.characters;
-    const frequentErrors = pool.filter((c) => c.mastery === '经常读错');
-    const unfamiliar = pool.filter((c) => c.mastery === '不熟' || c.mastery === '待复习');
-    const rest = pool.filter(
-      (c) => c.mastery !== '经常读错' && c.mastery !== '不熟' && c.mastery !== '待复习',
-    );
+    // 预设字集：从学习足迹日详情「复习这批字」带入（R2 窄集成）。
+    const presetIds =
+      options && typeof options.chars === 'string' && options.chars
+        ? options.chars.split(',').filter(Boolean)
+        : [];
 
-    const weighted = frequentErrors.concat(unfamiliar, shuffle(rest)).slice(0, MAX_QUESTIONS);
-    const queue = shuffle(weighted);
+    let queue;
+    if (presetIds.length) {
+      const wanted = new Set(presetIds);
+      queue = shuffle(state.characters.filter((c) => wanted.has(c.id)).slice(0, MAX_QUESTIONS));
+      if (presetIds.length > queue.length) {
+        wx.showToast({
+          title: `已按足迹带入 ${presetIds.length} 字，本批先测 ${queue.length} 字`,
+          icon: 'none',
+        });
+      }
+    } else {
+      // 出卷：先考待巩固的错字，再考前三种未闭环状态，已掌握的押后。
+      // 掌握度只由默写驱动（R2），这里排的是「该趁热打铁认读」的优先级。
+      const pool = state.characters;
+      const weak = pool.filter((c) => c.mastery === M.WEAK);
+      const pending = pool.filter(
+        (c) => c.mastery === M.NEW || c.mastery === M.LEARNING || c.mastery === M.REVIEW,
+      );
+      const rest = pool.filter((c) => c.mastery === M.MASTERED);
+
+      queue = shuffle(weak.concat(shuffle(pending), shuffle(rest)).slice(0, MAX_QUESTIONS));
+    }
 
     if (queue.length === 0) {
       this.setData({ total: 0 });
@@ -111,13 +130,9 @@ Page({
     const item = this.data.current;
     const state = this.state;
 
-    const newMastery = correct
-      ? seconds < 1.8 && item.mastery !== '经常读错'
-        ? '熟练'
-        : '基本掌握'
-      : '经常读错';
-
-    store.updateMastery(state, item.id, newMastery, seconds, correct);
+    // 认读结果只记事实（会不会/多久/错几次），不改掌握度 —— 5 态状态机
+    // 的所有流转都指向默写任务（PRD 8.4）。
+    store.recordReadingResult(state, item.id, correct, seconds);
     store.saveState(state);
 
     this.log = this.log.filter((entry) => entry.char !== item.char).concat([
@@ -133,7 +148,7 @@ Page({
       showPinyin: true,
       responseTime: seconds,
       feedback: correct
-        ? '读得很好！这个字已经记进掌握清单。'
+        ? '读得很好！本次认读已记录。'
         : `这个字读作“${item.pinyin}”，多跟读两遍，之后再考你。`,
       correctCount: this.data.correctCount + (correct ? 1 : 0),
     });

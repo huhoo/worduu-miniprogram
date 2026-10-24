@@ -1,0 +1,72 @@
+<view class="page">
+  <!-- 空足迹 -->
+  <view class="card empty-fp" wx:if="{{totalChars === 0}}">
+    <view class="empty-icon">🗓️</view>
+    <view class="row-t">还没有学习足迹</view>
+    <view class="row-s">拍一页课本或课外书，确认加入生字库后，这里会按天记下每一笔收获。</view>
+  </view>
+
+  <!-- 月历 -->
+  <view class="card">
+    <view class="cal-h">
+      <view class="cal-nav" catchtap="prevMonth">‹</view>
+      <text class="cal-title">{{monthLabel}}</text>
+      <view class="cal-nav" catchtap="nextMonth">›</view>
+    </view>
+
+    <view class="cal-tools">
+      <view class="legend">
+        <view class="lg"><view class="lg-dot"></view>有新增</view>
+        <view class="lg"><view class="lg-today"></view>今天</view>
+      </view>
+      <view class="range-toggle {{rangeMode ? 'on' : ''}}" catchtap="toggleRangeMode">
+        {{rangeMode ? '退出选范围' : '选范围'}}
+      </view>
+    </view>
+
+    <view class="cal-grid">
+      <view class="cw" wx:for="{{weekdays}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="cal-week" wx:for="{{weeks}}" wx:for-item="week" wx:for-index="wi" wx:key="wi">
+      <view class="d-wrap" wx:for="{{week}}" wx:for-item="cell" wx:key="iso">
+        <view wx:if="{{cell}}" class="{{cell.cls}}" data-iso="{{cell.iso}}" catchtap="onDayTap">
+          <text class="d-num">{{cell.day}}</text>
+          <view class="d-dot" wx:if="{{cell.count > 0}}"></view>
+        </view>
+        <view wx:else class="d blank"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选中日详情 -->
+  <view class="card day-card" wx:if="{{selected}}">
+    <view class="row-t">{{selected.label}} · 新增 {{selected.count}} 字</view>
+    <view class="row-s" wx:if="{{selected.count > 0}}">{{selected.sourceText}}</view>
+    <view class="fc-words" wx:if="{{selected.count > 0}}">
+      <view class="fw" wx:for="{{selected.chars}}" wx:key="id" data-id="{{item.id}}" bindtap="openDetail">{{item.char}}</view>
+    </view>
+    <view class="row-s" wx:else>当天没有新增生字</view>
+    <view class="day-acts" wx:if="{{selected.count > 0}}">
+      <view class="btn btn-ghost" catchtap="reviewDay">复习这批字（{{selected.count}}）</view>
+      <view class="btn btn-primary" catchtap="dictateDay">用这批字默写</view>
+    </view>
+  </view>
+
+  <!-- 区间条 -->
+  <view class="card rangebar" wx:if="{{rangeStart && rangeEnd}}">
+    <view class="range-line">
+      <text class="rg">{{rangeStartLabel}}</text>
+      <view class="rg-line"></view>
+      <text class="rg">{{rangeEndLabel}}</text>
+      <text class="rg-n">共 {{rangeCount}} 字</text>
+    </view>
+    <view class="btn btn-primary btn-block" catchtap="dictateRange">用这 {{rangeCount}} 字去默写</view>
+  </view>
+
+  <view class="tipcard" wx:if="{{totalChars > 0}}">
+    足迹是学习审计账本，按天记录每一次入库，不支持删除单日记录。
+  </view>
+
+  <!-- 二级页：底栏保留（回主页走底栏），但不高亮任何 tab -->
+  <tabbar current="" />
+</view>

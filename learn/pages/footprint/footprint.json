@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "学习足迹",
+  "usingComponents": {
+    "tabbar": "/components/tabbar/tabbar"
+  }
+}

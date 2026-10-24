@@ -47,6 +47,8 @@ Page({
       item: Object.assign({}, item, {
         wordsText: words.join('、'),
         hasWords: words.length > 0,
+        // dateEncountered 库里存的是 ISO，展示层格式化；解析不了的老记录不显示日期。
+        dateEncounteredText: store.isoToLabel(item.dateEncountered),
       }),
     });
     wx.setNavigationBarTitle({ title: `“${item.char}” 字卡` });
@@ -81,8 +83,10 @@ Page({
               originStory: info.originStory || '',
               source: '课外书',
               sourceDetail: '临时查字',
-              dateEncountered: store.todayLabel(),
-              mastery: '不熟',
+              dateEncountered: store.todayISO(),
+              dateEncounteredText: store.isoToLabel(store.todayISO()),
+              // 临时查字的字不在字库里，掌握度无从谈起 —— 不挂 5 态里的任何一个。
+              mastery: '未入字库',
             },
             notice: '',
           });

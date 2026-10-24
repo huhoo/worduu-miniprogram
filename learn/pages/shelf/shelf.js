@@ -28,7 +28,7 @@ function articleStats(article, characters) {
     const entry = characters.find((c) => c.char === symbol);
     if (!entry) return;
     encountered += 1;
-    if (entry.mastery === '熟练' || entry.mastery === '基本掌握') mastered += 1;
+    if (entry.mastery === store.MASTERY.MASTERED) mastered += 1;
   });
 
   return { total: unique.size, encountered, mastered };

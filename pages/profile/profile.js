@@ -1,14 +1,16 @@
 const store = require('../../utils/store.js');
 
-const RING = 176; // 熟练率圆环的画布边长（px）
+const M = store.MASTERY;
+const RING = 176; // 掌握率圆环的画布边长（px）
 const SLOW_THRESHOLD = 2.5; // 反应超过 2.5 秒算「偏慢」，与 Web 版一致
 
 /** 掌握度 -> 标签配色，与字库页保持同一套。 */
 function masteryClass(level) {
-  if (level === '熟练') return 'is-ok';
-  if (level === '经常读错') return 'is-bad';
-  if (level === '不熟' || level === '待复习') return 'is-amber';
-  return 'is-blue';
+  if (level === M.MASTERED) return 'is-ok';
+  if (level === M.WEAK) return 'is-bad';
+  if (level === M.REVIEW) return 'is-amber';
+  if (level === M.LEARNING) return 'is-blue';
+  return 'is-plain'; // 新加入
 }
 
 /** 「春、蝶、森 等」这种列表文本。WXML 不支持 join，只能在 JS 里拼好。 */
@@ -25,10 +27,11 @@ Page({
       todayLearnedCount: 0,
       todayMasteredCount: 0,
       todayReviewCount: 0,
-      mastered: 0,
-      basic: 0,
-      unfamiliar: 0,
-      frequentError: 0,
+      newCount: 0,
+      learningCount: 0,
+      weakCount: 0,
+      masteredCount: 0,
+      reviewCount: 0,
     },
     total: 0,
     masteryRate: 0,
@@ -62,33 +65,34 @@ Page({
 
     const pct = (value) => (total > 0 ? Math.round((value / total) * 100) : 0);
 
-    const solidChars = characters.filter((c) => c.mastery === '熟练');
-    const errorChars = characters.filter((c) => c.mastery === '经常读错');
+    const solidChars = characters.filter((c) => c.mastery === M.MASTERED);
+    const errorChars = characters.filter((c) => c.mastery === M.WEAK);
     const slowChars = characters.filter(
       (c) => Number(c.reactionTimeSeconds) > SLOW_THRESHOLD,
     );
     const canDictate = characters.filter((c) => c.canDictate).length;
 
     const buckets = [
-      { name: '熟练', color: '#3F8E5D', count: stats.mastered, pct: pct(stats.mastered) },
-      { name: '基本掌握', color: '#6DB589', count: stats.basic, pct: pct(stats.basic) },
-      { name: '不熟', color: '#B8862E', count: stats.unfamiliar, pct: pct(stats.unfamiliar) },
-      { name: '经常读错', color: '#F43F5E', count: stats.frequentError, pct: pct(stats.frequentError) },
+      { name: M.NEW, color: '#93A397', count: stats.newCount, pct: pct(stats.newCount) },
+      { name: M.LEARNING, color: '#2F6B50', count: stats.learningCount, pct: pct(stats.learningCount) },
+      { name: M.WEAK, color: '#F43F5E', count: stats.weakCount, pct: pct(stats.weakCount) },
+      { name: M.MASTERED, color: '#3F8E5D', count: stats.masteredCount, pct: pct(stats.masteredCount) },
+      { name: M.REVIEW, color: '#B8862E', count: stats.reviewCount, pct: pct(stats.reviewCount) },
     ];
 
     const memoryList = characters.slice(0, 6).map((c) => ({
       id: c.id,
       char: c.char,
       source: c.source || '课外书',
-      mastery: c.mastery || '不熟',
+      mastery: c.mastery || M.NEW,
       masteryClass: masteryClass(c.mastery),
-      note: c.memoryNote || `“${c.char}”来自${c.sourceDetail || c.source || '课外书'}，当前状态为${c.mastery || '不熟'}。`,
+      note: c.memoryNote || `“${c.char}”来自${c.sourceDetail || c.source || '课外书'}，当前状态为${c.mastery || M.NEW}。`,
     }));
 
     this.setData({
       stats,
       total,
-      masteryRate: pct(stats.mastered),
+      masteryRate: pct(stats.masteredCount),
       buckets,
       memoryList,
       canDictate,
@@ -98,9 +102,9 @@ Page({
       childNickname: state.childNickname || '孩子',
       solidSummary:
         solidChars.length > 0
-          ? `${solidChars.length} 个字认读熟练（${joinChars(solidChars, 6)}）`
-          : '还没有标记为熟练的字',
-      errorSummary: `${errorChars.length} 个字朗读出错（${joinChars(errorChars, 8)}）`,
+          ? `${solidChars.length} 个字默写已掌握（${joinChars(solidChars, 6)}）`
+          : '还没有默写掌握的字',
+      errorSummary: `${errorChars.length} 个字在默写库待巩固（${joinChars(errorChars, 8)}）`,
       slowSummary: `${slowChars.length} 个字认读用时超过 ${SLOW_THRESHOLD} 秒（${slowChars
         .slice(0, 6)
         .map((c) => `“${c.char}”约 ${c.reactionTimeSeconds} 秒`)

@@ -16,6 +16,8 @@
         "pages/quiz/quiz",
         "pages/write/write",
         "pages/dictation/dictation",
+        "pages/pool/pool",
+        "pages/footprint/footprint",
         "pages/shelf/shelf",
         "pages/reader/reader",
         "pages/achievement/achievement"

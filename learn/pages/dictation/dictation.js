@@ -2,8 +2,10 @@ const store = require('../../../utils/store.js');
 const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
 
+const M = store.MASTERY;
 const SIZE = 280; // 画布逻辑边长（px）
-const PER_SESSION = 5; // 一次听写 5 个字，与原 Web 版一致
+const PER_SESSION = 5; // 常规听写一轮 5 个字，与原 Web 版一致
+const MAX_PRESET = 20; // 预设字集（足迹/默写库带入）单轮上限，超出先默前 20 个
 
 Page({
   data: {
@@ -25,15 +27,36 @@ Page({
     empty: false,
   },
 
-  onLoad() {
+  onLoad(options) {
     const state = store.loadState();
     this.state = state;
 
-    const queue = buildQueue(state.characters, PER_SESSION);
+    // 预设字集：从学习足迹日详情/默写库「用这批字去默写」带入。
+    // R2 只做这条窄集成（带入即开默），完整的范围设定/内容配置页在 R3。
+    const presetIds =
+      options && typeof options.chars === 'string' && options.chars
+        ? options.chars.split(',').filter(Boolean)
+        : [];
+
+    const queue = buildQueue(state.characters, PER_SESSION, presetIds);
     if (queue.length === 0) {
       this.setData({ empty: true, total: 0 });
       return;
     }
+
+    if (presetIds.length > queue.length) {
+      wx.showToast({
+        title: `已按足迹带入 ${presetIds.length} 字，本批先默 ${queue.length} 字`,
+        icon: 'none',
+      });
+    }
+
+    // PRD 8.4：「第一次被选入默写任务」即离开新加入 —— 建队时就流转，不等出结果。
+    store.markDictationStarted(
+      state,
+      queue.map((c) => c.id),
+    );
+    store.saveState(state);
 
     this.queue = queue;
     this.strokes = [];
@@ -397,6 +420,11 @@ Page({
       this.setData({ empty: true, done: false, total: 0 });
       return;
     }
+    store.markDictationStarted(
+      state,
+      queue.map((c) => c.id),
+    );
+    store.saveState(state);
     this.queue = queue;
     this.log = [];
     this.setData({ done: false, correctCount: 0, wrongList: [], percent: 0 });
@@ -417,11 +445,14 @@ Page({
 });
 
 /**
- * 出卷：先考还没默写过关的字，再补错过的字，最后才是其余。
+ * 出卷：先救待巩固的错字（二出池），再考前三种未闭环状态，已掌握的押后。
  * 不洗牌 —— 字库本身按收录时间倒序，先考最近学的，符合从新到旧的复习顺序。
- * 三档之间用 seen 去重，否则一个「未过关 + 经常读错」的字会被抽中两次。
+ * 三档之间用 seen 去重，否则一个字会因同时命中多档被抽中两次。
+ *
+ * presetIds 非空时（足迹/默写库带入）整批替换候选，仍受 MAX_PRESET 限制；
+ * 带入而字已不在库的（被移出过）静默剔除。
  */
-function buildQueue(pool, limit) {
+function buildQueue(pool, limit, presetIds) {
   const seen = new Set();
   const pick = (list) =>
     list.filter((c) => {
@@ -430,9 +461,18 @@ function buildQueue(pool, limit) {
       return true;
     });
 
-  const pending = pick(pool.filter((c) => !c.canDictate && c.mastery !== '熟练'));
-  const weak = pick(pool.filter((c) => c.mastery === '经常读错'));
+  if (presetIds && presetIds.length) {
+    const wanted = new Set(presetIds);
+    return pool.filter((c) => wanted.has(c.id)).slice(0, MAX_PRESET);
+  }
+
+  const weak = pick(pool.filter((c) => c.mastery === M.WEAK));
+  const pending = pick(
+    pool.filter(
+      (c) => c.mastery === M.NEW || c.mastery === M.LEARNING || c.mastery === M.REVIEW,
+    ),
+  );
   const rest = pick(pool);
 
-  return pending.concat(weak, rest).slice(0, limit);
+  return weak.concat(pending, rest).slice(0, limit);
 }

@@ -240,6 +240,7 @@
 .tag.is-bad { background: #FFF1F2; color: #9F1239; border: 1rpx solid #FECDD3; }
 .tag.is-amber { background: var(--amber-light); color: var(--amber-ink); border: 1rpx solid var(--amber-line); }
 .tag.is-blue { background: #EFF6FF; color: #1E40AF; border: 1rpx solid #BFDBFE; }
+.tag.is-plain { background: var(--app-surface-2); color: var(--ink-2); border: 1rpx solid var(--line); }
 
 .trail-note {
   display: block;

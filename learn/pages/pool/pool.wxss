@@ -1,0 +1,197 @@
+.rulecard {
+  border-left: 6rpx solid var(--amber);
+}
+
+.rulecard .strong {
+  color: var(--amber-ink);
+  font-weight: 700;
+}
+
+/* ---------- 池内字行 ---------- */
+.poolrow {
+  display: flex;
+  align-items: center;
+}
+
+.tz {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 20rpx;
+  background: var(--app-surface-2);
+  border: 1rpx solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.pool-main {
+  flex: 1;
+  min-width: 0;
+  margin: 0 20rpx;
+}
+
+.pool-char {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.pool-py {
+  margin-left: 10rpx;
+  font-size: 24rpx;
+  font-family: 'SF Mono', Menlo, monospace;
+  color: var(--indigo);
+}
+
+.pool-tag {
+  margin-left: 12rpx;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--amber-ink);
+  background: var(--amber-light);
+  border: 1rpx solid var(--amber-line);
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+}
+
+/* 二出进度条：对 1/2 就是一半 */
+.pbar {
+  margin: 12rpx 0 4rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: var(--app-surface-2);
+  overflow: hidden;
+}
+
+.pbar-in {
+  height: 100%;
+  border-radius: 999rpx;
+  background: var(--green-2);
+}
+
+.pool-acts {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.btn-sm {
+  font-size: 24rpx;
+  padding: 10rpx 22rpx;
+  min-height: 64rpx;
+  border-radius: 16rpx;
+}
+
+.btn-sm + .btn-sm {
+  margin-top: 12rpx;
+}
+
+.btn-danger {
+  color: #9F1239;
+  border-color: #FECDD3;
+  background: #FFF1F2;
+}
+
+/* ---------- 空池庆祝态 ---------- */
+.empty-pool {
+  text-align: center;
+  padding: 48rpx 28rpx;
+}
+
+.empty-icon {
+  font-size: 64rpx;
+  margin-bottom: 12rpx;
+}
+
+/* ---------- 已出库 ---------- */
+.outrow {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fw {
+  min-width: 72rpx;
+  min-height: 88rpx;
+  margin: 8rpx;
+  border-radius: 16rpx;
+  background: var(--app-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: var(--ink-2);
+}
+
+.fw.gray {
+  color: var(--ink-3);
+}
+
+/* ---------- 家长密码弹层 ---------- */
+.mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(43, 58, 48, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal {
+  width: 600rpx;
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 40rpx 36rpx 32rpx;
+}
+
+.modal-t {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+}
+
+.modal-s {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.pwd-input {
+  margin-top: 28rpx;
+  height: 88rpx;
+  border: 1rpx solid var(--line-2);
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  font-size: 32rpx;
+  letter-spacing: 8rpx;
+  background: var(--app-bg);
+}
+
+.pwd-err {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #9F1239;
+  text-align: center;
+}
+
+.modal-btns {
+  display: flex;
+  margin-top: 32rpx;
+}
+
+.modal-btn {
+  flex: 1;
+}
+
+.modal-btn + .modal-btn {
+  margin-left: 20rpx;
+}

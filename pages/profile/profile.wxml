@@ -37,7 +37,7 @@
           ></canvas>
           <view class="ring-center">
             <text class="ring-pct">{{masteryRate}}%</text>
-            <text class="ring-label">熟练率</text>
+            <text class="ring-label">已掌握率</text>
           </view>
         </view>
 
@@ -56,12 +56,12 @@
       </view>
 
       <view wx:if="{{hasErrors}}" class="review-btn" bindtap="reviewErrors">
-        <text class="review-text">⚠ 立即专项复习 {{errorCount}} 个经常读错生字</text>
+        <text class="review-text">⚠ 立即专项复习 {{errorCount}} 个待巩固生字</text>
         <text class="review-arrow">›</text>
       </view>
       <!-- 没有错字时不能摆一个点了没反应的按钮 -->
       <view wx:else class="review-ok">
-        <text class="review-ok-text">✓ 暂时没有经常读错的字，继续保持</text>
+        <text class="review-ok-text">✓ 暂时没有待巩固的字，继续保持</text>
       </view>
     </view>
 
@@ -111,7 +111,7 @@
         <view class="avatar">👦</view>
         <view class="head-text">
           <text class="head-title">{{childNickname}}的学习档案看板</text>
-          <text class="head-sub">已认读 {{total}} 字，其中 {{stats.mastered}} 字达到熟练</text>
+          <text class="head-sub">已认读 {{total}} 字，其中 {{stats.masteredCount}} 字已掌握</text>
         </view>
       </view>
 

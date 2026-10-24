@@ -85,7 +85,7 @@
     <text class="title">这个字的来历</text>
     <text class="body-text">
       {{item.source}} · {{item.sourceDetail}}
-      <block wx:if="{{item.dateEncountered}}">（{{item.dateEncountered}}遇到）</block>
+      <block wx:if="{{item.dateEncounteredText}}">（{{item.dateEncounteredText}}遇到）</block>
     </text>
     <text class="body-text" wx:if="{{item.memoryNote}}">{{item.memoryNote}}</text>
   </view>

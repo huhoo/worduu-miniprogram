@@ -146,6 +146,57 @@
   border-color: #FECDD3;
 }
 
+/* 新加入：中性次级面，不抢已掌握/待巩固的语义色 */
+.mastery-plain {
+  background: var(--app-surface-2);
+  color: var(--ink-2);
+  border-color: var(--line);
+}
+
+/* ---------- 默写库常驻卡片 + 足迹入口 ---------- */
+.pool-card {
+  display: flex;
+  align-items: center;
+  border-left: 6rpx solid var(--green);
+}
+
+.pool-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.pool-count {
+  margin-left: 10rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.pool-clear {
+  color: var(--green);
+}
+
+.entry-row {
+  display: flex;
+  align-items: center;
+}
+
+.entry-ic {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.entry-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.entry-go {
+  font-size: 40rpx;
+  color: var(--ink-3);
+  margin-left: 12rpx;
+}
+
 .play {
   margin-top: 12rpx;
   font-size: 32rpx;

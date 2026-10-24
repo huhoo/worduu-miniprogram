@@ -1,0 +1,69 @@
+<view class="page">
+  <!-- 二出原则说明卡 -->
+  <view class="card rulecard">
+    <view class="row-t">二出原则</view>
+    <view class="row-s">错字自动入池 → 连续写对 <text class="strong">2</text> 次自动出库；家长也可手动出库。避免「错一次就攒一个新库」越攒越多。</view>
+  </view>
+
+  <!-- 池内字 -->
+  <view class="card poolrow" wx:for="{{pool}}" wx:key="id">
+    <view class="tz kai" data-id="{{item.id}}" bindtap="openDetail">{{item.char}}</view>
+    <view class="pool-main">
+      <view class="row">
+        <text class="pool-char">{{item.char}}</text>
+        <text class="pool-py" wx:if="{{item.pinyin}}">{{item.pinyin}}</text>
+        <text class="pool-tag">对 {{item.streak}}/2</text>
+      </view>
+      <view class="pbar"><view class="pbar-in" style="width:{{item.progressPct}}%"></view></view>
+      <text class="row-s">{{item.metaText}}</text>
+    </view>
+    <view class="pool-acts">
+      <view class="btn btn-ghost btn-sm" data-id="{{item.id}}" catchtap="reDictate">再默</view>
+      <view class="btn btn-ghost btn-sm btn-danger" data-id="{{item.id}}" data-char="{{item.char}}" catchtap="askManualExit">出库</view>
+    </view>
+  </view>
+
+  <!-- 空池庆祝态 -->
+  <view class="card empty-pool" wx:if="{{pool.length === 0}}">
+    <view class="empty-icon">🎉</view>
+    <view class="row-t">全部字都过关啦</view>
+    <view class="row-s" wx:if="{{lastExitLabel}}">最近一次过关：{{lastExitLabel}}</view>
+    <view class="row-s" wx:else>错字会在默写时自动进池，连续写对 2 次自动出库</view>
+  </view>
+
+  <!-- 已出库（最近 7 天） -->
+  <block wx:if="{{exited.length > 0}}">
+    <view class="sec-title">已出库 · 最近 7 天 <text class="sec-count">{{exited.length}}</text></view>
+    <view class="card outrow">
+      <view class="fw" wx:for="{{exited}}" wx:key="char">{{item.char}}</view>
+    </view>
+  </block>
+
+  <!-- 一键再默 -->
+  <view class="btn btn-primary btn-block" wx:if="{{pool.length > 0}}" catchtap="reDictateAll">一键再默（{{pool.length}} 字）</view>
+
+  <!-- 家长密码弹层 -->
+  <view class="mask" wx:if="{{pwdModal}}" catchtap="dismissPwd">
+    <view class="modal" catchtap="noop">
+      <view class="modal-t">{{pwdMode === 'set' ? '设置家长密码' : '输入家长密码'}}</view>
+      <view class="modal-s">{{pwdMode === 'set' ? '4-6 位数字，只存本机，保护「手动出库」' : '验证后可将该字移出默写库'}}</view>
+      <input
+        class="pwd-input"
+        type="number"
+        password
+        maxlength="6"
+        value="{{pwdInput}}"
+        bindinput="onPwdInput"
+        placeholder="4-6 位数字"
+      />
+      <view class="pwd-err" wx:if="{{pwdError}}">{{pwdError}}</view>
+      <view class="modal-btns">
+        <view class="btn btn-ghost modal-btn" catchtap="dismissPwd">取消</view>
+        <view class="btn btn-primary modal-btn" catchtap="confirmPwd">{{pwdMode === 'set' ? '设置并出库' : '验证并出库'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 二级页：底栏保留（回主页走底栏），但不高亮任何 tab -->
+  <tabbar current="" />
+</view>

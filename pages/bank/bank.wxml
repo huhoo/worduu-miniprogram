@@ -10,6 +10,29 @@
     />
   </view>
 
+  <!-- 待巩固默写库：生字库页顶部常驻卡片（PRD 9.5） -->
+  <view class="card pool-card" bindtap="goPool">
+    <view class="pool-body">
+      <view class="row-t">待巩固默写库 <text class="pool-count">{{poolCount}} 字</text></view>
+      <view class="row-s" wx:if="{{poolCount > 0}}">
+        <block wx:if="{{poolOldest}}">最久未过：{{poolOldest.char}}（{{poolOldest.days}} 天）· 连续写对 2 次自动出库</block>
+        <block wx:else>{{poolCount}} 个字等待巩固 · 连续写对 2 次自动出库</block>
+      </view>
+      <view class="row-s pool-clear" wx:else>全部字都过关啦，保持住 🎉</view>
+    </view>
+    <text class="entry-go">›</text>
+  </view>
+
+  <!-- 学习足迹入口（PRD 8.3） -->
+  <view class="card entry-row" bindtap="goFootprint">
+    <text class="entry-ic">🗓️</text>
+    <view class="entry-body">
+      <view class="row-t">学习足迹</view>
+      <view class="row-s">按天的生字账本<block wx:if="{{footprintDays > 0}}"> · 已有 {{footprintDays}} 天</block> · 可圈日期范围去默写</view>
+    </view>
+    <text class="entry-go">›</text>
+  </view>
+
   <!-- 分类 -->
   <scroll-view scroll-x class="tabs">
     <view
@@ -36,7 +59,7 @@
           <text class="item-pinyin">{{item.pinyin || '暂无拼音'}}</text>
           <text class="chip chip-plain">{{item.source}}</text>
         </view>
-        <text class="item-date">{{item.dateEncountered}} 遇到</text>
+        <text class="item-date">{{item.dateEncounteredText}} 遇到</text>
         <text class="item-words" wx:if="{{item.wordsText}}">组词：{{item.wordsText}}</text>
       </view>
       <view class="item-right">
