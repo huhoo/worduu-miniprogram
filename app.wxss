@@ -80,6 +80,40 @@ page {
   justify-content: space-between;
 }
 
+/* ---------- 卡片行文（原型的 row-t/row-s，全局复用） ---------- */
+.row-t {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.row-s {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ---------- 区块小标题 ---------- */
+.sec-title {
+  margin: 32rpx 8rpx 16rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.sec-count {
+  margin-left: 8rpx;
+  font-weight: 700;
+  color: var(--green);
+}
+
+/* ---------- 块级按钮 ---------- */
+.btn-block {
+  width: 100%;
+  margin-top: 24rpx;
+}
+
 /* ---------- 文字 ---------- */
 .title {
   font-size: 32rpx;

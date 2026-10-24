@@ -19,5 +19,6 @@ module.exports = {
     state: 'ziban_state_v1',
     study: 'ziban_study_time_v1',
     speechPref: 'ziban_speech_pref_v1',
+    parent: 'ziban_parent_pwd_v1',
   },
 };
