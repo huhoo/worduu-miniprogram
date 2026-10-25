@@ -1,6 +1,8 @@
 const store = require('../../../utils/store.js');
 const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
+const { loadStrokeData } = require('../../utils/strokes.js');
+const { checkStrokeOrder } = require('../../utils/strokeCheck.js');
 
 const M = store.MASTERY;
 const SIZE = 280; // 画布逻辑边长（px）
@@ -67,10 +69,13 @@ Page({
 
   onHide() {
     audio.stopSpeaking();
+    // 切后台时取消自动跳转：回来看到的是带「下一字」按钮的判定态，手动继续。
+    this.clearAutoNext();
   },
 
   onUnload() {
     audio.stopSpeaking();
+    this.clearAutoNext();
   },
 
   startQuestion(index) {
@@ -95,6 +100,10 @@ Page({
       evaluating: false,
     });
     wx.setNavigationBarTitle({ title: `听写 ${index + 1}/${this.queue.length}` });
+
+    // 预取该字的标准笔顺（与笔顺动画同源数据），提交时本地逐笔比对要用。
+    this.localHint = '';
+    this.strokeDataTask = loadStrokeData(item.char);
 
     // 等画布就绪再重画；晚 400ms 自动读一遍，和原 Web 版的节奏一致。
     if (wx.nextTick) wx.nextTick(() => this.initCanvas());
@@ -282,14 +291,43 @@ Page({
     const standard = Number(item.strokeCount) || 0;
     // 拿不到 AI 结论时的兜底判定：笔画数差 1 以内算对。这是唯一本地可验证的事实。
     const countOnlyPass = standard > 0 ? Math.abs(written - standard) <= 1 : false;
+    const that = this;
+
+    this.setData({ evaluating: true });
+    this.localHint = '';
+
+    // 本地逐笔笔顺比对（PRD 9.4，标准数据与笔顺动画同源）。能本地定论的
+    // （笔画数差 ≥2、顺序错）立即反馈，省一轮十几秒的 AI 等待；
+    // 拿不到标准数据或比对放行时照旧走 AI —— 本地不猜，AI 不可用只报事实。
+    const task = this.strokeDataTask || loadStrokeData(item.char);
+    task
+      .then((glyph) => {
+        if (that.data.revealed) return;
+        if (glyph && glyph.medians) {
+          const r = checkStrokeOrder(that.strokes, SIZE, glyph.medians);
+          if (r.status === 'count-error' || r.status === 'order-error') {
+            that.finishTask(false, r.detail, '');
+            return;
+          }
+          that.localHint = r.hint || '';
+        }
+        that.proceedToAi(written, standard, countOnlyPass);
+      })
+      .catch(() => {
+        if (that.data.revealed) return;
+        that.proceedToAi(written, standard, countOnlyPass);
+      });
+  },
+
+  /** 本地比对放行后的 AI 批改路径（原 submit 主体）。 */
+  proceedToAi(written, standard, countOnlyPass) {
+    const that = this;
 
     if (!this.canvas) {
       this.finishTask(countOnlyPass, '未能取得书写图像，本次仅核对了笔画数。', '');
       return;
     }
 
-    const that = this;
-    this.setData({ evaluating: true });
     const dpr = this.dpr || wx.getSystemInfoSync().pixelRatio || 2;
     const side = Math.round(SIZE * dpr);
 
@@ -330,14 +368,15 @@ Page({
         canvasBase64: `data:image/png;base64,${base64}`,
       })
       .then((data) => {
-        that.finishTask(data.isPassed === true, '', data.feedback || '');
+        that.finishTask(data.isPassed === true, that.localHint || '', data.feedback || '');
       })
       .catch((err) => {
         // 不编造分数。只给出本地确实核对过的事实，并提醒家长复核。
         const reason = (err && err.message) || 'AI 批改不可用';
+        const note = that.localHint ? `${reason}；${that.localHint}` : reason;
         that.finishTask(
           countOnlyPass,
-          `${reason}；本次仅按笔画数判定，请家长复核。`,
+          `${note}；本次仅按笔画数判定，请家长复核。`,
           '',
         );
       });
@@ -362,9 +401,27 @@ Page({
       feedback: feedback || '',
       correctCount: this.data.correctCount + (passed ? 1 : 0),
     });
+
+    // PRD 9.3：字形判定正确 → 绿勾 → 自动进入下一字（2026-10-25 用户反馈补上）。
+    // 留 1.2 秒给绿勾和音效；期间手动点「下一字」会先清掉这个定时器，不会跳两个字。
+    if (passed) {
+      this.clearAutoNext();
+      this.autoNextTimer = setTimeout(() => {
+        this.autoNextTimer = null;
+        this.next();
+      }, 1200);
+    }
+  },
+
+  clearAutoNext() {
+    if (this.autoNextTimer) {
+      clearTimeout(this.autoNextTimer);
+      this.autoNextTimer = null;
+    }
   },
 
   next() {
+    this.clearAutoNext();
     if (this.data.index < this.queue.length - 1) {
       this.startQuestion(this.data.index + 1);
       return;

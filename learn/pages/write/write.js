@@ -2,6 +2,7 @@ const store = require('../../../utils/store.js');
 const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
 const { loadStrokeData } = require('../../utils/strokes.js');
+const { checkStrokeOrder } = require('../../utils/strokeCheck.js');
 
 const SIZE = 300; // 画布逻辑边长（px）
 
@@ -59,11 +60,14 @@ Page({
     // 而这个数既要展示给孩子、又是批改的判定基准。笔顺 medians 是权威值，
     // 拉到后覆盖；字没有权威数据时才退回字库里存的数。
     this.authoritativeCount = 0;
+    this.standardMedians = null;
     const that = this;
     loadStrokeData(item.char).then((glyph) => {
       const count = glyph && Array.isArray(glyph.medians) ? glyph.medians.length : 0;
       if (!count) return;
       that.authoritativeCount = count;
+      // 逐笔笔顺比对（提交时本地先判一次）与动画共用这份数据。
+      that.standardMedians = glyph.medians;
       if (that.data.item && that.data.item.char === item.char) {
         that.setData({ standardStrokeCount: count });
       }
@@ -255,6 +259,26 @@ Page({
     if (!this.canvas) {
       this.setData({ note: '画布还没准备好，请稍等一下再试。' });
       return;
+    }
+
+    // 本地逐笔笔顺比对（PRD 9.4，标准数据与笔顺动画同源）。能本地定论的
+    // （笔画数差 ≥2、顺序错）立即反馈，不等十几秒的 AI；放行时照旧走 AI。
+    if (this.standardMedians) {
+      const local = checkStrokeOrder(this.strokes, SIZE, this.standardMedians);
+      if (local.status === 'count-error' || local.status === 'order-error') {
+        audio.soundEffects.playNotice();
+        this.setData({
+          result: {
+            isPassed: false,
+            shapeScore: 0,
+            strokeScore: 0,
+            feedback: local.detail,
+            improvementsText: '对照「看笔顺动画」页签再写一遍。',
+            hasImprovements: true,
+          },
+        });
+        return;
+      }
     }
 
     const that = this;

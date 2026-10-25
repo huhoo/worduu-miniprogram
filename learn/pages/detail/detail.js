@@ -14,9 +14,23 @@ Page({
   onLoad(options) {
     const state = store.loadState();
 
+    // char 参数两种来源：reader 等页面 encodeURIComponent 后跳入（%E5%A5%BD），
+    // 以及本仓库一贯的「传原字符」习惯（好）。微信框架不解码 query，
+    // 接收端统一解一次：对原字符是空操作，对预编码是还原 —— 两种都兼容。
+    // 不解码的后果：reader 点字跳过来的是 %XX 串，云函数报「请提供单个汉字」，
+    // 字卡空白（2026-10-25 用户真机实测）。
+    let charParam = '';
+    if (options.char) {
+      try {
+        charParam = decodeURIComponent(options.char);
+      } catch (e) {
+        charParam = options.char;
+      }
+    }
+
     let item = null;
     if (options.id) item = store.findById(state, options.id);
-    if (!item && options.char) item = store.findByChar(state, options.char);
+    if (!item && charParam) item = store.findByChar(state, charParam);
 
     if (item) {
       this.state = state;
@@ -27,10 +41,10 @@ Page({
     }
 
     // 字库里没有：只在本次会话里展示，不写进字库。
-    if (options.char) {
+    if (charParam) {
       this.state = state;
       this.setData({ inBank: false, loading: true });
-      this.fetchInfo(options.char, true);
+      this.fetchInfo(charParam, true);
       return;
     }
 

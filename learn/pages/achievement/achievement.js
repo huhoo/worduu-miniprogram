@@ -30,14 +30,22 @@ Page({
     const opts = options || {};
 
     // chars 由上一页以「春,蝶」的形式传过来，拼音回到字库里补，不靠链接带。
+    // 上一页是 encodeURIComponent 后拼的 query，微信框架不解码 —— 这里必须
+    // 配对解一次，否则 findByChar 全 miss，成就卡上是一串 %XX 乱码。
     let chars = null;
     if (opts.chars) {
       chars = String(opts.chars)
         .split(',')
         .filter((ch) => ch)
         .map((ch) => {
-          const found = store.findByChar(state, ch);
-          return found || { char: ch, pinyin: '' };
+          let decoded = ch;
+          try {
+            decoded = decodeURIComponent(ch);
+          } catch (e) {
+            decoded = ch;
+          }
+          const found = store.findByChar(state, decoded);
+          return found || { char: decoded, pinyin: '' };
         });
     }
 
