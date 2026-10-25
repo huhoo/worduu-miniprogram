@@ -11,6 +11,11 @@ const MAX_PRESET = 20; // 预设字集（足迹/默写库带入）单轮上限�
 
 Page({
   data: {
+    scope: false, // 范围选择视图（无预设字带入时先选范围）
+    picking: false, // 自选字的挑字面板
+    picker: [], // { id, char, pinyin, picked }
+    pickedCount: 0,
+    photoCount: 0,
     current: null,
     index: 0,
     total: 0,
@@ -33,20 +38,49 @@ Page({
     const state = store.loadState();
     this.state = state;
 
-    // 预设字集：从学习足迹日详情/默写库「用这批字去默写」带入。
-    // R2 只做这条窄集成（带入即开默），完整的范围设定/内容配置页在 R3。
+    // 预设字集：从学习足迹日详情/默写库「用这批字去默写」带入，直接开默。
     const presetIds =
       options && typeof options.chars === 'string' && options.chars
         ? options.chars.split(',').filter(Boolean)
         : [];
 
-    const queue = buildQueue(state.characters, PER_SESSION, presetIds);
-    if (queue.length === 0) {
-      this.setData({ empty: true, total: 0 });
+    if (presetIds.length) {
+      this.beginSession(presetIds, true);
       return;
     }
 
-    if (presetIds.length > queue.length) {
+    // 无预设 → 先选默写范围（2026-10-25 用户反馈：人教版 / 拍照 / 自选）。
+    // 人教版教材字库属 R4，数据还没建，如实标「建设中」，不给假入口。
+    const all = state.characters;
+    this.setData({
+      scope: true,
+      empty: false,
+      done: false,
+      photoCount: all.filter((c) => c.source !== '手写查字').length,
+      picker: all.map((c) => ({
+        id: c.id,
+        char: c.char,
+        pinyin: c.pinyin || '',
+        picked: false,
+      })),
+      pickedCount: 0,
+      picking: false,
+    });
+  },
+
+  /**
+   * 正式开卷。presetIds 非空时整批替换候选（仍受 MAX_PRESET 限制）；
+   * fromPreset 为 true 时是足迹/默写库带入口径，需要提示截断。
+   */
+  beginSession(presetIds, fromPreset) {
+    const state = this.state || store.loadState();
+    const queue = buildQueue(state.characters, PER_SESSION, presetIds);
+    if (queue.length === 0) {
+      this.setData({ empty: true, scope: false, total: 0 });
+      return;
+    }
+
+    if (fromPreset && presetIds.length > queue.length) {
       wx.showToast({
         title: `已按足迹带入 ${presetIds.length} 字，本批先默 ${queue.length} 字`,
         icon: 'none',
@@ -64,7 +98,52 @@ Page({
     this.strokes = [];
     this.current = [];
     this.log = [];
+    this.setData({ scope: false, picking: false, done: false });
     this.startQuestion(0);
+  },
+
+  /* ---------------- 范围选择 ---------------- */
+
+  /** 拍照收的生字：拍照识字收进来的字（手写查字另算），先默最近收的。 */
+  scopePhoto() {
+    const photoChars = this.state.characters.filter((c) => c.source !== '手写查字');
+    if (!photoChars.length) {
+      wx.showToast({ title: '字库还是空的，先去拍照认字', icon: 'none' });
+      return;
+    }
+    this.beginSession(photoChars.map((c) => c.id), false);
+  },
+
+  /** 人教版教材生字库：R4 数据，还没上线，如实告知。 */
+  scopeTextbook() {
+    wx.showToast({ title: '人教版教材字库建设中，即将上线', icon: 'none' });
+  },
+
+  /** 自选字：展开挑字面板。 */
+  scopePick() {
+    this.setData({ picking: true });
+  },
+
+  togglePick(e) {
+    const id = e.currentTarget.dataset.id;
+    const picker = this.data.picker.map((c) =>
+      c.id === id ? Object.assign({}, c, { picked: !c.picked }) : c,
+    );
+    const pickedCount = picker.filter((c) => c.picked).length;
+    if (pickedCount > MAX_PRESET) {
+      wx.showToast({ title: `一卷最多 ${MAX_PRESET} 个字`, icon: 'none' });
+      return;
+    }
+    this.setData({ picker, pickedCount });
+  },
+
+  confirmPick() {
+    const ids = this.data.picker.filter((c) => c.picked).map((c) => c.id);
+    if (!ids.length) {
+      wx.showToast({ title: '先挑至少一个字', icon: 'none' });
+      return;
+    }
+    this.beginSession(ids, false);
   },
 
   onHide() {
@@ -473,22 +552,9 @@ Page({
   },
 
   restart() {
-    const state = store.loadState();
-    this.state = state;
-    const queue = buildQueue(state.characters, PER_SESSION);
-    if (!queue.length) {
-      this.setData({ empty: true, done: false, total: 0 });
-      return;
-    }
-    store.markDictationStarted(
-      state,
-      queue.map((c) => c.id),
-    );
-    store.saveState(state);
-    this.queue = queue;
-    this.log = [];
+    // 「再听一轮」回到范围选择，让下一次自己决定默哪批字。
     this.setData({ done: false, correctCount: 0, wrongList: [], percent: 0 });
-    this.startQuestion(0);
+    this.onLoad({});
   },
 
   backHome() {

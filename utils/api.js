@@ -97,6 +97,7 @@ module.exports = {
   call,
   resolveMessage,
   ocrScan: (imageBase64, sourceType) => call('ocr-scan', { imageBase64, sourceType }),
+  recognizeHandwriting: (imageBase64) => call('recognize-handwriting', { imageBase64 }),
   characterInfo: (char) => call('character-info', { char }),
   evaluateWriting: (payload) => call('evaluate-writing', payload),
   ttsSpeech: (payload) => call('tts-speech', payload),

@@ -8,7 +8,7 @@ const SIZE = 300; // 画布逻辑边长（px）
 
 Page({
   data: {
-    tab: 'write', // write | animate
+    tab: 'write', // write | animate | lookup
     mode: 'trace', // trace 跟写 | free 独立写
     item: null,
     strokeCount: 0,
@@ -18,6 +18,12 @@ Page({
     note: '',
     hasNext: false,
     ready: false,
+    // 手写查字：写出不认识的字 → AI 认 → 3 候选 → 选择 → 询问入库
+    lookupStrokes: 0,
+    recognizing: false,
+    candidates: [],
+    chosen: null,
+    lookupNote: '',
   },
 
   onLoad(options) {
@@ -113,11 +119,8 @@ Page({
       });
   },
 
-  /** 画米字格 + 描红字 + 已写笔画。每一次落笔都会整幅重画，逻辑最简单也最稳。 */
-  redraw() {
-    const ctx = this.ctx;
-    if (!ctx) return;
-
+  /** 米字格 + （可选）描红底字 + 已写笔画。写字与查字两块画板共用这套画法。 */
+  paintBoard(ctx, traceChar, strokes, current) {
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, SIZE, SIZE);
 
@@ -141,14 +144,14 @@ Page({
     ctx.stroke();
     ctx.restore();
 
-    // 跟写模式的描红底字：浅绿字印（BASELINE：字卡字印浅绿 #BFE3C9）
-    if (this.data.mode === 'trace' && this.data.item) {
+    // 描红底字：浅绿字印（BASELINE：字卡字印浅绿 #BFE3C9）
+    if (traceChar) {
       ctx.save();
       ctx.font = `${Math.round(SIZE * 0.72)}px "Kaiti SC", serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#BFE3C9';
-      ctx.fillText(this.data.item.char, SIZE / 2, SIZE / 2 + SIZE * 0.05);
+      ctx.fillText(traceChar, SIZE / 2, SIZE / 2 + SIZE * 0.05);
       ctx.restore();
     }
 
@@ -173,8 +176,20 @@ Page({
       ctx.stroke();
     };
 
-    (this.strokes || []).forEach(drawStroke);
-    if (this.current && this.current.length) drawStroke(this.current);
+    (strokes || []).forEach(drawStroke);
+    if (current && current.length) drawStroke(current);
+  },
+
+  /** 画米字格 + 描红字 + 已写笔画。每一次落笔都会整幅重画，逻辑最简单也最稳。 */
+  redraw() {
+    if (!this.ctx) return;
+    // 跟写模式才描红；独立写/考核是白板
+    this.paintBoard(
+      this.ctx,
+      this.data.mode === 'trace' && this.data.item ? this.data.item.char : '',
+      this.strokes,
+      this.current,
+    );
   },
 
   toCanvasPoint(touch) {
@@ -217,7 +232,17 @@ Page({
   /* ---------------- 操作 ---------------- */
 
   switchTab(e) {
-    this.setData({ tab: e.currentTarget.dataset.tab });
+    const tab = e.currentTarget.dataset.tab;
+    this.setData({ tab });
+    // wx:if 切换会销毁/重建 canvas 节点，切回写字页签必须重新初始化画布，
+    // 否则旧的 ctx 引用指向已销毁的节点，落笔无声无息地画不出来。
+    if (tab === 'write') {
+      if (wx.nextTick) wx.nextTick(() => this.initCanvas());
+      else setTimeout(() => this.initCanvas(), 30);
+    } else if (tab === 'lookup') {
+      if (wx.nextTick) wx.nextTick(() => this.initLookupCanvas());
+      else setTimeout(() => this.initLookupCanvas(), 30);
+    }
   },
 
   switchMode(e) {
@@ -383,6 +408,210 @@ Page({
       return;
     }
     this.pick(next);
+  },
+
+  /* ---------------- 手写查字 ---------------- */
+
+  initLookupCanvas() {
+    const query = wx.createSelectorQuery();
+    query
+      .select('#lookup-canvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        if (!res || !res[0] || !res[0].node) return;
+        const canvas = res[0].node;
+        const ctx = canvas.getContext('2d');
+        const dpr = wx.getSystemInfoSync().pixelRatio || 2;
+        canvas.width = SIZE * dpr;
+        canvas.height = SIZE * dpr;
+        ctx.scale(dpr, dpr);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        this.lcanvas = canvas;
+        this.lctx = ctx;
+        this.ldpr = dpr;
+
+        // 另起一个 query —— 同一个 SelectorQuery 对象不能重复 exec。
+        wx.createSelectorQuery()
+          .select('#lookup-canvas')
+          .boundingClientRect()
+          .exec((rectRes) => {
+            this.lrect = rectRes && rectRes[0] ? rectRes[0] : null;
+          });
+
+        this.redrawLookup();
+      });
+  },
+
+  redrawLookup() {
+    if (!this.lctx) return;
+    // 查字是白板：不描红、不提示，孩子写什么 AI 认什么
+    this.paintBoard(this.lctx, '', this.lstrokes, this.lcurrent);
+  },
+
+  toLookupPoint(touch) {
+    // 同 toCanvasPoint：微信 Touch 标准字段是 pageX/pageY，x/y 缺失时回退保命。
+    let x = touch.x != null ? touch.x : touch.pageX;
+    let y = touch.y != null ? touch.y : touch.pageY;
+    const rect = this.lrect;
+    if (rect && (x > SIZE || y > SIZE || x < 0 || y < 0)) {
+      x -= rect.left;
+      y -= rect.top;
+    }
+    return { x, y };
+  },
+
+  onLookupTouchStart(e) {
+    if (!this.lctx) return;
+    this.lcurrent = [this.toLookupPoint(e.touches[0])];
+    audio.soundEffects.playStrokeTap();
+    this.redrawLookup();
+  },
+
+  onLookupTouchMove(e) {
+    if (!this.lctx || !this.lcurrent || !this.lcurrent.length) return;
+    this.lcurrent.push(this.toLookupPoint(e.touches[0]));
+    this.redrawLookup();
+  },
+
+  onLookupTouchEnd() {
+    if (!this.lcurrent || !this.lcurrent.length) return;
+    this.lstrokes = (this.lstrokes || []).concat([this.lcurrent]);
+    this.lcurrent = [];
+    this.setData({ lookupStrokes: this.lstrokes.length });
+    this.redrawLookup();
+  },
+
+  lookupUndo() {
+    if (!this.lstrokes || !this.lstrokes.length) return;
+    this.lstrokes.pop();
+    this.setData({ lookupStrokes: this.lstrokes.length, chosen: null });
+    this.redrawLookup();
+  },
+
+  lookupClear() {
+    this.lstrokes = [];
+    this.lcurrent = [];
+    this.setData({ lookupStrokes: 0, chosen: null });
+    this.redrawLookup();
+  },
+
+  /** 导出手写板图像，请 AI 给出最多 3 个候选字。 */
+  recognize() {
+    if (this.data.recognizing) return;
+    if (!this.lstrokes || !this.lstrokes.length) {
+      wx.showToast({ title: '先在田字格里写一笔', icon: 'none' });
+      return;
+    }
+    if (!this.lcanvas) {
+      this.setData({ lookupNote: '画布还没准备好，请稍等一下再试。' });
+      return;
+    }
+
+    const that = this;
+    this.setData({ recognizing: true, lookupNote: '', candidates: [], chosen: null });
+
+    const dpr = this.ldpr || wx.getSystemInfoSync().pixelRatio || 2;
+    const side = Math.round(SIZE * dpr);
+
+    wx.canvasToTempFilePath({
+      canvas: this.lcanvas,
+      x: 0,
+      y: 0,
+      width: side,
+      height: side,
+      destWidth: side,
+      destHeight: side,
+      fileType: 'png',
+      success(res) {
+        let base64 = '';
+        try {
+          base64 = wx.getFileSystemManager().readFileSync(res.tempFilePath, 'base64');
+        } catch (err) {
+          that.setData({ recognizing: false, lookupNote: '读取书写图片失败，请再试一次。' });
+          return;
+        }
+        api
+          .recognizeHandwriting(`data:image/png;base64,${base64}`)
+          .then((data) => {
+            // WXML 不能调 join()，组词先在 JS 里拼好
+            const candidates = (data.candidates || []).map((c) =>
+              Object.assign({}, c, { wordsText: (c.words || []).join('、') }));
+            that.setData({
+              recognizing: false,
+              candidates,
+              lookupNote: candidates.length
+                ? ''
+                : 'AI 没认出来。写大一点、一笔一画写工整，再试一次。',
+            });
+          })
+          .catch((err) => {
+            that.setData({
+              recognizing: false,
+              lookupNote: (err && err.message) || 'AI 认字暂时不可用，请稍后再试。',
+            });
+          });
+      },
+      fail() {
+        that.setData({ recognizing: false, lookupNote: '导出书写图片失败，请再试一次。' });
+      },
+    });
+  },
+
+  /** 点选候选：读一遍发音帮孩子确认，再问是否入库。 */
+  chooseCandidate(e) {
+    const chosen = (this.data.candidates || []).find(
+      (c) => c.char === e.currentTarget.dataset.char,
+    );
+    if (!chosen) return;
+    this.setData({ chosen });
+    audio.playCharAudio({ char: chosen.char, pinyin: chosen.pinyin, mode: 'read' });
+  },
+
+  rejectCandidate() {
+    this.setData({ candidates: [], chosen: null });
+    this.lookupClear();
+  },
+
+  /** 确认后把字收进生字库，成功后带去字卡详情。 */
+  addToLibrary() {
+    const chosen = this.data.chosen;
+    if (!chosen) return;
+
+    const state = store.loadState();
+    const existing = store.findByChar(state, chosen.char);
+    if (existing) {
+      wx.showToast({ title: `“${chosen.char}”已在生字库里`, icon: 'none' });
+      wx.navigateTo({ url: `/learn/pages/detail/detail?id=${existing.id}` });
+      return;
+    }
+
+    const added = store.addCharacters(
+      state,
+      [
+        {
+          char: chosen.char,
+          pinyin: chosen.pinyin || '',
+          meaning: chosen.meaning || '',
+          words: Array.isArray(chosen.words) ? chosen.words : [],
+        },
+      ],
+      '手写查字',
+      '手写查字确认后加入',
+    );
+    store.saveState(state);
+
+    if (added && added.length) {
+      audio.soundEffects.playSuccess();
+      wx.showToast({ title: `“${chosen.char}”已加入生字库`, icon: 'success' });
+      const newId = added[0].id;
+      setTimeout(() => {
+        wx.navigateTo({ url: `/learn/pages/detail/detail?id=${newId}` });
+      }, 900);
+    } else {
+      wx.showToast({ title: '加入生字库失败，请重试', icon: 'none' });
+    }
   },
 
   goOcr() {

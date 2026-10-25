@@ -352,7 +352,10 @@ function addCharacters(state, drafts, source, sourceDetail) {
       canWrite: false,
       canDictate: false,
       errorCount: 0,
-      memoryNote: `“${symbol}”是孩子在${source || '课外书'}拍照识别提取的`,
+      memoryNote:
+        source === '手写查字'
+          ? `“${symbol}”是孩子手写查字时确认加入的`
+          : `“${symbol}”是孩子在${source || '课外书'}拍照识别提取的`,
     });
   });
 

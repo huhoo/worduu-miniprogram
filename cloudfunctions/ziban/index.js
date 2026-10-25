@@ -154,6 +154,57 @@ totalExtracted 等于 recognizedCharacters 的数量，uncertainCount 等于其�
 }
 
 /* ------------------------------------------------------------------ *
+ * 手写查字
+ *
+ * 孩子遇到不会读的字：在手写板写出来 → AI 认 → 给最多 3 个候选 →
+ * 孩子自己确认是哪个 → 询问是否加入生字库。候选由孩子亲自挑，
+ * 模型只提供选项，不替孩子拍板 —— 认错字的代价由确认这一步兜住。
+ * ------------------------------------------------------------------ */
+async function handleRecognizeHandwriting(config, body) {
+  const image = readImage(body.imageBase64);
+  if (!image) return fail('invalid_image', '没有读到有效的图片，请写好再试一次');
+
+  const cfg = mustConfig(config);
+
+  const user = `图片里是孩子在田字格中手写的一个汉字（低年级孩子，笔画可能不端正、结构可能变形）。
+
+【任务】判断这个手写字最可能是哪个字，按可能性从高到低给出最多 3 个候选。
+
+【输出要求】每个候选给出：
+- char：单个汉字
+- pinyin：带声调的标准汉语拼音（如 qíng）
+- meaning：10~20 字、生动易懂的儿童释义
+- words：2 个规范常用的小学组词
+- confidence：0-100 的把握分
+
+【严格 JSON 结构】
+{"candidates":[{"char":"晴","pinyin":"qíng","meaning":"天空中没有云或云很少","words":["晴天","晴朗"],"confidence":86}]}
+宁缺毋滥：没有像样的候选就返回 {"candidates":[]}，不要硬凑。`;
+
+  const data = await chatForJson(cfg, {
+    system: OCR_SYSTEM,
+    user,
+    image: { dataBase64: image.dataBase64, mimeType: image.mimeType },
+    model: cfg.visionModel,
+  });
+
+  const candidates = (Array.isArray(data.candidates) ? data.candidates : [])
+    .filter((c) => c && isCjkChar(c.char))
+    .slice(0, 3)
+    .map((c) => ({
+      char: c.char,
+      pinyin: clampString(c.pinyin, 40) || '',
+      meaning: clampString(c.meaning, 300) || '',
+      words: Array.isArray(c.words)
+        ? c.words.filter((w) => typeof w === 'string').slice(0, 2).map((w) => String(w).slice(0, 30))
+        : [],
+      confidence: clampScore(c.confidence),
+    }));
+
+  return ok({ candidates });
+}
+
+/* ------------------------------------------------------------------ *
  * 查字
  * ------------------------------------------------------------------ */
 async function handleCharInfo(config, body) {
@@ -583,6 +634,8 @@ exports.main = async (event) => {
     switch (action) {
       case 'ocr-scan':
         return await handleOcrScan(config, event);
+      case 'recognize-handwriting':
+        return await handleRecognizeHandwriting(config, event);
       case 'character-info':
         return await handleCharInfo(config, event);
       case 'evaluate-writing':

@@ -6,6 +6,59 @@
   <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
 </view>
 
+<!-- 范围选择：没有预设字带入时，先决定默哪批字 -->
+<view class="page" wx:elif="{{scope}}">
+  <view class="card">
+    <view class="scope-title">选择默写范围</view>
+
+    <view class="scope-card" bindtap="scopePhoto">
+      <view class="scope-info">
+        <view class="scope-name">📷 拍照收的生字</view>
+        <view class="scope-desc" wx:if="{{photoCount}}">拍照识字收进来的 {{photoCount}} 个字，先默最近收的</view>
+        <view class="scope-desc" wx:else>先去拍照识字收几个字，再来默写</view>
+      </view>
+      <text class="scope-arrow">›</text>
+    </view>
+
+    <view class="scope-card" bindtap="scopeTextbook">
+      <view class="scope-info">
+        <view class="scope-name-row">
+          <text class="scope-name">📚 人教版教材生字库</text>
+          <text class="scope-badge">建设中</text>
+        </view>
+        <view class="scope-desc">按年级、册、课组织的教材生字，即将上线</view>
+      </view>
+      <text class="scope-arrow">›</text>
+    </view>
+
+    <view class="scope-card" bindtap="scopePick">
+      <view class="scope-info">
+        <view class="scope-name">✍️ 自选字</view>
+        <view class="scope-desc">从生字库里手动挑字组一卷（最多 20 字）</view>
+      </view>
+      <text class="scope-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 自选挑字面板 -->
+  <view class="card" wx:if="{{picking}}">
+    <view class="row-between">
+      <view class="scope-title">挑字组卷（{{pickedCount}}/20）</view>
+      <view class="btn btn-primary pick-done {{pickedCount ? '' : 'btn-disabled'}}" bindtap="confirmPick">开始默写</view>
+    </view>
+    <view class="pick-grid" wx:if="{{picker.length}}">
+      <view
+        class="pick-chip {{item.picked ? 'chip-on' : ''}}"
+        wx:for="{{picker}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="togglePick"
+      >{{item.char}}</view>
+    </view>
+    <text class="scope-desc" wx:else>字库还是空的，先去拍照认字。</text>
+  </view>
+</view>
+
 <!-- 听写报告 -->
 <view class="page" wx:elif="{{done}}">
   <view class="card report">

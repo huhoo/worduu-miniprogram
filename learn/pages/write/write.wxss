@@ -200,3 +200,95 @@
   width: 60%;
   min-height: 88rpx;
 }
+
+.empty-btn + .empty-btn {
+  margin-top: 20rpx;
+}
+
+/* ---------- 手写查字 ---------- */
+.lookup-wrap {
+  margin-top: 20rpx;
+}
+
+.cand-list {
+  margin-top: 16rpx;
+}
+
+.cand {
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-top: 16rpx;
+}
+
+.cand-on {
+  border-color: var(--green);
+  background: #F5FAF3;
+}
+
+.cand-char {
+  font-size: 56rpx;
+  font-weight: 800;
+  color: var(--ink);
+  width: 96rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.cand-info {
+  flex: 1;
+  margin-left: 20rpx;
+  min-width: 0;
+}
+
+.cand-pinyin {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--indigo);
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.cand-conf {
+  margin-left: 14rpx;
+  font-size: 20rpx;
+  color: #57685B;
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.cand-meaning {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.cand-words {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: var(--green);
+}
+
+.confirm-row {
+  margin-top: 20rpx;
+}
+
+.confirm-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.confirm-btn {
+  flex: 1;
+  margin-top: 16rpx;
+  min-height: 88rpx;
+}
+
+.confirm-btn + .confirm-btn {
+  margin-left: 16rpx;
+}

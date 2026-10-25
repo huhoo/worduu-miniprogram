@@ -332,6 +332,98 @@
   padding-top: 120rpx;
 }
 
+/* ---------- 范围选择 ---------- */
+.scope-title {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.scope-card {
+  display: flex;
+  align-items: center;
+  background: #F5FAF3;
+  border: 1rpx solid var(--line);
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-top: 20rpx;
+  min-height: 88rpx;
+}
+
+.scope-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.scope-name-row {
+  display: flex;
+  align-items: center;
+}
+
+.scope-name {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.scope-badge {
+  margin-left: 12rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: var(--amber-ink);
+  background: var(--amber-light);
+  border: 1rpx solid var(--amber-line);
+  border-radius: 999rpx;
+  padding: 2rpx 14rpx;
+}
+
+.scope-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #57685B;
+  line-height: 1.6;
+}
+
+.scope-arrow {
+  font-size: 40rpx;
+  color: #9DB4A3;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}
+
+.pick-done {
+  min-height: 88rpx;
+  padding: 0 28rpx;
+  font-size: 24rpx;
+}
+
+.pick-grid {
+  margin-top: 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pick-chip {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--ink);
+  background: #F5FAF3;
+  border: 2rpx solid var(--line);
+  border-radius: 16rpx;
+  margin: 10rpx 10rpx 0 0;
+}
+
+.chip-on {
+  border-color: var(--green);
+  background: #DCFCE7;
+  color: #166534;
+}
+
 .empty-emoji {
   font-size: 80rpx;
   opacity: 0.4;
