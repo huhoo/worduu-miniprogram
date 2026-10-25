@@ -23,7 +23,7 @@
       <view class="shoot" bindtap="chooseImage">
         <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" class="preview" />
         <view wx:else class="shoot-empty">
-          <text class="shoot-emoji">📸</text>
+          <image class="shoot-emoji" src="/images/icons/camera-green.png" mode="aspectFit" />
           <text class="shoot-title">拍一页课本或课外书</text>
           <text class="muted">尽量正对纸面、光线均匀，识别更准</text>
         </view>

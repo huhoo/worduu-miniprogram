@@ -47,8 +47,9 @@
 }
 
 .shoot-emoji {
-  font-size: 96rpx;
-  opacity: 0.5;
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.85;
 }
 
 .shoot-title {

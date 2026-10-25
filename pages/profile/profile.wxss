@@ -163,6 +163,13 @@
   min-height: 88rpx;
 }
 
+.review-icon {
+  width: 26rpx;
+  height: 26rpx;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
 .review-text {
   font-size: 22rpx;
   font-weight: 700;
@@ -366,8 +373,9 @@
 }
 
 .empty-emoji {
-  font-size: 72rpx;
-  opacity: 0.4;
+  width: 80rpx;
+  height: 80rpx;
+  opacity: 0.7;
 }
 
 .empty-title {
@@ -396,6 +404,7 @@
 }
 
 .help-emoji {
-  font-size: 36rpx;
+  width: 34rpx;
+  height: 34rpx;
   margin-right: 12rpx;
 }

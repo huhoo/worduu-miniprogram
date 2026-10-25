@@ -10,7 +10,7 @@
       class="seg-item {{segment === 'parent' ? 'seg-on' : ''}}"
       data-segment="parent"
       bindtap="switchSegment"
-    >🛡 家长学情端</view>
+    ><image class="ic-inline" src="/images/icons/shield-green.png" mode="aspectFit" />家长学情端</view>
   </view>
 
   <!-- ============ 我的识字档案 ============ -->
@@ -56,7 +56,7 @@
       </view>
 
       <view wx:if="{{hasErrors}}" class="review-btn" bindtap="reviewErrors">
-        <text class="review-text">⚠ 立即专项复习 {{errorCount}} 个待巩固生字</text>
+        <image class="review-icon" src="/images/icons/warning-amber.png" mode="aspectFit" /><text class="review-text">立即专项复习 {{errorCount}} 个待巩固生字</text>
         <text class="review-arrow">›</text>
       </view>
       <!-- 没有错字时不能摆一个点了没反应的按钮 -->
@@ -67,7 +67,7 @@
 
     <!-- 空字库 -->
     <view class="card empty-card" wx:else>
-      <text class="empty-emoji">🌱</text>
+      <image class="empty-emoji" src="/images/icons/sprout-green.png" mode="aspectFit" />
       <text class="empty-title">还没有识字记录</text>
       <text class="empty-sub">拍一张课本或课外书的生字页，这里就会开始记录每个字的来源与掌握情况。</text>
       <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
@@ -144,11 +144,11 @@
         </view>
 
         <view class="sum-box sum-bad" wx:if="{{hasErrors}}">
-          ⚠️ <text class="sum-strong">需要巩固</text>：{{errorSummary}}，建议用「识字认读」重点复习。
+          <image class="ic-inline" src="/images/icons/warning-amber.png" mode="aspectFit" /><text class="sum-strong">需要巩固</text>：{{errorSummary}}，建议用「识字认读」重点复习。
         </view>
 
         <view class="sum-box sum-amber" wx:if="{{hasSlow}}">
-          ⏱ <text class="sum-strong">反应偏慢</text>：{{slowSummary}}。
+          <image class="ic-inline" src="/images/icons/clock-green.png" mode="aspectFit" /><text class="sum-strong">反应偏慢</text>：{{slowSummary}}。
         </view>
 
         <view class="sum-box sum-plain" wx:if="{{!hasErrors && !hasSlow}}">
@@ -167,7 +167,7 @@
   <view class="card help-card">
     <view class="row-between help-row" bindtap="goHelp">
       <view class="row">
-        <text class="help-emoji">💬</text>
+        <image class="help-emoji" src="/images/icons/chat-green.png" mode="aspectFit" />
         <text class="title">帮助与反馈</text>
       </view>
       <text class="more">常见问题 ›</text>

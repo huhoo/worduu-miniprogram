@@ -51,6 +51,11 @@
   background: var(--app-surface-2);
 }
 
+.icon-btn-img {
+  width: 34rpx;
+  height: 34rpx;
+}
+
 /* ---------- 入口卡 ---------- */
 .home-entries {
   margin-top: 20rpx;
@@ -80,14 +85,18 @@
   font-size: 48rpx;
 }
 
-/* 第一个入口用实心绿，与其余软绿底区分主次（原型规范） */
+/* 第一个入口同样软绿底 + 绿线图标（设计图规范：全部入口统一浅底绿线图标） */
 .he-ic.cam {
-  background: var(--green);
-  box-shadow: 0 12rpx 24rpx -12rpx rgba(63, 142, 93, 0.55);
+  background: #E7F3E9;
 }
 
 .he-ic.soft {
   background: #E7F3E9;
+}
+
+.he-img {
+  width: 52rpx;
+  height: 52rpx;
 }
 
 .he-main {

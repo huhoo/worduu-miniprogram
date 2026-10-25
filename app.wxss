@@ -277,3 +277,19 @@ page {
   color: var(--green);
   font-weight: 700;
 }
+
+/* ---------- 线条图标（images/icons/，设计图同款简易线图标） ---------- */
+/* 行内小图标：按钮 / 页签文字前 */
+.ic-inline {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 8rpx;
+  vertical-align: -4rpx;
+}
+
+/* 大图标：空态 / 发音大按钮 */
+.ic-big {
+  width: 88rpx;
+  height: 88rpx;
+  opacity: 0.6;
+}

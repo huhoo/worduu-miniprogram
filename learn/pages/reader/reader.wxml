@@ -29,7 +29,7 @@
     </view>
 
     <view class="tip">
-      <text class="tip-emoji">📖</text>
+      <image class="tip-emoji" src="/images/icons/book-green.png" mode="aspectFit" />
       <text class="tip-text">点击文中任意不认识的汉字，就能看拼音、查字义、听发音。</text>
     </view>
   </view>

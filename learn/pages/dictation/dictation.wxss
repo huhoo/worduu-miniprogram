@@ -6,8 +6,9 @@
   padding: 18rpx 28rpx;
 }
 
-.bar-emoji {
-  font-size: 30rpx;
+.bar-icon {
+  width: 30rpx;
+  height: 30rpx;
   margin-right: 10rpx;
 }
 
@@ -54,8 +55,8 @@
 }
 
 .play-icon {
-  font-size: 56rpx;
-  line-height: 1;
+  width: 56rpx;
+  height: 56rpx;
 }
 
 .listen-title {
@@ -427,6 +428,15 @@
 .empty-emoji {
   font-size: 80rpx;
   opacity: 0.4;
+}
+
+/* 实心绿按钮里的浅色线条图标：白底圆片衬托绿线图标 */
+.ic-inline-light {
+  background: #FFFFFF;
+  border-radius: 50%;
+  padding: 6rpx;
+  width: 34rpx;
+  height: 34rpx;
 }
 
 .empty-title {

@@ -72,11 +72,15 @@
 <!-- 字库为空（查字页签不受此限 —— 字库空恰恰最需要查字） -->
 <view class="page" wx:if="{{ready && !item && tab !== 'lookup'}}">
   <view class="card empty">
-    <view class="empty-icon">✍️</view>
+    <view class="empty-icon">
+      <image class="ic-big" src="/images/icons/pencil-green.png" mode="aspectFit" />
+    </view>
     <text class="sub">字库还是空的，没有可练习的字</text>
     <text class="muted">先拍一页课本或课外书，把生字收进来，这里就能逐笔练习书写。</text>
     <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照认字</view>
-    <view class="btn btn-ghost empty-btn" bindtap="switchTab" data-tab="lookup">✍️ 手写查字</view>
+    <view class="btn btn-ghost empty-btn" bindtap="switchTab" data-tab="lookup">
+      <image class="ic-inline" src="/images/icons/search-ink.png" mode="aspectFit" /><text>手写查字</text>
+    </view>
   </view>
 </view>
 
@@ -92,17 +96,16 @@
         class="tab {{tab === 'write' ? 'tab-on' : ''}}"
         data-tab="write"
         bindtap="switchTab"
-      >✍️ 写字练习</view>
+      ><image class="ic-inline" src="/images/icons/pencil-green.png" mode="aspectFit" />写字练习</view>
       <view
         class="tab {{tab === 'animate' ? 'tab-on' : ''}}"
         data-tab="animate"
         bindtap="switchTab"
-      >👁 看笔顺动画</view>
-      <view
+      ><image class="ic-inline" src="/images/icons/eye-green.png" mode="aspectFit" />看笔顺动画</view>      <view
         class="tab {{tab === 'lookup' ? 'tab-on' : ''}}"
         data-tab="lookup"
         bindtap="switchTab"
-      >🔍 查字</view>
+      ><image class="ic-inline" src="/images/icons/search-ink.png" mode="aspectFit" />查字</view>
     </view>
   </view>
 
@@ -144,7 +147,9 @@
     <view class="row tools">
       <view class="btn btn-ghost tool-btn" bindtap="undo">撤销一笔</view>
       <view class="btn btn-ghost tool-btn" bindtap="clear">重写清除</view>
-      <view class="btn btn-ghost tool-btn" bindtap="playRead">🔊 听读音</view>
+      <view class="btn btn-ghost tool-btn" bindtap="playRead">
+        <image class="ic-inline" src="/images/icons/speaker-green.png" mode="aspectFit" /><text>听读音</text>
+      </view>
     </view>
 
     <view wx:if="{{note}}" class="notice">

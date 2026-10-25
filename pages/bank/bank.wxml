@@ -1,7 +1,7 @@
 <view class="page">
   <!-- 搜索 -->
   <view class="search">
-    <text class="search-icon">🔍</text>
+    <image class="search-icon" src="/images/icons/search-ink.png" mode="aspectFit" />
     <input
       class="search-input"
       value="{{keyword}}"
@@ -25,7 +25,7 @@
 
   <!-- 学习足迹入口（PRD 8.3） -->
   <view class="card entry-row" bindtap="goFootprint">
-    <text class="entry-ic">🗓️</text>
+    <image class="entry-ic" src="/images/icons/calendar-green.png" mode="aspectFit" />
     <view class="entry-body">
       <view class="row-t">学习足迹</view>
       <view class="row-s">按天的生字账本<block wx:if="{{footprintDays > 0}}"> · 已有 {{footprintDays}} 天</block> · 可圈日期范围去默写</view>
@@ -65,15 +65,21 @@
       <view class="item-right">
         <text class="mastery mastery-{{item.masteryClass}}">{{item.mastery}}</text>
         <view class="row item-actions">
-          <view class="play" data-id="{{item.id}}" catchtap="playChar">🔊</view>
+          <view class="play" data-id="{{item.id}}" catchtap="playChar">
+            <image class="play-img" src="/images/icons/speaker-green.png" mode="aspectFit" />
+          </view>
           <!-- 练写直达：原来只能先进字卡再跳书写，多绕一步 -->
-          <view class="play" data-char="{{item.char}}" catchtap="goWrite">✍️</view>
+          <view class="play" data-char="{{item.char}}" catchtap="goWrite">
+            <image class="play-img" src="/images/icons/pencil-green.png" mode="aspectFit" />
+          </view>
         </view>
       </view>
     </view>
 
     <view class="empty" wx:if="{{list.length === 0}}">
-      <view class="empty-icon">🔍</view>
+      <view class="empty-icon">
+        <image class="ic-big" src="/images/icons/search-ink.png" mode="aspectFit" />
+      </view>
       <text class="sub" wx:if="{{total > 0}}">没有找到匹配的汉字</text>
       <block wx:else>
         <text class="sub">字库还是空的</text>

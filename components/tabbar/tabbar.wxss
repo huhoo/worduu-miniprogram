@@ -24,14 +24,9 @@
   background: #ECF4E9;
 }
 
-.tabbar-emoji {
-  font-size: 40rpx;
-  line-height: 1.2;
-  opacity: 0.55;
-}
-
-.tabbar-item.active .tabbar-emoji {
-  opacity: 1;
+.tabbar-icon {
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .tabbar-label {

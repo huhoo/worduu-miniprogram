@@ -1,7 +1,9 @@
 <!-- 字库为空 -->
 <view class="page" wx:if="{{total === 0}}">
   <view class="card empty">
-    <view class="empty-icon">🌱</view>
+    <view class="empty-icon">
+      <image class="ic-big" src="/images/icons/sprout-green.png" mode="aspectFit" />
+    </view>
     <text class="sub">字库还是空的，没有可以认读的字</text>
     <text class="muted">先拍一页课本或课外书把生字收进来，认读评测会从这些字里出题。</text>
     <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
@@ -17,7 +19,7 @@
 
   <view class="card" wx:if="{{wrongList.length > 0}}">
     <view class="row">
-      <text class="warn-icon">⚠️</text>
+      <image class="warn-icon" src="/images/icons/warning-amber.png" mode="aspectFit" />
       <text class="title">这几个字读错了，已放进错题本</text>
     </view>
     <view class="wrong-grid">
@@ -40,7 +42,9 @@
     <text class="sub">全部读对了，真棒！</text>
   </view>
 
-  <view class="btn btn-primary" bindtap="goAchievement">🏆 生成今日成就卡</view>
+  <view class="btn btn-primary" bindtap="goAchievement">
+    <image class="ic-inline ic-inline-light" src="/images/icons/trophy-green.png" mode="aspectFit" /><text>生成今日成就卡</text>
+  </view>
   <view class="btn btn-ghost" bindtap="backHome">完成，回到首页</view>
 </view>
 
@@ -66,7 +70,9 @@
     </view>
 
     <view class="row audio-row">
-      <view class="btn btn-ghost audio-btn" bindtap="playRead">🔊 听发音</view>
+      <view class="btn btn-ghost audio-btn" bindtap="playRead">
+        <image class="ic-inline" src="/images/icons/speaker-green.png" mode="aspectFit" /><text>听发音</text>
+      </view>
       <view class="btn btn-ghost audio-btn" bindtap="playSpell">🎧 慢速拼读</view>
     </view>
 
@@ -92,7 +98,7 @@
         <text class="result-icon">{{isCorrect ? '✅' : '💪'}}</text>
         <text class="result-title">{{isCorrect ? '读对了！' : '再接再厉！'}}</text>
       </view>
-      <text class="result-time">⏱ {{responseTime}} 秒</text>
+      <text class="result-time">{{responseTime}} 秒</text>
     </view>
     <text class="result-feedback">{{feedback}}</text>
 

@@ -6,7 +6,7 @@
     data-key="{{item.key}}"
     bindtap="onTap"
   >
-    <view class="tabbar-emoji">{{item.emoji}}</view>
+    <image class="tabbar-icon" src="{{current === item.key ? item.iconActive : item.icon}}" mode="aspectFit" />
     <view class="tabbar-label">{{item.label}}</view>
   </view>
 </view>

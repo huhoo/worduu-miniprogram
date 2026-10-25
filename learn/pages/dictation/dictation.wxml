@@ -1,6 +1,6 @@
 <!-- 空字库：不出题，也不伪造一份卷子 -->
 <view class="page center" wx:if="{{empty}}">
-  <text class="empty-emoji">📝</text>
+  <image class="ic-big" src="/images/icons/doc-green.png" mode="aspectFit" />
   <text class="empty-title">生字库还是空的，没有可以听写的字</text>
   <text class="empty-sub">先拍一页课本或课外书把生字收进来，听写会从这些字里出题。</text>
   <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
@@ -13,7 +13,10 @@
 
     <view class="scope-card" bindtap="scopePhoto">
       <view class="scope-info">
-        <view class="scope-name">📷 拍照收的生字</view>
+        <view class="scope-name-row">
+          <image class="ic-inline" src="/images/icons/camera-green.png" mode="aspectFit" />
+          <text class="scope-name">拍照收的生字</text>
+        </view>
         <view class="scope-desc" wx:if="{{photoCount}}">拍照识字收进来的 {{photoCount}} 个字，先默最近收的</view>
         <view class="scope-desc" wx:else>先去拍照识字收几个字，再来默写</view>
       </view>
@@ -23,7 +26,8 @@
     <view class="scope-card" bindtap="scopeTextbook">
       <view class="scope-info">
         <view class="scope-name-row">
-          <text class="scope-name">📚 人教版教材生字库</text>
+          <image class="ic-inline" src="/images/icons/book-green.png" mode="aspectFit" />
+          <text class="scope-name">人教版教材生字库</text>
           <text class="scope-badge">建设中</text>
         </view>
         <view class="scope-desc">按年级、册、课组织的教材生字，即将上线</view>
@@ -33,7 +37,10 @@
 
     <view class="scope-card" bindtap="scopePick">
       <view class="scope-info">
-        <view class="scope-name">✍️ 自选字</view>
+        <view class="scope-name-row">
+          <image class="ic-inline" src="/images/icons/pencil-green.png" mode="aspectFit" />
+          <text class="scope-name">自选字</text>
+        </view>
         <view class="scope-desc">从生字库里手动挑字组一卷（最多 20 字）</view>
       </view>
       <text class="scope-arrow">›</text>
@@ -91,7 +98,9 @@
     <text class="report-note" wx:else>全部默写正确，这些字已经记进「会写会默」清单。</text>
   </view>
 
-  <view class="btn btn-primary mt" bindtap="goAchievement">🏆 生成今日成就卡</view>
+  <view class="btn btn-primary mt" bindtap="goAchievement">
+    <image class="ic-inline ic-inline-light" src="/images/icons/trophy-green.png" mode="aspectFit" /><text>生成今日成就卡</text>
+  </view>
   <view class="btn btn-primary mt" bindtap="restart">再听一轮</view>
   <view class="btn btn-ghost mt" bindtap="backHome">回到首页</view>
 </view>
@@ -100,7 +109,7 @@
 <view class="page" wx:else>
   <view class="bar">
     <view class="row">
-      <text class="bar-emoji">✍️</text>
+      <image class="bar-icon" src="/images/icons/pencil-green.png" mode="aspectFit" />
       <text class="bar-title">听写默写测试</text>
     </view>
     <text class="bar-progress">{{index + 1}} / {{total}}</text>
@@ -109,7 +118,7 @@
   <!-- 发音卡：只给声音，不给字形 -->
   <view class="card listen">
     <view class="play-btn {{playing ? 'playing' : ''}}" bindtap="playRead">
-      <text class="play-icon">🔊</text>
+      <image class="play-icon" src="/images/icons/speaker-green.png" mode="aspectFit" />
     </view>
     <text class="listen-title">请写出听到的字</text>
     <text class="listen-sub">听音写字 · 提交后核对字形与笔画</text>

@@ -1,7 +1,9 @@
 <view class="page">
   <!-- 空足迹 -->
   <view class="card empty-fp" wx:if="{{totalChars === 0}}">
-    <view class="empty-icon">🗓️</view>
+    <view class="empty-icon">
+      <image class="ic-big" src="/images/icons/calendar-green.png" mode="aspectFit" />
+    </view>
     <view class="row-t">还没有学习足迹</view>
     <view class="row-s">拍一页课本或课外书，确认加入生字库后，这里会按天记下每一笔收获。</view>
   </view>

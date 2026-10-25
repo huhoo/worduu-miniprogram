@@ -98,8 +98,10 @@
 }
 
 .tip-emoji {
-  font-size: 24rpx;
+  width: 28rpx;
+  height: 28rpx;
   margin-right: 12rpx;
+  flex-shrink: 0;
 }
 
 .tip-text {

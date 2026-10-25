@@ -10,8 +10,10 @@
 }
 
 .notice-emoji {
-  font-size: 28rpx;
+  width: 30rpx;
+  height: 30rpx;
   margin-right: 12rpx;
+  flex-shrink: 0;
 }
 
 .notice-text {
@@ -157,7 +159,9 @@
 }
 
 .empty-emoji {
-  font-size: 64rpx;
+  width: 72rpx;
+  height: 72rpx;
+  opacity: 0.5;
 }
 
 .empty-text {

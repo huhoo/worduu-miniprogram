@@ -32,7 +32,9 @@
 
   <!-- 发音 -->
   <view class="row audio-row">
-    <view class="btn btn-ghost audio-btn" bindtap="playRead">🔊 听发音</view>
+    <view class="btn btn-ghost audio-btn" bindtap="playRead">
+      <image class="ic-inline" src="/images/icons/speaker-green.png" mode="aspectFit" /><text>听发音</text>
+    </view>
     <view class="btn btn-ghost audio-btn" bindtap="playSpell">🎧 慢速拼读</view>
   </view>
 
@@ -99,7 +101,9 @@
 
 <view class="page" wx:else>
   <view class="empty">
-    <view class="empty-icon">📖</view>
+    <view class="empty-icon">
+      <image class="ic-big" src="/images/icons/book-green.png" mode="aspectFit" />
+    </view>
     <text class="sub">{{notice || '没有找到这个字'}}</text>
   </view>
 </view>

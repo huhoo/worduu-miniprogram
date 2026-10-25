@@ -1,6 +1,6 @@
 <view class="page">
   <view class="notice">
-    <text class="notice-emoji">📖</text>
+    <image class="notice-emoji" src="/images/icons/book-green.png" mode="aspectFit" />
     <text class="notice-text">下面是 app 内置的示例读物，用来体验伴读功能。阅读进度里的「已收录 / 已掌握」全部来自你自己的字库，不会预先写死。</text>
   </view>
 
@@ -42,7 +42,7 @@
   </view>
 
   <view class="empty" wx:else>
-    <text class="empty-emoji">🔍</text>
+    <image class="empty-emoji" src="/images/icons/search-ink.png" mode="aspectFit" />
     <text class="empty-text">这个分类下还没有读物</text>
   </view>
 
