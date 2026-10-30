@@ -6,27 +6,15 @@
   <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照识字</view>
 </view>
 
-<!-- 范围选择：没有预设字带入时，先决定默哪批字 -->
+<!-- 范围选择：没有预设字带入时，先决定默哪批字（2026-10-30：人教版第一、自选第二） -->
 <view class="page" wx:elif="{{scope}}">
   <view class="card">
     <view class="scope-title">选择默写范围</view>
 
-    <view class="scope-card" bindtap="scopePhoto">
-      <view class="scope-info">
-        <view class="scope-name-row">
-          <image class="ic-inline" src="/images/icons/camera-green.png" mode="aspectFit" />
-          <text class="scope-name">拍照收的生字</text>
-        </view>
-        <view class="scope-desc" wx:if="{{photoCount}}">拍照识字收进来的 {{photoCount}} 个字，先默最近收的</view>
-        <view class="scope-desc" wx:else>先去拍照识字收几个字，再来默写</view>
-      </view>
-      <text class="scope-arrow">›</text>
-    </view>
-
     <view class="scope-card" bindtap="scopeTextbook">
       <view class="scope-info">
         <view class="scope-name-row">
-          <image class="ic-inline" src="/images/icons/book-green.png" mode="aspectFit" />
+          <image class="ic-inline" src="/images/icons/flag-green.png" mode="aspectFit" />
           <text class="scope-name">人教版教材生字库</text>
           <text class="scope-badge">建设中</text>
         </view>
@@ -38,7 +26,7 @@
     <view class="scope-card" bindtap="scopePick">
       <view class="scope-info">
         <view class="scope-name-row">
-          <image class="ic-inline" src="/images/icons/pencil-green.png" mode="aspectFit" />
+          <image class="ic-inline" src="/images/icons/grid-green.png" mode="aspectFit" />
           <text class="scope-name">自选字</text>
         </view>
         <view class="scope-desc">从生字库里手动挑字组一卷（最多 20 字）</view>
@@ -69,35 +57,29 @@
 <!-- 听写报告 -->
 <view class="page" wx:elif="{{done}}">
   <view class="card report">
-    <text class="report-emoji">{{percent === 100 ? '🎉' : '💪'}}</text>
-    <text class="report-title">{{percent === 100 ? '听写默写满分！' : '完成听写默写挑战！'}}</text>
-    <text class="report-score">默写正确 {{correctCount}} / {{total}} 字</text>
+    <text class="report-emoji">{{wrongCount === 0 ? '🎉' : '💪'}}</text>
+    <text class="report-title">{{wrongCount === 0 ? '听写默写满分！' : '完成听写默写挑战！'}}</text>
+    <text class="report-score">默对 {{correctWords}} / {{totalWords}} 词</text>
 
     <view class="progress">
-      <view class="progress-fill" style="width: {{percent}}%"></view>
+      <view class="progress-fill" style="width: {{totalWords ? (correctWords / totalWords * 100) : 0}}%"></view>
     </view>
-    <text class="report-percent">{{percent}}%</text>
+    <text class="report-percent">{{totalWords ? (correctWords / totalWords * 100) : 0}}%</text>
 
-    <view class="report-wrong" wx:if="{{wrongList.length}}">
-      <text class="report-wrong-title">需要复习的字（点一下听读音）</text>
-      <view class="wrong-row">
-        <view
-          wx:for="{{wrongList}}"
-          wx:key="id"
-          class="wrong-item"
-          data-char="{{item.char}}"
-          bindtap="playWrong"
-        >
-          <text class="wrong-char kai">{{item.char}}</text>
-          <text class="wrong-pinyin">{{item.pinyin}}</text>
-          <text class="wrong-strokes">{{item.written}} 笔</text>
-        </view>
+    <view class="report-words" wx:if="{{reportWords.length}}">
+      <view class="rw" wx:for="{{reportWords}}" wx:key="word">
+        <block wx:for="{{item.chars}}" wx:for-item="ch" wx:key="char">
+          <text class="rw-char kai {{ch.wrong ? 'rw-wrong' : ''}}">{{ch.char}}</text>
+        </block>
+        <text class="rw-pinyin {{item.passed ? '' : 'rw-wrong-pinyin'}}">{{item.pinyin}}</text>
       </view>
     </view>
 
-    <text class="report-note" wx:else>全部默写正确，这些字已经记进「会写会默」清单。</text>
+    <text class="report-note" wx:if="{{wrongCount === 0}}">全部默写正确，这些字已经记进「会写会默」清单。</text>
+    <text class="report-note" wx:else>{{wrongCount}} 个字笔顺有误，已标红并归入待巩固库。</text>
   </view>
 
+  <view class="btn btn-primary mt" wx:if="{{wrongCount > 0}}" bindtap="goReview">错字去待巩固库复习</view>
   <view class="btn btn-primary mt" bindtap="goAchievement">
     <image class="ic-inline ic-inline-light" src="/images/icons/trophy-green.png" mode="aspectFit" /><text>生成今日成就卡</text>
   </view>
@@ -105,30 +87,20 @@
   <view class="btn btn-ghost mt" bindtap="backHome">回到首页</view>
 </view>
 
-<!-- 听写进行中 -->
-<view class="page" wx:else>
+<!-- 听写进行中：写字框居中，顶部一行标题+进度+重听 -->
+<view class="page write-stage" wx:else>
   <view class="bar">
     <view class="row">
       <image class="bar-icon" src="/images/icons/pencil-green.png" mode="aspectFit" />
       <text class="bar-title">听写默写测试</text>
+      <text class="bar-progress">{{wordIndex + 1}} / {{totalWords}}</text>
     </view>
-    <text class="bar-progress">{{index + 1}} / {{total}}</text>
-  </view>
-
-  <!-- 发音卡：只给声音，不给字形 -->
-  <view class="card listen">
-    <view class="play-btn {{playing ? 'playing' : ''}}" bindtap="playRead">
-      <image class="play-icon" src="/images/icons/speaker-green.png" mode="aspectFit" />
-    </view>
-    <text class="listen-title">请写出听到的字</text>
-    <text class="listen-sub">听音写字 · 提交后核对字形与笔画</text>
-    <view class="row audio-row">
-      <view class="btn btn-ghost audio-btn" bindtap="playRead">重听字音</view>
-      <view class="btn btn-ghost audio-btn amber" bindtap="playSpell">听拼读提示</view>
+    <view class="bar-replay {{playing ? 'playing' : ''}}" bindtap="replay">
+      <image class="bar-replay-img" src="/images/icons/speaker-green.png" mode="aspectFit" />
     </view>
   </view>
 
-  <view class="card write-card">
+  <view class="stage-center">
     <view class="canvas-wrap">
       <canvas
         type="2d"
@@ -142,31 +114,30 @@
       ></canvas>
     </view>
 
+    <view class="char-hint" wx:if="{{withinWord && !revealed}}">
+      第 {{charIndex + 1}} / {{wordCharCount}} 字：写出「{{currentChar}}」
+    </view>
+
     <view class="row tools">
       <view class="tool" bindtap="undo">撤销一笔</view>
       <view class="tool" bindtap="clear">重写</view>
       <text class="stroke-count">已写 {{writtenStrokes}} 笔</text>
     </view>
 
-    <!-- 批改结果：AI 不可用时只报笔画数，不编造分数 -->
+    <!-- 整词批改结果 -->
     <view class="verdict" wx:if="{{revealed}}">
-      <view class="verdict-note" wx:if="{{verdictNote}}">{{verdictNote}}</view>
       <view class="row-center">
-        <text class="verdict-char kai">{{current.char}}</text>
-        <text class="verdict-pinyin">{{current.pinyin}}</text>
+        <text class="verdict-word kai">{{currentWord.word}}</text>
         <text class="tag {{isCorrect ? 'tag-ok' : 'tag-bad'}}">{{isCorrect ? '默写正确' : '需复习巩固'}}</text>
       </view>
-      <text class="verdict-strokes">
-        标准笔画 {{hasStandard ? current.strokeCount : '未记录'}} 笔 · 你写了 {{writtenStrokes}} 笔
-      </text>
-      <text class="verdict-feedback" wx:if="{{feedback}}">{{feedback}}</text>
+      <text class="verdict-note" wx:if="{{verdictNote}}">{{verdictNote}}</text>
     </view>
 
     <view class="btn btn-primary submit-btn" wx:if="{{!revealed}}" bindtap="submit">
-      {{evaluating ? 'AI 正在批改…' : '提交默写'}}
+      {{evaluating ? '正在核对笔顺…' : '提交'}}
     </view>
     <view class="btn btn-primary submit-btn" wx:else bindtap="next">
-      {{isLast ? '查看听写报告' : '下一字'}}
+      {{isLastWord ? '查看听写报告' : '下一个'}}
     </view>
   </view>
 </view>

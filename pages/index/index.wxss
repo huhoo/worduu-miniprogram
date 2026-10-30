@@ -150,3 +150,11 @@
   font-size: 42rpx;
   flex: none;
 }
+
+/* 页脚识字档案链接（原右上角齿轮入口移到这里） */
+.profile-link {
+  text-align: center;
+  padding: 20rpx 0 40rpx;
+  font-size: 24rpx;
+  color: #7A8B7E;
+}

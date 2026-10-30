@@ -1,5 +1,4 @@
 const store = require('../../../utils/store.js');
-const api = require('../../../utils/api.js');
 const audio = require('../../../utils/audio.js');
 const { loadStrokeData } = require('../../utils/strokes.js');
 const { checkStrokeOrder } = require('../../utils/strokeCheck.js');
@@ -9,28 +8,39 @@ const SIZE = 280; // 画布逻辑边长（px）
 const PER_SESSION = 5; // 常规听写一轮 5 个字，与原 Web 版一致
 const MAX_PRESET = 20; // 预设字集（足迹/默写库带入）单轮上限，超出先默前 20 个
 
+/**
+ * 默写页（2026-10-30 重构）：
+ * - 范围：人教版教材库（第一，建设中占位）/ 自选字（第二）。「拍照收的生字」入口下线。
+ * - 判定：本地逐笔笔顺比对（PRD 9.4，与笔顺动画同源）。笔顺不对通通按错，
+ *   不再走 AI 逐字批改，也不编造分数（#55 用户拍板）。
+ * - 词：一个默写单元可以是一个词（多字）。听时念出整个词；逐字写，写完一笔（一个字）
+ *   提交后跳到下一个字；整词写错/笔顺错则整词判错，错字标红。
+ * - 报告：列出本次默写的词语，错字标红；错字一键归入「待巩固默写库」供复习。
+ */
 Page({
   data: {
     scope: false, // 范围选择视图（无预设字带入时先选范围）
     picking: false, // 自选字的挑字面板
     picker: [], // { id, char, pinyin, picked }
     pickedCount: 0,
-    photoCount: 0,
-    current: null,
-    index: 0,
-    total: 0,
-    isLast: false,
+    currentWord: null, // 当前默写单元 { word, chars, pinyin, wordCharIds, ... }
+    wordIndex: 0,
+    totalWords: 0,
+    charIndex: 0,
+    wordCharCount: 1,
+    withinWord: false,
+    currentChar: '',
+    isLastWord: false,
     playing: false,
     writtenStrokes: 0,
     revealed: false,
     isCorrect: false,
     verdictNote: '',
-    feedback: '',
     evaluating: false,
     done: false,
-    correctCount: 0,
-    wrongList: [],
-    percent: 0,
+    reportWords: [], // [{ word, pinyin, chars:[{char,wrong}], passed }]
+    correctWords: 0,
+    wrongCount: 0,
     empty: false,
   },
 
@@ -49,14 +59,14 @@ Page({
       return;
     }
 
-    // 无预设 → 先选默写范围（2026-10-25 用户反馈：人教版 / 拍照 / 自选）。
+    // 无预设 → 先选默写范围（2026-10-30 用户拍板：人教版第一、自选第二）。
     // 人教版教材字库属 R4，数据还没建，如实标「建设中」，不给假入口。
     const all = state.characters;
     this.setData({
       scope: true,
       empty: false,
       done: false,
-      photoCount: all.filter((c) => c.source !== '手写查字').length,
+      picking: false,
       picker: all.map((c) => ({
         id: c.id,
         char: c.char,
@@ -64,8 +74,35 @@ Page({
         picked: false,
       })),
       pickedCount: 0,
-      picking: false,
     });
+  },
+
+  /** 由字 id 列表拼出默写单元（支持词：用字的首个组词作为「词」）。 */
+  buildItems(ids) {
+    const state = this.state;
+    return ids
+      .map((id) => {
+        const c = state.characters.find((x) => x.id === id);
+        if (!c) return null;
+        // 有组词就把它当作本次要默的「词」，逐字写；否则单字。
+        const word = c.words && c.words.length ? c.words[0] : c.char;
+        const chars = Array.from(word);
+        const wordCharIds = chars.map((ch) => {
+          const m = store.findByChar(state, ch);
+          return m ? m.id : c.id;
+        });
+        return {
+          id: c.id,
+          char: c.char,
+          pinyin: c.pinyin || '',
+          word,
+          chars,
+          wordCharIds,
+          strokeCount: c.strokeCount || 0,
+          source: c.source || '',
+        };
+      })
+      .filter(Boolean);
   },
 
   /**
@@ -74,52 +111,37 @@ Page({
    */
   beginSession(presetIds, fromPreset) {
     const state = this.state || store.loadState();
-    const queue = buildQueue(state.characters, PER_SESSION, presetIds);
+    const queue = this.buildItems(presetIds).slice(0, MAX_PRESET);
     if (queue.length === 0) {
-      this.setData({ empty: true, scope: false, total: 0 });
+      this.setData({ empty: true, scope: false, totalWords: 0 });
       return;
     }
 
     if (fromPreset && presetIds.length > queue.length) {
       wx.showToast({
-        title: `已按足迹带入 ${presetIds.length} 字，本批先默 ${queue.length} 字`,
+        title: `已带入 ${presetIds.length} 字，本批先默 ${queue.length} 字`,
         icon: 'none',
       });
     }
 
     // PRD 8.4：「第一次被选入默写任务」即离开新加入 —— 建队时就流转，不等出结果。
-    store.markDictationStarted(
-      state,
-      queue.map((c) => c.id),
-    );
+    store.markDictationStarted(state, queue.map((c) => c.id));
     store.saveState(state);
 
     this.queue = queue;
-    this.strokes = [];
-    this.current = [];
-    this.log = [];
+    this.charLog = []; // 扁平的每字结果，给 store 回写与报告共用
     this.setData({ scope: false, picking: false, done: false });
-    this.startQuestion(0);
+    this.startWord(0);
   },
 
   /* ---------------- 范围选择 ---------------- */
 
-  /** 拍照收的生字：拍照识字收进来的字（手写查字另算），先默最近收的。 */
-  scopePhoto() {
-    const photoChars = this.state.characters.filter((c) => c.source !== '手写查字');
-    if (!photoChars.length) {
-      wx.showToast({ title: '字库还是空的，先去拍照认字', icon: 'none' });
-      return;
-    }
-    this.beginSession(photoChars.map((c) => c.id), false);
-  },
-
-  /** 人教版教材生字库：R4 数据，还没上线，如实告知。 */
+  /** 人教版教材生字库：R4 数据，还没上线，如实告知。拍第一。 */
   scopeTextbook() {
     wx.showToast({ title: '人教版教材字库建设中，即将上线', icon: 'none' });
   },
 
-  /** 自选字：展开挑字面板。 */
+  /** 自选字：展开挑字面板（排第二）。 */
   scopePick() {
     this.setData({ picking: true });
   },
@@ -148,7 +170,6 @@ Page({
 
   onHide() {
     audio.stopSpeaking();
-    // 切后台时取消自动跳转：回来看到的是带「下一字」按钮的判定态，手动继续。
     this.clearAutoNext();
   },
 
@@ -157,65 +178,72 @@ Page({
     this.clearAutoNext();
   },
 
-  startQuestion(index) {
+  startWord(index) {
     const item = this.queue[index];
-    this.strokes = [];
-    this.current = [];
+    const chars = item.chars;
+    this.charResults = new Array(chars.length).fill(null); // 本词逐字结果
 
     this.setData({
-      index,
-      total: this.queue.length,
-      isLast: index >= this.queue.length - 1,
-      current: Object.assign({}, item, {
-        wordsText: (item.words || []).join('、'),
-      }),
-      // 笔画数可能没查出来（0），直接显示「0 笔」会误导，这里如实标未记录。
-      hasStandard: Number(item.strokeCount) > 0,
+      wordIndex: index,
+      totalWords: this.queue.length,
+      isLastWord: index >= this.queue.length - 1,
+      currentWord: item,
+      charIndex: 0,
+      wordCharCount: chars.length,
+      withinWord: chars.length > 1,
+      currentChar: chars[0],
       writtenStrokes: 0,
       revealed: false,
       isCorrect: false,
       verdictNote: '',
-      feedback: '',
       evaluating: false,
     });
     wx.setNavigationBarTitle({ title: `听写 ${index + 1}/${this.queue.length}` });
 
-    // 预取该字的标准笔顺（与笔顺动画同源数据），提交时本地逐笔比对要用。
+    // 预取首字标准笔顺（与笔顺动画同源），提交时本地逐笔比对要用。
     this.localHint = '';
-    this.strokeDataTask = loadStrokeData(item.char);
+    this.strokeDataTask = loadStrokeData(chars[0]);
 
-    // 等画布就绪再重画；晚 400ms 自动读一遍，和原 Web 版的节奏一致。
     if (wx.nextTick) wx.nextTick(() => this.initCanvas());
     else setTimeout(() => this.initCanvas(), 30);
-    setTimeout(() => this.playRead(), 400);
+    setTimeout(() => this.playPrompt(), 400);
+  },
+
+  /** 切到词内的下一个字（保留整词结果，不重新 reveal）。 */
+  showChar() {
+    const item = this.data.currentWord;
+    const k = this.data.charIndex;
+    this.strokes = [];
+    this.current = [];
+    this.setData({
+      currentChar: item.chars[k],
+      writtenStrokes: 0,
+      revealed: false,
+      evaluating: false,
+      verdictNote: '',
+    });
+    this.strokeDataTask = loadStrokeData(item.chars[k]);
+    this.redraw();
+    if (wx.nextTick) wx.nextTick(() => this.initCanvas());
+    else setTimeout(() => this.initCanvas(), 30);
+    // 进下一个字时再念一遍整词，帮孩子对上音。
+    setTimeout(() => this.playPrompt(), 350);
   },
 
   /* ---------------- 发音 ---------------- */
 
-  playRead() {
-    const item = this.data.current;
-    if (!item) return;
+  /** 念出当前单元：词就念整词，单字就念字音。 */
+  playPrompt() {
+    const w = this.data.currentWord;
+    if (!w) return;
     this.setData({ playing: true });
-    audio.playCharAudio({
-      char: item.char,
-      pinyin: item.pinyin,
-      sampleWord: (item.words || [])[0],
-      mode: 'read',
-      onEnd: () => this.setData({ playing: false }),
-    });
+    const done = () => this.setData({ playing: false });
+    if (w.chars.length > 1) audio.playSentence({ text: w.word, onEnd: done });
+    else audio.playCharAudio({ char: w.char, pinyin: w.pinyin, mode: 'read', onEnd: done });
   },
 
-  playSpell() {
-    const item = this.data.current;
-    if (!item) return;
-    this.setData({ playing: true });
-    audio.playCharAudio({
-      char: item.char,
-      pinyin: item.pinyin,
-      sampleWord: (item.words || [])[0],
-      mode: 'spell',
-      onEnd: () => this.setData({ playing: false }),
-    });
+  replay() {
+    this.playPrompt();
   },
 
   /* ---------------- 画布 ---------------- */
@@ -240,7 +268,6 @@ Page({
         this.ctx = ctx;
         this.dpr = dpr;
 
-        // 另起一个 query —— 同一个 SelectorQuery 对象不能重复 exec。
         wx.createSelectorQuery()
           .select('#dictation-canvas')
           .boundingClientRect()
@@ -308,11 +335,10 @@ Page({
   toCanvasPoint(touch) {
     // 微信 Touch 的标准字段是 pageX/pageY/clientX/clientY（官方文档没有 x/y）。
     // 只给 pageX/pageY 的环境里读 x/y 会得 undefined，坐标变 NaN 后被 canvas 静默
-    // 丢弃 —— 现象是「笔会计数但不显示」。回退保命，两种字段都有的环境行为不变。
+    // 丢弃 —— 现象是「笔会计数但不显示」。回退保命。
     let x = touch.x != null ? touch.x : touch.pageX;
     let y = touch.y != null ? touch.y : touch.pageY;
     const rect = this.rect;
-    // 拿到的是页面坐标时（部分基础库），减掉画布偏移换算回画布坐标。
     if (rect && (x > SIZE || y > SIZE || x < 0 || y < 0)) {
       x -= rect.left;
       y -= rect.top;
@@ -356,7 +382,7 @@ Page({
     this.redraw();
   },
 
-  /* ---------------- 提交与批改 ---------------- */
+  /* ---------------- 提交与本地批改 ---------------- */
 
   submit() {
     if (this.data.evaluating || this.data.revealed) return;
@@ -365,124 +391,99 @@ Page({
       return;
     }
 
-    const item = this.data.current;
+    const item = this.data.currentWord;
+    const k = this.data.charIndex;
+    const char = item.chars[k];
     const written = this.strokes.length;
-    const standard = Number(item.strokeCount) || 0;
-    // 拿不到 AI 结论时的兜底判定：笔画数差 1 以内算对。这是唯一本地可验证的事实。
-    const countOnlyPass = standard > 0 ? Math.abs(written - standard) <= 1 : false;
     const that = this;
 
     this.setData({ evaluating: true });
-    this.localHint = '';
 
-    // 本地逐笔笔顺比对（PRD 9.4，标准数据与笔顺动画同源）。能本地定论的
-    // （笔画数差 ≥2、顺序错）立即反馈，省一轮十几秒的 AI 等待；
-    // 拿不到标准数据或比对放行时照旧走 AI —— 本地不猜，AI 不可用只报事实。
-    const task = this.strokeDataTask || loadStrokeData(item.char);
+    // 本地逐笔笔顺比对（PRD 9.4，标准数据与笔顺动画同源）。
+    // 笔顺不对通通按错；拿不到标准数据只核对笔画数，不编造失败。
+    const task = this.strokeDataTask || loadStrokeData(char);
     task
       .then((glyph) => {
         if (that.data.revealed) return;
+        let passed = true;
+        let hint = '';
         if (glyph && glyph.medians) {
           const r = checkStrokeOrder(that.strokes, SIZE, glyph.medians);
           if (r.status === 'count-error' || r.status === 'order-error') {
-            that.finishTask(false, r.detail, '');
-            return;
+            passed = false;
+            hint = r.detail;
+          } else if (r.hint) {
+            hint = r.hint;
           }
-          that.localHint = r.hint || '';
+        } else if (Number(item.strokeCount) > 0) {
+          // 没有中心线数据时，退而核对笔画数（差 ≥2 才算错，连笔宽容）。
+          const diff = Math.abs(written - item.strokeCount);
+          if (diff >= 2) {
+            passed = false;
+            hint = `标准 ${item.strokeCount} 笔，你写了 ${written} 笔`;
+          }
         }
-        that.proceedToAi(written, standard, countOnlyPass);
+        that.recordChar(k, char, passed, hint);
       })
       .catch(() => {
         if (that.data.revealed) return;
-        that.proceedToAi(written, standard, countOnlyPass);
+        // 数据取不到：只核对笔画数，不编造失败。
+        const diff = item.strokeCount > 0 ? Math.abs(written - item.strokeCount) : 0;
+        const passed = diff < 2;
+        that.recordChar(k, char, passed, passed ? '' : `标准 ${item.strokeCount} 笔，你写了 ${written} 笔`);
       });
   },
 
-  /** 本地比对放行后的 AI 批改路径（原 submit 主体）。 */
-  proceedToAi(written, standard, countOnlyPass) {
-    const that = this;
+  /** 记下一个字的判定，并决定是继续本词下一字还是整词收尾。 */
+  recordChar(k, char, passed, hint) {
+    const item = this.data.currentWord;
+    this.charResults[k] = { char, passed };
+    this.charLog.push({
+      id: item.wordCharIds[k],
+      char,
+      pinyin: item.pinyin,
+      passed,
+      written: this.strokes.length,
+      wordIndex: this.data.wordIndex,
+      charIndex: k,
+      word: item.word,
+    });
 
-    if (!this.canvas) {
-      this.finishTask(countOnlyPass, '未能取得书写图像，本次仅核对了笔画数。', '');
+    if (!passed) audio.soundEffects.playNotice();
+    else audio.soundEffects.playSuccess();
+
+    this.setData({ evaluating: false });
+
+    if (k < item.chars.length - 1) {
+      // 词内还有字：清屏进下一个字，不弹整词判定。
+      this.setData({ charIndex: k + 1 });
+      this.showChar();
       return;
     }
 
-    const dpr = this.dpr || wx.getSystemInfoSync().pixelRatio || 2;
-    const side = Math.round(SIZE * dpr);
-
-    wx.canvasToTempFilePath({
-      canvas: this.canvas,
-      x: 0,
-      y: 0,
-      width: side,
-      height: side,
-      destWidth: side,
-      destHeight: side,
-      fileType: 'png',
-      success(res) {
-        let base64 = '';
-        try {
-          base64 = wx.getFileSystemManager().readFileSync(res.tempFilePath, 'base64');
-        } catch (err) {
-          that.finishTask(countOnlyPass, '读取书写图片失败，本次仅核对了笔画数。', '');
-          return;
-        }
-        that.requestEvaluate(base64, written, standard, countOnlyPass);
-      },
-      fail() {
-        that.finishTask(countOnlyPass, '导出书写图片失败，本次仅核对了笔画数。', '');
-      },
-    });
+    // 整词写完：收尾判定。
+    this.finishWord(hint);
   },
 
-  requestEvaluate(base64, written, standard, countOnlyPass) {
-    const that = this;
-    const item = this.data.current;
+  finishWord(hint) {
+    const results = this.charResults;
+    const passed = results.every((r) => r && r.passed);
+    const wrongChars = results.filter((r) => r && !r.passed).map((r) => r.char);
 
-    api
-      .evaluateWriting({
-        char: item.char,
-        strokeCount: standard,
-        strokeOrderLogs: [{ written }],
-        canvasBase64: `data:image/png;base64,${base64}`,
-      })
-      .then((data) => {
-        that.finishTask(data.isPassed === true, that.localHint || '', data.feedback || '');
-      })
-      .catch((err) => {
-        // 不编造分数。只给出本地确实核对过的事实，并提醒家长复核。
-        const reason = (err && err.message) || 'AI 批改不可用';
-        const note = that.localHint ? `${reason}；${that.localHint}` : reason;
-        that.finishTask(
-          countOnlyPass,
-          `${note}；本次仅按笔画数判定，请家长复核。`,
-          '',
-        );
-      });
-  },
-
-  finishTask(passed, note, feedback) {
-    const item = this.data.current;
-    const written = this.strokes.length;
-
-    this.log = this.log.filter((entry) => entry.id !== item.id).concat([
-      { id: item.id, char: item.char, pinyin: item.pinyin, passed, written },
-    ]);
-
-    if (passed) audio.soundEffects.playSuccess();
-    else audio.soundEffects.playNotice();
+    let note = '';
+    if (passed) {
+      note = hint ? `笔顺 ${hint}，整体写得真工整！` : '笔顺正确，写得真工整！';
+    } else if (wrongChars.length) {
+      note = `「${wrongChars.join('')}」笔顺有误，再练练这${wrongChars.length > 1 ? '几' : '一'}笔`;
+    }
 
     this.setData({
-      evaluating: false,
       revealed: true,
       isCorrect: passed,
-      verdictNote: note || '',
-      feedback: feedback || '',
-      correctCount: this.data.correctCount + (passed ? 1 : 0),
+      verdictNote: note,
     });
 
-    // PRD 9.3：字形判定正确 → 绿勾 → 自动进入下一字（2026-10-25 用户反馈补上）。
-    // 留 1.2 秒给绿勾和音效；期间手动点「下一字」会先清掉这个定时器，不会跳两个字。
+    // PRD 9.3 / 用户拍板：判定正确 → 自动进入下一词（1.2s 留给绿勾和音效）。
     if (passed) {
       this.clearAutoNext();
       this.autoNextTimer = setTimeout(() => {
@@ -501,8 +502,8 @@ Page({
 
   next() {
     this.clearAutoNext();
-    if (this.data.index < this.queue.length - 1) {
-      this.startQuestion(this.data.index + 1);
+    if (this.data.wordIndex < this.queue.length - 1) {
+      this.startWord(this.data.wordIndex + 1);
       return;
     }
     this.finish();
@@ -512,36 +513,68 @@ Page({
     // 幂等：最后一题连点两下不该把复习数和错字次数重复累加一遍。
     if (this.data.done) return;
 
-    const total = this.queue.length || 1;
-    const correctCount = this.data.correctCount;
-    const wrongList = this.log.filter((entry) => !entry.passed);
+    const queue = this.queue;
+    const charLog = this.charLog || [];
 
-    // 一次性写回字库：过关记「认读写默」四会，没过关留一句需要复习的备注。
-    store.applyDictationResults(this.state, this.log);
-    store.saveState(this.state);
+    // 报告：按词聚合，错字标红。
+    const reportWords = queue.map((item, wi) => {
+      const chars = item.chars.map((ch, k) => {
+        const rec = charLog.find((r) => r.wordIndex === wi && r.charIndex === k);
+        return { char: ch, wrong: rec ? !rec.passed : false };
+      });
+      const passed = chars.every((c) => !c.wrong);
+      return { word: item.word, pinyin: item.pinyin, chars, passed };
+    });
+
+    const wrongCount = charLog.filter((r) => !r.passed).length;
+    const correctWords = reportWords.filter((w) => w.passed).length;
+
+    // 一次性写回字库（状态机 + 二出）。
+    store.applyDictationResults(this.state, charLog);
+    // 错字若不在库里（词里拆出来的部件），补进「默写复习」来源，保证能复习到。
+    const state = this.state;
+    let addedAny = false;
+    const seen = new Set();
+    charLog
+      .filter((r) => !r.passed)
+      .forEach((r) => {
+        if (seen.has(r.char)) return;
+        seen.add(r.char);
+        if (!store.findByChar(state, r.char)) {
+          store.addCharacters(
+            state,
+            [{ char: r.char, pinyin: '', meaning: '', words: [] }],
+            '默写复习',
+            '本次默写写错的字',
+          );
+          addedAny = true;
+        }
+      });
+    store.saveState(state);
 
     this.setData({
       done: true,
-      wrongList,
-      percent: Math.round((correctCount / total) * 100),
+      reportWords,
+      wrongCount,
+      correctWords,
+      totalWords: queue.length,
+      reviewReady: wrongCount > 0 && addedAny,
     });
     wx.setNavigationBarTitle({ title: '听写报告' });
   },
 
-  playWrong(e) {
-    const char = e.currentTarget.dataset.char;
-    const entry = this.data.wrongList.find((w) => w.char === char);
-    if (!entry) return;
-    audio.playCharAudio({ char: entry.char, pinyin: entry.pinyin, mode: 'read' });
+  /** 错字已归入待巩固默写库，去复习。 */
+  goReview() {
+    wx.navigateTo({ url: '/learn/pages/pool/pool' });
   },
 
   /** 带着本次默写成绩去生成成就卡。 */
   goAchievement() {
     const total = this.queue.length || 1;
-    const correct = this.data.correctCount;
+    const correct = this.data.correctWords;
     const chars = this.queue.map((item) => item.char).slice(0, 4).join(',');
     const title = correct === total && total > 0 ? '听写默写满分奖状！' : '完成听写默写挑战！';
-    const score = `默写正确 ${correct} / ${total} 字`;
+    const score = `默写正确 ${correct} / ${total} 词`;
     const praise = '落笔规范，笔画严谨，汉字写得越来越端正！';
 
     wx.navigateTo({
@@ -553,7 +586,7 @@ Page({
 
   restart() {
     // 「再听一轮」回到范围选择，让下一次自己决定默哪批字。
-    this.setData({ done: false, correctCount: 0, wrongList: [], percent: 0 });
+    this.setData({ done: false, reportWords: [], wrongCount: 0, correctWords: 0 });
     this.onLoad({});
   },
 
@@ -569,36 +602,3 @@ Page({
     wx.redirectTo({ url: '/pages/ocr/ocr' });
   },
 });
-
-/**
- * 出卷：先救待巩固的错字（二出池），再考前三种未闭环状态，已掌握的押后。
- * 不洗牌 —— 字库本身按收录时间倒序，先考最近学的，符合从新到旧的复习顺序。
- * 三档之间用 seen 去重，否则一个字会因同时命中多档被抽中两次。
- *
- * presetIds 非空时（足迹/默写库带入）整批替换候选，仍受 MAX_PRESET 限制；
- * 带入而字已不在库的（被移出过）静默剔除。
- */
-function buildQueue(pool, limit, presetIds) {
-  const seen = new Set();
-  const pick = (list) =>
-    list.filter((c) => {
-      if (seen.has(c.id)) return false;
-      seen.add(c.id);
-      return true;
-    });
-
-  if (presetIds && presetIds.length) {
-    const wanted = new Set(presetIds);
-    return pool.filter((c) => wanted.has(c.id)).slice(0, MAX_PRESET);
-  }
-
-  const weak = pick(pool.filter((c) => c.mastery === M.WEAK));
-  const pending = pick(
-    pool.filter(
-      (c) => c.mastery === M.NEW || c.mastery === M.LEARNING || c.mastery === M.REVIEW,
-    ),
-  );
-  const rest = pick(pool);
-
-  return weak.concat(pending, rest).slice(0, limit);
-}

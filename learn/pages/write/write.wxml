@@ -1,132 +1,7 @@
-<!-- 手写查字卡片（模板：空字库与有字库两种形态共用） -->
-<template name="lookup-card">
+<!-- 写字识字 = 手写查字闭环（2026-10-29 重构：删字条/页签/练写） -->
+<view class="page" wx:if="{{stage === 'write'}}">
   <view class="card">
     <text class="sub">遇到不会读的字？在田字格里写出来，AI 帮你认。</text>
-    <view class="canvas-wrap lookup-wrap">
-      <view class="tianzige" style="width:300px;height:300px">
-        <canvas
-          type="2d"
-          id="lookup-canvas"
-          class="write-canvas"
-          style="width:300px;height:300px"
-          disable-scroll="{{true}}"
-          bindtouchstart="onLookupTouchStart"
-          bindtouchmove="onLookupTouchMove"
-          bindtouchend="onLookupTouchEnd"
-          bindtouchcancel="onLookupTouchEnd"
-        ></canvas>
-      </view>
-      <view class="stroke-badge">已写 {{lookupStrokes}} 笔</view>
-    </view>
-
-    <view class="row tools">
-      <view class="btn btn-ghost tool-btn" bindtap="lookupUndo">撤销一笔</view>
-      <view class="btn btn-ghost tool-btn" bindtap="lookupClear">重写清除</view>
-    </view>
-
-    <view wx:if="{{lookupNote}}" class="notice">
-      <text class="notice-text">{{lookupNote}}</text>
-    </view>
-
-    <view class="btn btn-primary submit-btn {{lookupStrokes === 0 || recognizing ? 'btn-disabled' : ''}}" bindtap="recognize">
-      {{recognizing ? 'AI 正在认字…' : 'AI 帮我认字'}}
-    </view>
-
-    <!-- 候选确认：孩子自己挑，AI 不替孩子拍板 -->
-    <view class="result" wx:if="{{candidates.length}}">
-      <text class="result-title">你写的是这个字吗？点一下听听读音</text>
-      <view class="cand-list">
-        <view
-          class="cand {{chosen.char === cand.char ? 'cand-on' : ''}}"
-          wx:for="{{candidates}}"
-          wx:key="char"
-          wx:for-item="cand"
-          data-char="{{cand.char}}"
-          bindtap="chooseCandidate"
-        >
-          <text class="cand-char kai">{{cand.char}}</text>
-          <view class="cand-info">
-            <view class="row">
-              <text class="cand-pinyin">{{cand.pinyin}}</text>
-              <text class="cand-conf">{{cand.confidence}}%</text>
-            </view>
-            <text class="cand-meaning">{{cand.meaning}}</text>
-            <text class="cand-words" wx:if="{{cand.wordsText}}">{{cand.wordsText}}</text>
-          </view>
-        </view>
-      </view>
-
-      <block wx:if="{{chosen}}">
-        <view class="confirm-row">
-          <text class="confirm-text">是“{{chosen.char}}”（{{chosen.pinyin}}）吗？</text>
-        </view>
-        <view class="row">
-          <view class="btn btn-primary confirm-btn" bindtap="addToLibrary">加入生字库</view>
-          <view class="btn btn-ghost confirm-btn" bindtap="rejectCandidate">不是，重写</view>
-        </view>
-      </block>
-    </view>
-  </view>
-</template>
-
-<!-- 字库为空（查字页签不受此限 —— 字库空恰恰最需要查字） -->
-<view class="page" wx:if="{{ready && !item && tab !== 'lookup'}}">
-  <view class="card empty">
-    <view class="empty-icon">
-      <image class="ic-big" src="/images/icons/pencil-green.png" mode="aspectFit" />
-    </view>
-    <text class="sub">字库还是空的，没有可练习的字</text>
-    <text class="muted">先拍一页课本或课外书，把生字收进来，这里就能逐笔练习书写。</text>
-    <view class="btn btn-primary empty-btn" bindtap="goOcr">去拍照认字</view>
-    <view class="btn btn-ghost empty-btn" bindtap="switchTab" data-tab="lookup">
-      <image class="ic-inline" src="/images/icons/search-ink.png" mode="aspectFit" /><text>手写查字</text>
-    </view>
-  </view>
-</view>
-
-<view class="page" wx:elif="{{item}}">
-  <!-- 字头 -->
-  <view class="card head">
-    <view class="row">
-      <text class="head-char kai">{{item.char}}</text>
-      <text class="head-meta">共 {{item.strokeCount || '—'}} 笔 · 部首【{{item.radical || '—'}}】</text>
-    </view>
-    <view class="row tabs">
-      <view
-        class="tab {{tab === 'write' ? 'tab-on' : ''}}"
-        data-tab="write"
-        bindtap="switchTab"
-      ><image class="ic-inline" src="/images/icons/pencil-green.png" mode="aspectFit" />写字练习</view>
-      <view
-        class="tab {{tab === 'animate' ? 'tab-on' : ''}}"
-        data-tab="animate"
-        bindtap="switchTab"
-      ><image class="ic-inline" src="/images/icons/eye-green.png" mode="aspectFit" />看笔顺动画</view>      <view
-        class="tab {{tab === 'lookup' ? 'tab-on' : ''}}"
-        data-tab="lookup"
-        bindtap="switchTab"
-      ><image class="ic-inline" src="/images/icons/search-ink.png" mode="aspectFit" />查字</view>
-    </view>
-  </view>
-
-  <!-- 写字练习 -->
-  <view class="card" wx:if="{{tab === 'write'}}">
-    <view class="row-between mode-row">
-      <text class="sub">练习模式</text>
-      <view class="row mode-switch">
-        <view
-          class="mode {{mode === 'trace' ? 'mode-on' : ''}}"
-          data-mode="trace"
-          bindtap="switchMode"
-        >跟写（描红）</view>
-        <view
-          class="mode {{mode === 'free' ? 'mode-on' : ''}}"
-          data-mode="free"
-          bindtap="switchMode"
-        >独立写（考核）</view>
-      </view>
-    </view>
-
     <view class="canvas-wrap">
       <view class="tianzige" style="width:300px;height:300px">
         <canvas
@@ -146,60 +21,84 @@
 
     <view class="row tools">
       <view class="btn btn-ghost tool-btn" bindtap="undo">撤销一笔</view>
-      <view class="btn btn-ghost tool-btn" bindtap="clear">重写清除</view>
-      <view class="btn btn-ghost tool-btn" bindtap="playRead">
-        <image class="ic-inline" src="/images/icons/speaker-green.png" mode="aspectFit" /><text>听读音</text>
-      </view>
+      <view class="btn btn-ghost tool-btn" bindtap="clearBoard">重写清除</view>
     </view>
 
     <view wx:if="{{note}}" class="notice">
       <text class="notice-text">{{note}}</text>
     </view>
 
-    <view class="row count-row">
-      <text class="sub">当前书写：<text class="count-num">{{strokeCount}}</text> 笔</text>
-      <text class="sub">标准笔画：<text class="count-num green">{{standardStrokeCount || '—'}}</text> 笔</text>
-    </view>
-
-    <view class="btn btn-primary submit-btn {{strokeCount === 0 || evaluating ? 'btn-disabled' : ''}}" bindtap="evaluate">
-      {{evaluating ? 'AI 正在批改字形与笔顺…' : '我写完了，检查字形'}}
-    </view>
-
-    <!-- 批改结果 -->
-    <view class="result" wx:if="{{result}}">
-      <view class="row-between">
-        <text class="result-title">{{result.isPassed ? '批改通过！🎉' : '继续加油哦！💪'}}</text>
-        <text class="result-score">字形 {{result.shapeScore}} · 笔顺 {{result.strokeScore}}</text>
-      </view>
-      <text class="result-feedback">{{result.feedback}}</text>
-      <view wx:if="{{result.hasImprovements}}" class="improve">
-        建议：{{result.improvementsText}}
-      </view>
-      <view class="btn btn-ghost next-btn" bindtap="nextChar">练下一个字</view>
+    <view class="btn btn-primary submit-btn {{strokeCount === 0 || recognizing ? 'btn-disabled' : ''}}" bindtap="recognize">
+      {{recognizing ? 'AI 正在认字…' : 'AI 帮我识字'}}
     </view>
   </view>
 
-  <!-- 笔顺动画：这个页签就是来看动画的，进入即自动逐笔演示 -->
-  <view class="card" wx:elif="{{tab === 'animate'}}">
-    <stroke-glyph char="{{item.char}}" size="{{280}}" is-mi-zi-ge="{{true}}" auto-play="{{tab === 'animate'}}" />
-    <view class="btn btn-primary animate-btn" bindtap="switchTab" data-tab="write">去田字格练习</view>
+  <!-- 候选：点某个字进详情下页 -->
+  <view class="card" wx:if="{{candidates.length}}">
+    <text class="result-title">你写的是这个字吗？点一下查看</text>
+    <view class="cand-list">
+      <view
+        class="cand"
+        wx:for="{{candidates}}"
+        wx:key="char"
+        wx:for-item="cand"
+        data-char="{{cand.char}}"
+        bindtap="chooseCandidate"
+      >
+        <text class="cand-char kai">{{cand.char}}</text>
+        <view class="cand-info">
+          <view class="row">
+            <text class="cand-pinyin">{{cand.pinyin}}</text>
+            <text class="cand-conf">{{cand.confidence}}%</text>
+          </view>
+          <text class="cand-meaning">{{cand.meaning}}</text>
+          <text class="cand-words" wx:if="{{cand.wordsText}}">{{cand.wordsText}}</text>
+        </view>
+        <text class="cand-go">›</text>
+      </view>
+    </view>
+    <view class="btn btn-ghost re-btn" bindtap="clearBoard">不是这些字，重新写</view>
   </view>
-
-  <!-- 手写查字 -->
-  <block wx:elif="{{tab === 'lookup'}}">
-    <template
-      is="lookup-card"
-      data="{{lookupStrokes, recognizing, lookupNote, candidates, chosen}}"
-    />
-  </block>
 </view>
 
-<!-- 空字库时的查字页签：没有字头卡，只有查字卡 -->
-<view class="page" wx:elif="{{tab === 'lookup'}}">
-  <template
-    is="lookup-card"
-    data="{{lookupStrokes, recognizing, lookupNote, candidates, chosen}}"
-  />
+<!-- 下页：点选的汉字详情，字框旁小加号询问是否入库 -->
+<view class="page" wx:else>
+  <view class="card lookup-detail">
+    <view class="detail-head">
+      <view class="detail-char-box kai">{{chosen.char}}</view>
+      <!-- 小加号：询问是否加入生字库 -->
+      <view wx:if="{{!added}}" class="plus-btn" bindtap="addToLibrary">
+        <image class="plus-img" src="/images/icons/plus-green.png" mode="aspectFit" />
+      </view>
+      <view wx:else class="plus-btn plus-done" bindtap="goDetail">
+        <image class="plus-img" src="/images/icons/sprout-green.png" mode="aspectFit" />
+      </view>
+    </view>
+    <view class="plus-hint">{{added ? '已在生字库里，点查看完整字卡' : '点 + 加入生字库'}}</view>
+
+    <view class="detail-row">
+      <text class="detail-pinyin">{{chosen.pinyin}}</text>
+      <text class="cand-conf">{{chosen.confidence}}%</text>
+      <view class="btn btn-ghost audio-mini" bindtap="playChosen">
+        <image class="ic-inline" src="/images/icons/speaker-green.png" mode="aspectFit" /><text>听读音</text>
+      </view>
+    </view>
+
+    <view class="detail-block">
+      <text class="detail-label">释义</text>
+      <text class="detail-text">{{chosen.meaning || '暂无释义'}}</text>
+    </view>
+    <view class="detail-block">
+      <text class="detail-label">组词</text>
+      <text class="detail-text">{{wordsText || '暂无组词'}}</text>
+    </view>
+
+    <view class="row detail-actions">
+      <view class="btn btn-primary detail-btn" wx:if="{{added}}" bindtap="goDetail">查看完整字卡</view>
+      <view class="btn {{added ? 'btn-ghost' : 'btn-primary'}} detail-btn" wx:else bindtap="addToLibrary">加入生字库</view>
+      <view class="btn btn-ghost detail-btn" bindtap="backToCandidates">不是这个字</view>
+    </view>
+  </view>
 </view>
 
 <tabbar current="write" />

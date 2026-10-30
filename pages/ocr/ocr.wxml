@@ -1,24 +1,6 @@
 <view class="page">
-  <!-- 第一步：选来源、拍照 -->
+  <!-- 第一步：拍照（2026-10-29 用户反馈：删掉「这一页来自哪里」，出处只在入库前问一次） -->
   <block wx:if="{{step === 'pick'}}">
-    <view class="card">
-      <view class="row-between">
-        <text class="title">这一页来自哪里？</text>
-        <picker
-          mode="selector"
-          range="{{sources}}"
-          value="{{sourceIndex}}"
-          bindchange="onSourceChange"
-        >
-          <view class="picker">
-            <text>{{sources[sourceIndex]}}</text>
-            <text class="picker-arrow">▾</text>
-          </view>
-        </picker>
-      </view>
-      <text class="muted picker-note">来源会记进每个字的档案，方便日后回看孩子是在哪儿遇到它的。</text>
-    </view>
-
     <view class="card">
       <view class="shoot" bindtap="chooseImage">
         <image wx:if="{{imagePath}}" src="{{imagePath}}" mode="widthFix" class="preview" />
@@ -45,14 +27,22 @@
     </view>
   </block>
 
-  <!-- 第二步：框出要学的那一段 -->
+  <!-- 第二步：框选 + 橡皮擦（可双指缩放图片，方便擦字） -->
   <block wx:elif="{{step === 'crop'}}">
     <view class="card">
       <view class="row-between">
         <text class="title">框出要学的那一段</text>
         <text class="chip chip-plain" bindtap="chooseImage">重拍</text>
       </view>
-      <text class="muted picker-note">拖动选框或拽四个角调整范围，只识别框里的字，桌上的其他东西就不会混进来。</text>
+      <text class="muted picker-note">拖动选框或拽四个角调整范围；不想识别的字用橡皮擦涂掉，双指捏合可缩放图片。</text>
+
+      <view class="tools-row">
+        <view class="tool-toggle {{tool === 'select' ? 'tool-on' : ''}}" bindtap="setTool" data-tool="select">框选范围</view>
+        <view class="tool-toggle {{tool === 'erase' ? 'tool-on' : ''}}" bindtap="setTool" data-tool="erase">
+          <image class="ic-inline" src="/images/icons/eraser-ink.png" mode="aspectFit" /><text>橡皮擦</text>
+        </view>
+        <view class="tool-toggle tool-undo" wx:if="{{eraseCount}}" bindtap="clearErase">清空擦除</view>
+      </view>
 
       <view
         class="crop-stage"
@@ -62,27 +52,37 @@
         bindtouchend="onCropTouchEnd"
         bindtouchcancel="onCropTouchEnd"
       >
-        <image src="{{imagePath}}" class="crop-img" mode="aspectFit" />
+        <view class="crop-inner" style="transform: translate({{viewTx}}px, {{viewTy}}px) scale({{viewScale}});">
+          <image src="{{imagePath}}" class="crop-img" mode="aspectFit" />
 
-        <view
-          wx:if="{{rectPx}}"
-          class="crop-sel"
-          style="left:{{rectPx.left}}px;top:{{rectPx.top}}px;width:{{rectPx.width}}px;height:{{rectPx.height}}px"
-        >
-          <view class="grip grip-nw"><view class="grip-dot"></view></view>
-          <view class="grip grip-ne"><view class="grip-dot"></view></view>
-          <view class="grip grip-sw"><view class="grip-dot"></view></view>
-          <view class="grip grip-se"><view class="grip-dot"></view></view>
+          <canvas
+            wx:if="{{box}}"
+            type="2d"
+            id="eraseCanvas"
+            class="erase-canvas"
+            style="left:{{box.left}}px;top:{{box.top}}px;width:{{box.width}}px;height:{{box.height}}px"
+          ></canvas>
+
+          <view
+            wx:if="{{rectPx && tool === 'select'}}"
+            class="crop-sel"
+            style="left:{{rectPx.left}}px;top:{{rectPx.top}}px;width:{{rectPx.width}}px;height:{{rectPx.height}}px"
+          >
+            <view class="grip grip-nw"><view class="grip-dot"></view></view>
+            <view class="grip grip-ne"><view class="grip-dot"></view></view>
+            <view class="grip grip-sw"><view class="grip-dot"></view></view>
+            <view class="grip grip-se"><view class="grip-dot"></view></view>
+          </view>
         </view>
 
         <view wx:if="{{scanning || cropping}}" class="crop-busy">
           <view class="spinner"></view>
-          <text class="crop-busy-text">{{scanHint}}</text>
+          <text class="crop-busy-text">{{scanHint || '正在处理…'}}</text>
         </view>
       </view>
 
       <view class="btn btn-primary crop-btn" bindtap="cropAndScan">
-        {{cropping ? '正在裁剪…' : '就识别这里'}}
+        {{cropping ? '正在处理…' : '就识别这里'}}
       </view>
       <view class="btn btn-ghost crop-btn" bindtap="useWholePage">整页识别</view>
       <view wx:if="{{scanning}}" class="btn btn-ghost crop-btn" bindtap="cancelScan">取消识别，返回重拍</view>

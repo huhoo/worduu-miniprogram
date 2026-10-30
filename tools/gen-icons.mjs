@@ -81,6 +81,19 @@ const ICONS = {
     <path d="M12 3.8 L21 19.4 H3 z"/>
     <path d="M12 9.6 v4.2"/>
     <circle cx="12" cy="16.4" r="0.4"/>`,
+  flag: `
+    <path d="M6 3.6 v17"/>
+    <path d="M6 4.8 h11.2 l-2.5 3.5 2.5 3.5 H6"/>`,
+  grid: `
+    <rect x="4.2" y="4.2" width="6.8" height="6.8" rx="1.6"/>
+    <rect x="13" y="4.2" width="6.8" height="6.8" rx="1.6"/>
+    <rect x="4.2" y="13" width="6.8" height="6.8" rx="1.6"/>
+    <rect x="13" y="13" width="6.8" height="6.8" rx="1.6"/>`,
+  eraser: `
+    <path d="M4.5 13.4 L12.5 5.4 a2 2 0 0 1 2.8 0 l3.3 3.3 a2 2 0 0 1 0 2.8 l-7.1 7.1 H8.2 L4.5 15 z"/>
+    <path d="M9.4 8.5 l6.1 6.1 M6.4 18.6 h13.2"/>`,
+  plus: `
+    <path d="M12 5.6 v12.8 M5.6 12 h12.8"/>`,
 };
 
 const NEEDS = [
@@ -91,6 +104,11 @@ const NEEDS = [
   ['book', ['green']],
   ['search', ['ink']],
   ['gear', ['ink']],
+  ['clock', ['green', 'ink']],
+  ['flag', ['green']],
+  ['grid', ['green']],
+  ['eraser', ['ink']],
+  ['plus', ['green']],
   ['speaker', ['green']],
   ['trophy', ['green']],
   ['eye', ['green']],

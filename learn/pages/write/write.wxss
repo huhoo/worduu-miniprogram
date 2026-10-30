@@ -292,3 +292,135 @@
 .confirm-btn + .confirm-btn {
   margin-left: 16rpx;
 }
+
+/* ---------- 2026-10-29 重构：候选直达 + 详情下页 ---------- */
+.cand-go {
+  font-size: 44rpx;
+  color: #9DB4A3;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+.re-btn {
+  margin-top: 24rpx;
+  width: 100%;
+  min-height: 88rpx;
+}
+
+.lookup-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.detail-head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.detail-char-box {
+  width: 240rpx;
+  height: 240rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 140rpx;
+  font-weight: 800;
+  color: var(--ink);
+  background: #FFFFFF;
+  border: 2rpx solid #C0D3BD;
+  border-radius: 28rpx;
+}
+
+.plus-btn {
+  width: 72rpx;
+  height: 72rpx;
+  margin: -10rpx 0 0 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-light);
+  border: 2rpx solid var(--green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.plus-btn.plus-done {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+}
+
+.plus-img {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.plus-hint {
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #57685B;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24rpx;
+  width: 100%;
+}
+
+.detail-pinyin {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--indigo);
+  font-family: 'SF Mono', Menlo, monospace;
+}
+
+.audio-mini {
+  display: flex;
+  align-items: center;
+  margin-left: 20rpx;
+  font-size: 22rpx;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  min-height: 88rpx;
+}
+
+.detail-block {
+  width: 100%;
+  margin-top: 26rpx;
+  background: #F5FAF3;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  text-align: left;
+}
+
+.detail-label {
+  display: block;
+  font-size: 22rpx;
+  color: #57685B;
+}
+
+.detail-text {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+.detail-actions {
+  margin-top: 30rpx;
+  width: 100%;
+}
+
+.detail-btn {
+  flex: 1;
+  min-height: 88rpx;
+}
+
+.detail-btn + .detail-btn {
+  margin-left: 16rpx;
+}

@@ -28,77 +28,56 @@
   border-radius: 999rpx;
 }
 
-/* ---------- 发音卡 ---------- */
-.listen {
+/* ---------- 进行中：写字框居中 ---------- */
+.write-stage {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
-.play-btn {
-  width: 128rpx;
-  height: 128rpx;
-  border-radius: 50%;
-  background: var(--green-light);
+/* 顶栏：标题 + 进度 + 重听，三个占一行 */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1rpx solid var(--line);
+  border-radius: 24rpx;
+  padding: 18rpx 28rpx;
+}
+
+.bar-replay {
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 12rpx #F0FDF4;
-  transition: transform 0.15s, background 0.15s;
-  min-height: 88rpx;
+  border-radius: 50%;
+  background: var(--green-light);
 }
 
-.play-btn.playing {
+.bar-replay.playing {
   background: var(--green);
-  transform: scale(1.06);
 }
 
-.play-icon {
-  width: 56rpx;
-  height: 56rpx;
+.bar-replay-img {
+  width: 34rpx;
+  height: 34rpx;
 }
 
-.listen-title {
-  margin-top: 20rpx;
-  font-size: 32rpx;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-.listen-sub {
-  margin-top: 6rpx;
-  font-size: 22rpx;
-  color: var(--ink-3);
-}
-
-.audio-row {
-  margin-top: 20rpx;
-}
-
-.audio-btn {
-  font-size: 22rpx;
-  padding: 14rpx 26rpx;
-  border-radius: 999rpx;
-  min-height: 88rpx;
-}
-
-.audio-row .audio-btn + .audio-btn {
-  margin-left: 16rpx;
-  min-height: 88rpx;
-}
-
-.audio-btn.amber {
-  background: var(--amber-light);
-  border-color: var(--amber-line);
-  color: var(--amber-ink);
-}
-
-/* ---------- 书写区 ---------- */
-.write-card {
+.stage-center {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 24rpx 0;
+}
+
+.char-hint {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: var(--indigo);
+  font-weight: 700;
 }
 
 .canvas-wrap {
@@ -169,7 +148,8 @@
   justify-content: center;
 }
 
-.verdict-char {
+.verdict-char,
+.verdict-word {
   font-size: 48rpx;
   font-weight: 800;
   color: var(--ink);
@@ -272,50 +252,43 @@
   color: var(--green);
 }
 
-.report-wrong {
+/* 报告：词语列表，错字标红 */
+.report-words {
   margin-top: 32rpx;
   width: 100%;
-}
-
-.report-wrong-title {
-  display: block;
-  font-size: 22rpx;
-  color: #57685B;
-  text-align: left;
-}
-
-.wrong-row {
-  margin-top: 12rpx;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.wrong-item {
-  width: 33.33%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #FFF1F2;
-  border-radius: 20rpx;
-  padding: 16rpx 0;
-  margin-top: 12rpx;
-  min-height: 88rpx;
 }
 
-.wrong-char {
-  font-size: 40rpx;
+.rw {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14rpx;
+}
+
+.rw-char {
+  font-size: 44rpx;
   font-weight: 800;
   color: var(--ink);
+  margin: 0 2rpx;
 }
 
-.wrong-pinyin {
-  font-size: 24rpx;
-  color: #9F1239;
+.rw-char.rw-wrong {
+  color: #DC2626;
 }
 
-.wrong-strokes {
+.rw-pinyin {
+  margin-left: 14rpx;
   font-size: 22rpx;
-  color: var(--ink-3);
+  font-family: 'SF Mono', Menlo, monospace;
+  color: var(--indigo);
+}
+
+.rw-pinyin.rw-wrong-pinyin {
+  color: #DC2626;
 }
 
 .report-note {

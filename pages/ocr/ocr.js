@@ -16,6 +16,8 @@ const GRIP_HIT = 26;
  * 所以到点就把提示换成「可以取消后重拍」，而不是继续假装一切正常。
  */
 const SLOW_SCAN_SECONDS = 45;
+/** 橡皮擦在显示坐标下的半径（px），scale=1 时的尺寸。 */
+const ERASE_R = 14;
 
 Page({
   data: {
@@ -38,6 +40,12 @@ Page({
     box: null,
     rectPx: null,
     cropping: false,
+    // 工具与视图（2026-10-29：橡皮擦 + 双指缩放）
+    tool: 'select', // select 框选 | erase 橡皮擦
+    viewScale: 1,
+    viewTx: 0,
+    viewTy: 0,
+    eraseCount: 0,
   },
 
   onSourceChange(e) {
@@ -94,6 +102,7 @@ Page({
     const winW = wx.getSystemInfoSync().windowWidth || 375;
     // 先按「卡片左右各留 16px」估一个宽度把舞台渲染出来，紧接着再量真实宽度修正。
     const estW = Math.max(1, winW - 64);
+    this.resetEraseState();
     this.setData(
       { step: 'crop', imagePath: path, imgW, imgH, stageH: Math.min(estW * imgH / imgW, MAX_STAGE_H), errorMsg: '' },
       () => that.measureStage(imgW, imgH),
@@ -113,7 +122,10 @@ Page({
         const box = CROP.containedBox(imgW, imgH, stageW, stageH);
         that._box = box;
         that._stage = { left: rect.left, top: rect.top, width: stageW, height: stageH };
-        that.setData({ stageH: Math.round(stageH), box }, () => that.applyRect(CROP.DEFAULT_RECT));
+        that.setData({ stageH: Math.round(stageH), box }, () => {
+          that.applyRect(CROP.DEFAULT_RECT);
+          that.initEraseCanvas();
+        });
       })
       .exec();
   },
@@ -124,14 +136,117 @@ Page({
     this.setData({ rectPx: CROP.toStagePixels(rect, this._box) });
   },
 
-  onCropTouchStart(e) {
-    const touch = e.touches && e.touches[0];
-    const stage = this._stage;
-    const px = this.data.rectPx;
-    if (!touch || !stage || !px) return;
+  /* ---------------- 工具切换与视图（缩放） ---------------- */
 
-    const x = touch.clientX - stage.left;
-    const y = touch.clientY - stage.top;
+  setTool(e) {
+    this.setData({ tool: e.currentTarget.dataset.tool || 'select' });
+  },
+
+  /** 视图状态（缩放/平移）归位：数据视图与 WXML 同步。 */
+  resetView() {
+    this._view = { s: 1, tx: 0, ty: 0 };
+    this.setData({ viewScale: 1, viewTx: 0, viewTy: 0 });
+  },
+
+  resetEraseState() {
+    this._erase = [];
+    this._eraseCur = null;
+    this._pinch = null;
+    this._ecanvas = null;
+    this._ectx = null;
+    this.resetView();
+    this.setData({ tool: 'select', eraseCount: 0 });
+  },
+
+  clearErase() {
+    this._erase = [];
+    this._eraseCur = null;
+    this.setData({ eraseCount: 0 });
+    this.redrawErase();
+  },
+
+  /** 橡皮擦画布：盖在照片显示区上，把涂过的位置画成白色。 */
+  initEraseCanvas() {
+    const box = this._box;
+    if (!box) return;
+    wx.createSelectorQuery()
+      .in(this)
+      .select('#eraseCanvas')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        const canvas = res && res[0] && res[0].node;
+        if (!canvas) return;
+        const dpr = wx.getSystemInfoSync().pixelRatio || 2;
+        canvas.width = Math.round(box.width * dpr);
+        canvas.height = Math.round(box.height * dpr);
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        this._ecanvas = canvas;
+        this._ectx = ctx;
+        this.redrawErase();
+      });
+  },
+
+  redrawErase() {
+    const ctx = this._ectx;
+    const box = this._box;
+    if (!ctx || !box) return;
+    ctx.clearRect(0, 0, box.width, box.height);
+    ctx.fillStyle = '#FFFFFF';
+    const paint = (pts) => {
+      (pts || []).forEach((p) => {
+        ctx.beginPath();
+        ctx.arc(p[0], p[1], ERASE_R, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    };
+    (this._erase || []).forEach(paint);
+    paint(this._eraseCur);
+  },
+
+  /** 把舞台坐标换算成未缩放容器的坐标（选框/擦除都活在容器坐标系里）。 */
+  toStagePoint(touch) {
+    const stage = this._stage;
+    const v = this._view;
+    const rx = touch.clientX - stage.left;
+    const ry = touch.clientY - stage.top;
+    return { x: (rx - v.tx) / v.s, y: (ry - v.ty) / v.s };
+  },
+
+  onCropTouchStart(e) {
+    const stage = this._stage;
+    if (!stage) return;
+
+    // 双指：进入捏合缩放，记下初始距离/中心与当前视图。
+    if (e.touches.length >= 2) {
+      const [a, b] = e.touches;
+      this._pinch = {
+        dist: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1,
+        cx: (a.clientX + b.clientX) / 2 - stage.left,
+        cy: (a.clientY + b.clientY) / 2 - stage.top,
+        s0: this._view.s,
+        tx0: this._view.tx,
+        ty0: this._view.ty,
+      };
+      this._drag = null;
+      this._eraseCur = null;
+      return;
+    }
+    this._pinch = null;
+
+    const touch = e.touches[0];
+    if (!touch) return;
+    const p = this.toStagePoint(touch);
+
+    // 橡皮擦模式：起一段擦除笔迹
+    if (this.data.tool === 'erase') {
+      this._eraseCur = [[p.x, p.y]];
+      this.redrawErase();
+      return;
+    }
+
+    const px = this.data.rectPx;
+    if (!px) return;
 
     const corners = {
       nw: [px.left, px.top],
@@ -142,68 +257,117 @@ Page({
 
     let mode = 'draw';
     Object.keys(corners).forEach((key) => {
-      if (Math.abs(x - corners[key][0]) <= GRIP_HIT && Math.abs(y - corners[key][1]) <= GRIP_HIT) mode = key;
+      if (Math.abs(p.x - corners[key][0]) <= GRIP_HIT && Math.abs(p.y - corners[key][1]) <= GRIP_HIT) mode = key;
     });
     if (mode === 'draw') {
-      const inside = x >= px.left && x <= px.left + px.width && y >= px.top && y <= px.top + px.height;
+      const inside = p.x >= px.left && p.x <= px.left + px.width && p.y >= px.top && p.y <= px.top + px.height;
       if (inside) mode = 'move';
     }
 
     const box = this._box;
     this._drag = {
       mode,
-      startX: x,
-      startY: y,
+      startX: p.x,
+      startY: p.y,
       origin: Object.assign({}, this._rect || CROP.DEFAULT_RECT),
       // 框选（draw）需要记住起点的归一化坐标，反向拖也能框对。
-      anchorX: (x - box.left) / box.width,
-      anchorY: (y - box.top) / box.height,
+      anchorX: (p.x - box.left) / box.width,
+      anchorY: (p.y - box.top) / box.height,
     };
   },
 
   onCropTouchMove(e) {
-    const touch = e.touches && e.touches[0];
     const stage = this._stage;
+    if (!stage) return;
+
+    // 双指捏合：以初始两指中心为锚点缩放，图片不飘。
+    if (e.touches.length >= 2 && this._pinch) {
+      const [a, b] = e.touches;
+      const dist = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1;
+      const p = this._pinch;
+      const s = Math.min(4, Math.max(1, (p.s0 * dist) / p.dist));
+      const k = s / p.s0;
+      const tx = p.cx - (p.cx - p.tx0) * k;
+      const ty = p.cy - (p.cy - p.ty0) * k;
+      this._view = { s, tx, ty };
+      this.setData({ viewScale: s, viewTx: tx, viewTy: ty });
+      return;
+    }
+    if (this._pinch) this._pinch = null;
+
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    // 橡皮擦进行中：追加擦除点
+    if (this._eraseCur) {
+      const pt = this.toStagePoint(touch);
+      this._eraseCur.push([pt.x, pt.y]);
+      this.redrawErase();
+      return;
+    }
+
     const drag = this._drag;
     const box = this._box;
-    if (!touch || !stage || !drag || !box) return;
+    if (!drag || !box) return;
 
-    const x = touch.clientX - stage.left;
-    const y = touch.clientY - stage.top;
+    const pt = this.toStagePoint(touch);
 
     if (drag.mode === 'draw') {
-      const bx = Math.min(Math.max((x - box.left) / box.width, 0), 1);
-      const by = Math.min(Math.max((y - box.top) / box.height, 0), 1);
+      const bx = Math.min(Math.max((pt.x - box.left) / box.width, 0), 1);
+      const by = Math.min(Math.max((pt.y - box.top) / box.height, 0), 1);
       this.applyRect(CROP.rectFromPoints(drag.anchorX, drag.anchorY, bx, by));
       return;
     }
 
-    const dx = (x - drag.startX) / box.width;
-    const dy = (y - drag.startY) / box.height;
+    const dx = (pt.x - drag.startX) / box.width;
+    const dy = (pt.y - drag.startY) / box.height;
     this.applyRect(CROP.applyDrag(drag.origin, drag.mode, dx, dy));
   },
 
   onCropTouchEnd() {
+    // 橡皮擦收笔：整段笔迹入册
+    if (this._eraseCur) {
+      if (this._eraseCur.length) {
+        this._erase = (this._erase || []).concat([this._eraseCur]);
+        this.setData({ eraseCount: this._erase.length });
+      }
+      this._eraseCur = null;
+      this.redrawErase();
+    }
     this._drag = null;
+    this._pinch = null;
   },
 
-  /** 整页识别：跳过裁剪，直接走原来的整图链路。 */
+  /** 整页识别：无擦除笔迹走原压缩链路；有擦除则合成白块后再送。 */
   useWholePage() {
     this.setData({ step: 'crop' });
-    this.scan(this.data.imagePath, false);
+    const { imgW, imgH } = this.data;
+    if (this._erase && this._erase.length && imgW && imgH) {
+      this.renderAndScan({ sx: 0, sy: 0, sw: imgW, sh: imgH });
+    } else {
+      this.scan(this.data.imagePath, false);
+    }
   },
 
-  /** 按选区裁一刀再送识别。裁不动就如实退回整页，不假装裁过。 */
+  /** 按选区裁一刀再送识别。 */
   cropAndScan() {
-    const that = this;
     const rect = this._rect || CROP.DEFAULT_RECT;
     const { imagePath, imgW, imgH } = this.data;
     if (!imagePath || !imgW || !imgH) {
       this.scan(imagePath, false);
       return;
     }
+    this.renderAndScan(CROP.toSourcePixels(rect, imgW, imgH));
+  },
 
-    const src = CROP.toSourcePixels(rect, imgW, imgH);
+  /**
+   * 渲染最终送识别的图：源图指定区域 + 橡皮擦白块，宽压到 ≤1280。
+   * 擦除点记录在显示坐标，这里换算回原图坐标再画白圆，
+   * 涂掉的字在识别图里就真的是白纸了，AI 不会再看见它。
+   */
+  renderAndScan(src) {
+    const that = this;
+    const { imagePath, imgW, imgH } = this.data;
     const scale = Math.min(1, 1280 / src.sw);
     const outW = Math.max(1, Math.round(src.sw * scale));
     const outH = Math.max(1, Math.round(src.sh * scale));
@@ -229,12 +393,34 @@ Page({
 
         img.onload = () => {
           ctx.drawImage(img, src.sx, src.sy, src.sw, src.sh, 0, 0, outW, outH);
+
+          // 擦除白块：显示坐标 → 原图坐标 → 输出坐标
+          const box = that._box;
+          const erase = that._erase || [];
+          if (box && erase.length) {
+            const kx = imgW / box.width;
+            const ky = imgH / box.height;
+            const rImg = (ERASE_R * (kx + ky)) / 2;
+            ctx.fillStyle = '#FFFFFF';
+            erase.forEach((stroke) => {
+              (stroke || []).forEach((p) => {
+                const ix = (p[0] - box.left) * kx;
+                const iy = (p[1] - box.top) * ky;
+                if (ix < src.sx - rImg || ix > src.sx + src.sw + rImg) return;
+                if (iy < src.sy - rImg || iy > src.sy + src.sh + rImg) return;
+                ctx.beginPath();
+                ctx.arc((ix - src.sx) * scale, (iy - src.sy) * scale, rImg * scale, 0, Math.PI * 2);
+                ctx.fill();
+              });
+            });
+          }
+
           wx.canvasToTempFilePath({
             canvas,
             destWidth: outW,
             destHeight: outH,
             fileType: 'jpg',
-            quality: 0.92,
+            quality: 0.75,
             success(out) {
               that.setData({ cropping: false });
               that.scan(out.tempFilePath, true);
@@ -499,6 +685,7 @@ Page({
   reset() {
     this._rect = null;
     this._drag = null;
+    this.resetEraseState();
     this.clearSlowTimer();
     this.setData({
       step: 'pick',

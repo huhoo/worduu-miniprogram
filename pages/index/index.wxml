@@ -10,8 +10,8 @@
       <view class="icon-btn" bindtap="openBank">
         <image class="icon-btn-img" src="/images/icons/search-ink.png" mode="aspectFit" />
       </view>
-      <view class="icon-btn" bindtap="openProfile">
-        <image class="icon-btn-img" src="/images/icons/gear-ink.png" mode="aspectFit" />
+      <view class="icon-btn" bindtap="openFootprint">
+        <image class="icon-btn-img" src="/images/icons/clock-ink.png" mode="aspectFit" />
       </view>
     </view>
   </view>
@@ -76,6 +76,9 @@
     </view>
     <text class="he-chevron">›</text>
   </view>
+
+  <!-- 识字档案 / 家长学情入口（原右上角齿轮移到这里，右上角让给历史足迹钟表） -->
+  <view class="profile-link" bindtap="openProfile">识字档案与家长学情 ›</view>
 </view>
 
 <tabbar current="index" />

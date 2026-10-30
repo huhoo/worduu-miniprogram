@@ -285,6 +285,54 @@
   touch-action: none;
 }
 
+/* 缩放/平移的容器：图片、擦除画布、选框都在里面跟着变换 */
+.crop-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+.erase-canvas {
+  position: absolute;
+  /* left/top/width/height 由 WXML 内联给出（对齐照片显示区） */
+  pointer-events: none;
+}
+
+/* 工具切换行：框选 / 橡皮擦 */
+.tools-row {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+}
+
+.tool-toggle {
+  display: flex;
+  align-items: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink-2);
+  background: #ECF4E9;
+  border: 1rpx solid transparent;
+  border-radius: 999rpx;
+  padding: 12rpx 26rpx;
+  margin-right: 16rpx;
+  min-height: 88rpx;
+}
+
+.tool-toggle.tool-on {
+  background: var(--green);
+  color: #FFFFFF;
+}
+
+.tool-toggle.tool-undo {
+  background: #FFFFFF;
+  border-color: var(--line);
+  color: #57685B;
+}
+
 .crop-img {
   position: absolute;
   left: 0;
