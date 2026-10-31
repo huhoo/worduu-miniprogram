@@ -66,6 +66,10 @@ function call(action, params) {
       .callFunction({
         name: cloudFunction,
         data: Object.assign({ action }, params || {}),
+        // 视觉类接口（ocr-scan / recognize-handwriting / evaluate-writing）云端实测
+        // 耗时 10~30s，默认 20s 超时会在冷启动或弱网下把调用掐断，表现为「无识别结果」。
+        // 拉满到 60s（微信 callFunction 上限），与云函数 60s、模型 55s 超时对齐。
+        timeout: 60000,
       })
       .then((res) => {
         const body = res && res.result;
